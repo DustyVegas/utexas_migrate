@@ -1,0 +1,28 @@
+id: utexas_users
+label: UTDK user migration
+migration_group: utexas
+
+source:
+  plugin: utexas_migrate_user_source
+  # The "target" here refers to the database connection where the source data lives.
+  # You will need to configure this database in your settings.php.
+  target: utexas_migrate
+
+process:
+  uid: uid
+  name: name
+  pass: pass
+  mail: mail
+  status: status
+  created: created
+  changed: changed
+  access: access
+  login: login
+  timezone: timezone
+  langcode: language
+  preferred_langcode: language
+  preferred_admin_langcode: language
+  init: init
+
+destination:
+  plugin: entity:user

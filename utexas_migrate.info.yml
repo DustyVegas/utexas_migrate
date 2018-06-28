@@ -6,3 +6,4 @@ package: UTexas
 dependencies:
   - migrate_plus(4.0-beta3)
   - migrate_tools(4.0-beta3)
+  - migrate_drupal

@@ -8,7 +8,8 @@ use Drupal\migrate\Plugin\migrate\source\SqlBase;
  * Migrate users from Drupal 7 database.
  *
  * @MigrateSource(
- *   id = "utexas_migrate_user_source"
+ *   id = "utexas_migrate_user_source",
+ *   source_module = "utexas_migrate"
  * )
  */
 class UTexasMigrateUserSource extends SqlBase {
@@ -67,13 +68,6 @@ class UTexasMigrateUserSource extends SqlBase {
     ];
     return $fields;
 
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function bundleMigrationRequired() {
-    return FALSE;
   }
 
   /**

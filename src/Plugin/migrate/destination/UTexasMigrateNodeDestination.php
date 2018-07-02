@@ -6,7 +6,6 @@ use Drupal\Core\Entity\EntityStorageException;
 use Drupal\migrate\Plugin\migrate\destination\Entity;
 use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
-use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Row;
 use Drupal\node\Entity\Node;
 

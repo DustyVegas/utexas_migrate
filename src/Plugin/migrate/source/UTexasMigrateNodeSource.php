@@ -41,7 +41,7 @@ class UTexasMigrateNodeSource extends SqlBase {
       'status' => $this->t('Status'),
       'uid' => $this->t('Author'),
       'sticky' => $this->t('Sticky'),
-      'promote' => $this->t('Promote')
+      'promote' => $this->t('Promote'),
     ];
     return $fields;
   }

@@ -15,7 +15,7 @@ use Drupal\migrate\Plugin\migrate\source\SqlBase;
  *  source_module = "utexas_migrate"
  * )
  */
-class UTexasMigrateNodeSource extends SqlBase {
+abstract class UTexasMigrateNodeSource extends SqlBase {
 
   /**
    * {@inheritdoc}

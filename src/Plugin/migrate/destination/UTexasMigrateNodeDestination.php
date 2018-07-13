@@ -16,7 +16,7 @@ use Drupal\node\Entity\Node;
  *   id = "utexas_migrate_node_destination"
  * )
  */
-class UTexasMigrateNodeDestination extends Entity implements MigrateDestinationInterface {
+abstract class UTexasMigrateNodeDestination extends Entity implements MigrateDestinationInterface {
 
   public $nodeProperties = [];
 
@@ -57,8 +57,7 @@ class UTexasMigrateNodeDestination extends Entity implements MigrateDestinationI
       return [$node->id()];
     }
     catch (EntityStorageException $e) {
-      \Drupal::logger('utexas_migrate')->warning("Import of node with nid of :nid failed: :error - Code: :code", [
-        ':nid' => $nid,
+      \Drupal::logger('utexas_migrate')->warning("Import of node failed: :error - Code: :code", [
         ':error' => $e->getMessage(),
         ':code' => $e->getCode(),
       ]);

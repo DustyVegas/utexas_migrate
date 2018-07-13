@@ -2,6 +2,9 @@
 
 namespace Drupal\utexas_migrate\Traits;
 
+use Drupal\migrate\Row;
+use Drupal\Core\Database\Query\SelectInterface;
+
 /**
  * Defines query and row elements shared between Standard Page & Landing Page.
  */
@@ -12,10 +15,10 @@ trait SharedPageFieldsTrait {
    *
    * @var sharedFields
    *
-   * See @UTexasMigrateLandingPageDestination
-   * & @UTexasMigrateStandardPageDestination.
+   * @see UTexasMigrateLandingPageDestination
+   * & UTexasMigrateStandardPageDestination.
    */
-  public $sharedFields = [
+  protected $sharedFields = [
     'field_wysiwyg_a' => 'field_flex_page_wysiwyg_a',
     'field_wysiwyg_b' => 'field_flex_page_wysiwyg_b',
   ];
@@ -24,9 +27,15 @@ trait SharedPageFieldsTrait {
    * Helper method to add SQL query joins.
    *
    * This is called by UTexasMigrateLandingPageSource and
-   * UTexasMigratestandardPageSource.
+   * UTexasMigrateStandardPageSource.
+   *
+   * @param \Drupal\Core\Database\Query\SelectInterface $query
+   *   A Drupal Select query object.
+   *
+   * @return \Drupal\Core\Database\Query\SelectInterface
+   *   The modified Drupal Select query object.
    */
-  public function setSharedQueryJoins($query) {
+  protected function setSharedQueryJoins(SelectInterface $query) {
     foreach ($this->sharedFields as $source => $destination) {
       $query->leftJoin('field_data_' . $source, $source, $source . '.entity_id = n.nid');
       $query->fields($source);
@@ -39,8 +48,11 @@ trait SharedPageFieldsTrait {
    *
    * Each field is listed sequentially,
    * since their value/format structure may differ.
+   *
+   * @param \Drupal\migrate\Row $row
+   *   The actual node data from the source.
    */
-  public function setSharedSourceProperties($row) {
+  protected function setSharedSourceProperties(Row $row) {
     $default_format = 'flex_html';
 
     // WYSIWYG A.
@@ -54,6 +66,28 @@ trait SharedPageFieldsTrait {
       'value' => $row->getSourceProperty('field_wysiwyg_b_value'),
       'format' => $default_format,
     ]);
+  }
+
+  /**
+   * Helper method to send field data to appropriate handlers.
+   *
+   * For example, send a Flex Content Area compound field to be converted into
+   * a Paragraph.
+   *
+   * @param string $source_name
+   *   The machine name of the Drupal 7 field this corresponds to.
+   * @param array $source_data
+   *   The actual field data, in simple key => value format.
+   */
+  protected function prepareSharedField($source_name, array $source_data) {
+    switch ($source_name) {
+      case '':
+        return $source_data;
+
+      default:
+        return $source_data;
+
+    }
   }
 
 }

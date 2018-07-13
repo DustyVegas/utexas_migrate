@@ -27,7 +27,7 @@ class UTexasMigrateStandardPageDestination extends UTexasMigrateNodeDestination 
 
     // Populate rows shared between Standard Page & Landing Page.
     foreach ($this->sharedFields as $source => $destination) {
-      $this->nodeProperties[$destination] = $row->getSourceProperty($source);
+      $this->nodeProperties[$destination] = $this->prepareSharedField($source, $row->getSourceProperty($source));
     }
 
     /* Add import mapping for fields specific to this node type. */

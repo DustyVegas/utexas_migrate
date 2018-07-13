@@ -18,32 +18,41 @@ use Drupal\node\Entity\Node;
  */
 class UTexasMigrateNodeDestination extends Entity implements MigrateDestinationInterface {
 
+  public $nodeProperties = [];
+
   /**
    * Import function that runs on each row.
    */
   public function import(Row $row, array $old_destination_id_values = []) {
-    $nid = $row->getSourceProperty('nid');
-    $title = $row->getSourceProperty('title');
-    $language = $row->getSourceProperty('language');
-    $created = $row->getSourceProperty('created');
-    $changed = $row->getSourceProperty('changed');
-    $status = $row->getSourceProperty('status');
-    $uid = $row->getSourceProperty('uid');
-    $sticky = $row->getSourceProperty('sticky');
-    $promote = $row->getSourceProperty('promote');
+    $basic_node_properties = [
+      'nid',
+      'title',
+      'language',
+      'created',
+      'changed',
+      'status',
+      'uid',
+      'sticky',
+      'promote',
+    ];
+    foreach ($basic_node_properties as $property) {
+      $this->nodeProperties[$property] = $row->getSourceProperty($property);
+    }
+    $this->nodeProperties['type'] = $this->configuration['default_bundle'];
+
+    // NOTE: this will not import items by itself. saveImportData() must be
+    // called by an extending node type destination class.
+  }
+
+  /**
+   * Helper function that actually saves node data.
+   *
+   * This MUST be called in classes that extend UTexasMigrateNodeDestination
+   * as the last element in those extending classes' import() method.
+   */
+  protected function saveImportData() {
     try {
-      $node = Node::create([
-        'type' => $this->configuration['default_bundle'],
-        'langcode' => $language,
-        'id' => $nid,
-        'title' => $title,
-        'created' => $created,
-        'changed' => $changed,
-        'status' => $status,
-        'uid' => $uid,
-        'sticky' => $sticky,
-        'promote' => $promote,
-      ]);
+      $node = Node::create($this->nodeProperties);
       $node->save();
       return [$node->id()];
     }

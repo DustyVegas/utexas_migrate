@@ -27,6 +27,7 @@ class FlexPageDestination extends NodeDestination {
 
     // Pass each shared field through a "prepare" function, which can handle
     // more complex operations, like creating a Paragraph type to be referenced.
+    // @see FlexPageFieldsTrait.
     foreach ($this->flexPageFields as $source => $destination) {
       $this->nodeElements[$destination] = $this->prepareField($source, $row->getSourceProperty($source));
     }

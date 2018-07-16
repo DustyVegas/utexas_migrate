@@ -24,6 +24,7 @@ class FlexPageSource extends NodeSource {
     // Inherit SQL joins from UTexasNodeSource.
     $query = parent::query();
 
+    // @see FlexPageFieldsTrait.
     foreach ($this->flexPageFields as $source => $destination) {
       $query->leftJoin('field_data_' . $source, $source, $source . '.entity_id = n.nid');
       $query->fields($source);

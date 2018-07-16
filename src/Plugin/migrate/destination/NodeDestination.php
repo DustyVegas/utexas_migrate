@@ -13,12 +13,12 @@ use Drupal\node\Entity\Node;
  * Provides a 'utexas_migrate_node_destination' destination plugin.
  *
  * @MigrateDestination(
- *   id = "utexas_migrate_node_destination"
+ *   id = "utexas_node_destination"
  * )
  */
-abstract class UTexasMigrateNodeDestination extends Entity implements MigrateDestinationInterface {
+abstract class NodeDestination extends Entity implements MigrateDestinationInterface {
 
-  public $nodeProperties = [];
+  public $nodeElements = [];
 
   /**
    * Import function that runs on each row.
@@ -36,9 +36,9 @@ abstract class UTexasMigrateNodeDestination extends Entity implements MigrateDes
       'promote',
     ];
     foreach ($basic_node_properties as $property) {
-      $this->nodeProperties[$property] = $row->getSourceProperty($property);
+      $this->nodeElements[$property] = $row->getSourceProperty($property);
     }
-    $this->nodeProperties['type'] = $this->configuration['default_bundle'];
+    $this->nodeElements['type'] = $this->configuration['default_bundle'];
 
     // NOTE: this will not import items by itself. saveImportData() must be
     // called by an extending node type destination class.
@@ -52,7 +52,7 @@ abstract class UTexasMigrateNodeDestination extends Entity implements MigrateDes
    */
   protected function saveImportData() {
     try {
-      $node = Node::create($this->nodeProperties);
+      $node = Node::create($this->nodeElements);
       $node->save();
       return [$node->id()];
     }

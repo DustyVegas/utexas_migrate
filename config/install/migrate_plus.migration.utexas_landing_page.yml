@@ -17,7 +17,7 @@ process:
     migration: utexas_users
     source: uid
 destination:
-  plugin: utexas_migrate_landing_page_destination
+  plugin: utexas_migrate_flex_page_destination
   default_bundle: utexas_flex_page
 migration_dependencies:
   required:

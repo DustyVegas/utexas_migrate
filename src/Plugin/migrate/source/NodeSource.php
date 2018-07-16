@@ -5,7 +5,7 @@ namespace Drupal\utexas_migrate\Plugin\migrate\source;
 use Drupal\migrate\Plugin\migrate\source\SqlBase;
 
 /**
- * Provides a 'utexas_migrate_node_source' migrate source.
+ * Provides a 'utexas_node_source' migrate source.
  *
  * This provides a base source plugin for migrating Standard Page,
  * Landing Page, and other node types from UTDK 7.
@@ -15,7 +15,7 @@ use Drupal\migrate\Plugin\migrate\source\SqlBase;
  *  source_module = "utexas_migrate"
  * )
  */
-abstract class UTexasMigrateNodeSource extends SqlBase {
+abstract class NodeSource extends SqlBase {
 
   /**
    * {@inheritdoc}

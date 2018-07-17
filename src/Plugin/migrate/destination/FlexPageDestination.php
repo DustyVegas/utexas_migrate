@@ -27,7 +27,7 @@ class FlexPageDestination extends NodeDestination {
 
     // Pass each shared field through a "prepare" function, which can handle
     // more complex operations, like creating a Paragraph type to be referenced.
-    // @see FlexPageFieldsTrait.
+    /* @see FlexPageFieldsTrait */
     foreach ($this->flexPageFields as $source => $destination) {
       $this->nodeElements[$destination] = $this->prepareField($source, $row->getSourceProperty($source));
     }
@@ -46,6 +46,9 @@ class FlexPageDestination extends NodeDestination {
    *   The machine name of the Drupal 7 field this corresponds to.
    * @param array $source_data
    *   The actual field data, in simple key => value format.
+   *
+   * @return array
+   *   An array of the actual field data, prepared for Drupal 8.
    */
   protected function prepareField($source_name, array $source_data) {
     switch ($source_name) {

@@ -12,7 +12,8 @@ trait FlexPageFieldsTrait {
    *
    * @var flexPageFields
    *
-   * @see Used in UTexasFlexPageDestination & UTexasFlexPageSource.
+   * @see FlexPageSource
+   * @see FlexPageDestination
    */
   protected $flexPageFields = [
     'field_wysiwyg_a' => 'field_flex_page_wysiwyg_a',

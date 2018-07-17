@@ -15,6 +15,9 @@ use Drupal\node\Entity\Node;
  * @MigrateDestination(
  *   id = "utexas_node_destination"
  * )
+ *
+ * NOTE: this will not import items by itself. saveImportData() must be
+ * called by an extending node type destination class.
  */
 abstract class NodeDestination extends Entity implements MigrateDestinationInterface {
 
@@ -40,8 +43,6 @@ abstract class NodeDestination extends Entity implements MigrateDestinationInter
     }
     $this->nodeElements['type'] = $this->configuration['default_bundle'];
 
-    // NOTE: this will not import items by itself. saveImportData() must be
-    // called by an extending node type destination class.
   }
 
   /**

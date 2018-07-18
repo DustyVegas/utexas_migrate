@@ -43,13 +43,13 @@ class FlexPageSource extends NodeSource {
     // WYSIWYG A.
     $row->setSourceProperty('field_wysiwyg_a', [
       'value' => $row->getSourceProperty('field_wysiwyg_a_value'),
-      'format' => $default_format,
+      'format' => $this->defaultTextFormat,
     ]);
 
     // WYSIWYG B.
     $row->setSourceProperty('field_wysiwyg_b', [
       'value' => $row->getSourceProperty('field_wysiwyg_b_value'),
-      'format' => $default_format,
+      'format' => $this->defaultTextFormat,
     ]);
 
     return $row;

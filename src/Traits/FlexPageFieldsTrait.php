@@ -8,6 +8,13 @@ namespace Drupal\utexas_migrate\Traits;
 trait FlexPageFieldsTrait {
 
   /**
+   * The text format that most fields should be migrated with.
+   *
+   * @var defaultTextFormat
+   */
+  protected $defaultTextFormat = 'flex_html';
+
+  /**
    * The machine names of the fields mapping the source to destination.
    *
    * @var flexPageFields

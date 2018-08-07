@@ -18,6 +18,19 @@ $databases['utexas_migrate']['default'] = array(
 );
 ```
 
+For file migration purposes, you'll need to also define a setting for the
+`migration_source_base_url`, '`migration_source_public_file_path` and  '`migration_source_private_file_path`, e.g.:
+```
+// The destination (D8) file private path must be an absolute path.
+$settings['file_private_path'] = '/Users/nnn/Sites/utdk8/web/sites/default/files/private';
+
+$settings['migration_source_base_url'] = 'http://quicksites.local';
+$settings['migration_source_public_file_path'] = 'sites/default/files';
+// Private files cannot be retrieved over HTTP.
+$settings['migration_source_base_path'] = '/Users/nnn/Sites/quicksites';
+$settings['migration_source_private_file_path'] = 'sites/default/files/private';
+```
+
 # Usage
 ## Running migrations via the command line & drush
 * Use `drush ms` to list all available migrations. You'll get 

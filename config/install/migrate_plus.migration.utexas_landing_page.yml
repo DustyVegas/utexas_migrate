@@ -23,3 +23,4 @@ migration_dependencies:
   required:
     - utexas_users
     - utexas_media_image
+    - utexas_social_link_fields

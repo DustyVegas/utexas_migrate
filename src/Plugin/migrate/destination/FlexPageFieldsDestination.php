@@ -38,6 +38,7 @@ class FlexPageFieldsDestination extends Entity implements MigrateDestinationInte
       $node->set('field_flex_page_fca_a', $row->getSourceProperty('fca_a'));
       $node->set('field_flex_page_fca_b', $row->getSourceProperty('fca_b'));
       $node->set('field_flex_page_pu', $row->getSourceProperty('promo_units'));
+      $node->set('field_flex_page_ql', $row->getSourceProperty('quick_links'));
       // Save the node with the fields!
       $node->save();
       return [$node->id()];

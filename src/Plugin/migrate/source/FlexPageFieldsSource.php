@@ -7,6 +7,7 @@ use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
 use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
+use Drupal\utexas_migrate\CustomWidgets\Resource;
 
 /**
  * Query available fields in Drupal 7 database and prepare them..
@@ -71,6 +72,7 @@ class FlexPageFieldsSource extends NodeSource {
     $row->setSourceProperty('promo_units', PromoUnits::convert($source_nid));
     $row->setSourceProperty('quick_links', QuickLinks::convert($source_nid));
     $row->setSourceProperty('photo_content_area', PhotoContentArea::convert($source_nid));
+    $row->setSourceProperty('resource', Resource::convert($source_nid));
 
     return parent::prepareRow($row);
   }

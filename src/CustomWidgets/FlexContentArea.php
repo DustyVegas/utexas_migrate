@@ -42,23 +42,23 @@ class FlexContentArea {
   public static function getSourceData($instance, $source_nid) {
     // Get all instances from the legacy DB.
     Database::setActiveConnection('utexas_migrate');
-    $source_fcas = Database::getConnection()->select('field_data_field_utexas_flex_content_area_' . $instance, 'fc')
+    $source_data = Database::getConnection()->select('field_data_field_utexas_flex_content_area_' . $instance, 'fc')
       ->fields('fc')
       ->condition('entity_id', $source_nid)
       ->execute()
       ->fetchAll();
-    $prepared_fcas = [];
-    foreach ($source_fcas as $delta => $fca) {
-      $prepared_fcas[$delta] = [
-        'headline' => $fca->{'field_utexas_flex_content_area_' . $instance . '_headline'},
-        'image_fid' => $fca->{'field_utexas_flex_content_area_' . $instance . '_image_fid'},
-        'copy' => $fca->{'field_utexas_flex_content_area_' . $instance . '_copy_value'},
-        'links' => $fca->{'field_utexas_flex_content_area_' . $instance . '_links'},
-        'cta_title' => $fca->{'field_utexas_flex_content_area_' . $instance . '_cta_title'},
-        'cta_uri' => $fca->{'field_utexas_flex_content_area_' . $instance . '_cta_uri'},
+    $prepared = [];
+    foreach ($source_data as $delta => $item) {
+      $prepared[$delta] = [
+        'headline' => $item->{'field_utexas_flex_content_area_' . $instance . '_headline'},
+        'image_fid' => $item->{'field_utexas_flex_content_area_' . $instance . '_image_fid'},
+        'copy' => $item->{'field_utexas_flex_content_area_' . $instance . '_copy_value'},
+        'links' => $item->{'field_utexas_flex_content_area_' . $instance . '_links'},
+        'cta_title' => $item->{'field_utexas_flex_content_area_' . $instance . '_cta_title'},
+        'cta_uri' => $item->{'field_utexas_flex_content_area_' . $instance . '_cta_uri'},
       ];
     }
-    return $prepared_fcas;
+    return $prepared;
   }
 
   /**

@@ -10,14 +10,12 @@ namespace Drupal\utexas_migrate\Plugin\migrate\source;
  *   source_module="utexas_migrate"
  * )
  */
-class StandardPageSource extends FlexPageSource {
+class StandardPageSource extends NodeSource {
 
   /**
    * Add condition to parent query to get Landing Page nodes.
    */
   public function query() {
-    // Inherit all field mappings shared between Standard & Landing page from
-    // UTexasFlexPageSource.
     $query = parent::query();
     $query->condition('type', 'standard_page', '=');
     return $query;

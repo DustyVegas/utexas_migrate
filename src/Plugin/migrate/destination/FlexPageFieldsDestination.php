@@ -10,42 +10,39 @@ use Drupal\migrate\Row;
 use Drupal\node\Entity\Node;
 
 /**
- * Provides a 'utexas_migrate_node_destination' destination plugin.
+ * Save all Flex Page fields from their respective source.
  *
  * @MigrateDestination(
- *   id = "utexas_node_destination"
+ *   id = "flex_page_fields_destination"
  * )
  */
-class NodeDestination extends Entity implements MigrateDestinationInterface {
-
-  public $nodeElements = [];
+class FlexPageFieldsDestination extends Entity implements MigrateDestinationInterface {
 
   /**
    * Import function that runs on each row.
    */
   public function import(Row $row, array $old_destination_id_values = []) {
-    $basic_node_properties = [
-      'title',
-      'language',
-      'created',
-      'changed',
-      'status',
-      'uid',
-      'sticky',
-      'promote',
-    ];
-    foreach ($basic_node_properties as $property) {
-      $this->nodeElements[$property] = $row->getSourceProperty($property);
-    }
-    $this->nodeElements['type'] = $this->configuration['default_bundle'];
+    // This gets the NID we requested in the "process" declaration's
+    // migration_lookup in utexas_flex_page_fields.yml.
+    $destination = $row->getDestinationProperty('temp_nid');
 
     try {
-      $node = Node::create($this->nodeElements);
+      $node = Node::load($destination);
+      // Add fields, as necessary, per the model below.
+      // The first parameters is the Drupal 8 field name
+      // The second parameter gets data from what has been defined
+      // in FlexPageFieldsSource::prepareRow(), which may have callbacks
+      // to other classes for more complex field mappings.
+      $node->set('field_flex_page_wysiwyg_a', $row->getSourceProperty('wysiwyg_a'));
+      $node->set('field_flex_page_wysiwyg_b', $row->getSourceProperty('wysiwyg_b'));
+
+      // Save the node with the fields!
       $node->save();
       return [$node->id()];
     }
     catch (EntityStorageException $e) {
-      \Drupal::logger('utexas_migrate')->warning("Import of node failed: :error - Code: :code", [
+      \Drupal::logger('utexas_migrate')->warning("Field import to node :nid failed: :error - Code: :code", [
+        ':nid' => $destination,
         ':error' => $e->getMessage(),
         ':code' => $e->getCode(),
       ]);
@@ -89,19 +86,7 @@ class NodeDestination extends Entity implements MigrateDestinationInterface {
    * {@inheritdoc}
    */
   public function rollback(array $destination_identifier) {
-    try {
-      $node = Node::load($destination_identifier['id']);
-      if ($node != NULL) {
-        $node->delete();
-      }
-    }
-    catch (EntityStorageException $e) {
-      \Drupal::logger('utexas_migrate')->warning("Rollback of node with nid of :nid failed: :error - Code: :code", [
-        ':nid' => $destination_identifier['id'],
-        ':error' => $e->getMessage(),
-        ':code' => $e->getCode(),
-      ]);
-    }
+
   }
 
   /**

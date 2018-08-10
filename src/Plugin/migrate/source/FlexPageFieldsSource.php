@@ -3,6 +3,7 @@
 namespace Drupal\utexas_migrate\Plugin\migrate\source;
 
 use Drupal\migrate\Row;
+use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
 use Drupal\utexas_migrate\CustomWidgets\HeroImage;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
@@ -70,6 +71,8 @@ class FlexPageFieldsSource extends NodeSource {
     // Here, the first parameter to convert() specifies FCA 'A' or 'B' data.
     $row->setSourceProperty('fca_a', FlexContentArea::convert('a', $source_nid));
     $row->setSourceProperty('fca_b', FlexContentArea::convert('b', $source_nid));
+
+    $row->setSourceProperty('featured_highlight', FeaturedHighlight::convert($source_nid));
 
     // Hero Images differ between Landing Page & Standard page, so we pass the "type".
     $row->setSourceProperty('hero_image', HeroImage::convert($row->getSourceProperty('type'), $source_nid));

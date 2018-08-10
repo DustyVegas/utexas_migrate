@@ -10,7 +10,6 @@ use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Row;
 use Drupal\Core\Site\Settings;
-use Drupal\utexas_migrate\Traits\MediaMigrateTrait;
 
 /**
  * Provides a 'utexas_media_destination' destination plugin.
@@ -18,8 +17,6 @@ use Drupal\utexas_migrate\Traits\MediaMigrateTrait;
  * This is a base class for Media migrations.
  */
 abstract class MediaDestination extends DestinationBase implements MigrateDestinationInterface {
-
-  use MediaMigrateTrait;
 
   public $migrationSourceBasePath;
   public $migrationSourceBaseUrl;

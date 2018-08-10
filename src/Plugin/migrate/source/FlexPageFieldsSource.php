@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\Plugin\migrate\source;
 
 use Drupal\migrate\Row;
 use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
+use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 
 /**
  * Query available fields in Drupal 7 database and prepare them..
@@ -64,6 +65,8 @@ class FlexPageFieldsSource extends NodeSource {
     // Here, the first parameter to convert() specifies FCA 'A' or 'B' data.
     $row->setSourceProperty('fca_a', FlexContentArea::convert('a', $source_nid));
     $row->setSourceProperty('fca_b', FlexContentArea::convert('b', $source_nid));
+
+    $row->setSourceProperty('promo_units', PromoUnits::convert($source_nid));
 
     return parent::prepareRow($row);
   }

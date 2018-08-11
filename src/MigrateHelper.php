@@ -34,7 +34,32 @@ class MigrateHelper {
    *   The appropriate link for D8.
    */
   public static function prepareLink($link) {
-    // @todo: Add logic for handling internal URLs.
+    // Handle internal URLs.
+    if (strpos($link, 'node/') === 0) {
+      $source_nid = substr($link, 5);
+      // Each node type migration must be queried individually,
+      // since they have no relational shared field for joining.
+      $tables_to_query = [
+        'migrate_map_utexas_landing_page',
+        'migrate_map_utexas_standard_page',
+      ];
+      foreach ($tables_to_query as $table) {
+        $destination_nid = \Drupal::database()->select('migrate_map_utexas_landing_page', 'n')
+          ->fields('n', ['destid1'])
+          ->condition('n.sourceid1', $source_nid)
+          ->execute()
+          ->fetchField();
+        if ($destination_nid) {
+          return('internal:/node/' . $destination_nid);
+        }
+      }
+      // The destination NID doesn't exist. Print a warning message.
+      \Drupal::logger('utexas_migrate')->warning('* Source node %source contained link "@link". No equivalent destination node was found. Link replaced with link to homepage.', [
+        '@link' => $link,
+        '%source' => $source_nid,
+      ]);
+      return 'internal:/';
+    }
 
     // Handle <front>.
     if ($link == '<front>') {

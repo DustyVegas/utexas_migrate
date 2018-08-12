@@ -30,13 +30,13 @@ class NodeDestination extends Entity implements MigrateDestinationInterface {
       'created',
       'changed',
       'status',
-      'uid',
       'sticky',
       'promote',
     ];
     foreach ($basic_node_properties as $property) {
       $this->nodeElements[$property] = $row->getSourceProperty($property);
     }
+    $this->nodeElements['uid'] = $row->getDestinationProperty('uid');
     $this->nodeElements['type'] = $this->configuration['default_bundle'];
 
     try {

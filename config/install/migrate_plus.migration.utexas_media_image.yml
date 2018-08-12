@@ -13,7 +13,14 @@ source:
   plugin: utexas_media_image_source
 destination:
   plugin: utexas_media_image_destination
-process: []
+process:
+  # Find the destination UID; accessible via 
+  # $row->getDestinationProperty('uid');
+  uid:
+    plugin: migration_lookup
+    source: uid
+    migration:
+      - utexas_users
 migration_dependencies:
   required:
     - utexas_users

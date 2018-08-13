@@ -16,7 +16,7 @@ class MigrateHelper {
    * @return int
    *   Returns the matching media entity ID imported to the D8 site.
    */
-  public static function getMediaIdFromFid(int $fid) {
+  public static function getMediaIdFromFid($fid) {
     return \Drupal::database()->select('migrate_map_utexas_media_image')
       ->fields('migrate_map_utexas_media_image', ['destid1'])
       ->condition('sourceid1', $fid, '=')

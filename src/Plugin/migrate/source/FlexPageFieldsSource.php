@@ -3,6 +3,7 @@
 namespace Drupal\utexas_migrate\Plugin\migrate\source;
 
 use Drupal\migrate\Row;
+use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
 
 /**
  * Query available fields in Drupal 7 database and prepare them..
@@ -21,6 +22,7 @@ class FlexPageFieldsSource extends NodeSource {
     // Inherit SQL joins from NodeSource.
     $query = parent::query();
     // Add joins, as necessary, per each field you want to migrate.
+    // For fields with multiple deltas, do a separate query in a callback.
     $query->leftJoin('field_data_field_wysiwyg_a', 'wysiwyg_a', 'wysiwyg_a.entity_id = n.nid');
     $query->leftJoin('field_data_field_wysiwyg_b', 'wysiwyg_b', 'wysiwyg_b.entity_id = n.nid');
 
@@ -50,6 +52,7 @@ class FlexPageFieldsSource extends NodeSource {
    * {@inheritdoc}
    */
   public function prepareRow(Row $row) {
+    $source_nid = $row->getSourceProperty('nid');
     // For simple field preparation, such as WYSIWYG,
     // you can just define the structure of the D8 array here.
     // For complex fields, add an external class and "use" it in this class.
@@ -57,6 +60,10 @@ class FlexPageFieldsSource extends NodeSource {
     $row->setSourceProperty('wysiwyg_a', ['value' => $wysiwyg_a, 'format' => 'flex_html']);
     $wysiwyg_b = $row->getSourceProperty('field_wysiwyg_b_value');
     $row->setSourceProperty('wysiwyg_b', ['value' => $wysiwyg_b, 'format' => 'flex_html']);
+
+    // Here, the first parameter to convert() specifies FCA 'A' or 'B' data.
+    $row->setSourceProperty('fca_a', FlexContentArea::convert('a', $source_nid));
+    $row->setSourceProperty('fca_b', FlexContentArea::convert('b', $source_nid));
 
     return parent::prepareRow($row);
   }

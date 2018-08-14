@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\Plugin\migrate\source;
 
 use Drupal\migrate\Row;
 use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
+use Drupal\utexas_migrate\CustomWidgets\ImageLink;
 use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
@@ -68,6 +69,10 @@ class FlexPageFieldsSource extends NodeSource {
     // Here, the first parameter to convert() specifies FCA 'A' or 'B' data.
     $row->setSourceProperty('fca_a', FlexContentArea::convert('a', $source_nid));
     $row->setSourceProperty('fca_b', FlexContentArea::convert('b', $source_nid));
+
+    // Here, the first parameter to convert() specifies Image Link 'A' or 'B' data.
+    $row->setSourceProperty('image_link_a', ImageLink::convert('a', $source_nid));
+    $row->setSourceProperty('image_link_b', ImageLink::convert('b', $source_nid));
 
     $row->setSourceProperty('promo_units', PromoUnits::convert($source_nid));
     $row->setSourceProperty('quick_links', QuickLinks::convert($source_nid));

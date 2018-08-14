@@ -59,6 +59,7 @@ class FooterTextSource extends SqlBase {
         // The allowed format in D7 was restricted.
         // This will not prevent D8 users from switching the format after migration.
         $row->setSourceProperty('format', 'restricted_html');
+        $row->setSourceProperty('region', 'footer_left');
       }
       else {
         // If there is no footer text data, abandon the import.

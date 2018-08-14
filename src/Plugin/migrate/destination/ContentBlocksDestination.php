@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\Plugin\migrate\destination;
 
 use Drupal\block_content\Entity\BlockContent;
 use Drupal\Core\Entity\EntityStorageException;
+use Drupal\block\Entity\Block;
 use Drupal\migrate\Plugin\migrate\destination\Entity;
 use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
@@ -36,6 +37,20 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
         ],
       ]);
       $block->save();
+      $region = $row->getSourceProperty('region');
+      if ($region) {
+        $config = \Drupal::config('system.theme');
+        $placed_block = Block::create([
+          'id' => $block->id(),
+          'weight' => 0,
+          'theme' => $config->get('default'),
+          'status' => TRUE,
+          'region' => 'footer_left',
+          'plugin' => 'block_content:' . $block->uuid(),
+          'settings' => [],
+        ]);
+        $placed_block->save();
+      }
       return [$block->id()];
     }
     catch (EntityStorageException $e) {

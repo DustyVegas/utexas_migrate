@@ -23,14 +23,17 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
    */
   public function import(Row $row, array $old_destination_id_values = []) {
     try {
+      $migrated_format = $row->getSourceProperty('format');
       $block = BlockContent::create([
         'type' => 'basic',
         'info' => $row->getSourceProperty('info'),
-        'body' => $row->getSourceProperty('body'),
-        // @todo: replace with format that allows <iframe> & <script>
-        // @todo: add minimal text_format mapping for blocks that may be set
-        // to other text formats?
-        'format' => 'flex_html',
+        'body' => [
+          'value' => $row->getSourceProperty('body'),
+          'format' => isset($migrated_format) ? $migrated_format : 'flex_html',
+          // @todo: replace with format that allows <iframe> & <script>
+          // @todo: add minimal text_format mapping for blocks that may be set
+          // to other text formats?
+        ],
       ]);
       $block->save();
       return [$block->id()];

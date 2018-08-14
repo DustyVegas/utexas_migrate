@@ -37,13 +37,29 @@ class SocialLinksFieldSource extends SqlBase {
     $prepared_links = [];
     if (!empty($links)) {
       $inc = 0;
+      $allowed_providers = [
+        'facebook',
+        'flickr',
+        'googleplus',
+        'instagram',
+        'linkedin',
+        'pinterest',
+        'reddit',
+        'snapchat',
+        'tumblr',
+        'twitter',
+        'vimeo',
+        'youtube',
+      ];
       foreach ($links as $provider => $link) {
-        $prepared_links[] = [
-          'social_account_url' => MigrateHelper::prepareLink($link),
-          'social_account_name' => strtolower($provider),
-          'delta' => $inc,
-        ];
-        $inc++;
+        if (in_array(strtolower($provider), $allowed_providers)) {
+          $prepared_links[] = [
+            'social_account_url' => MigrateHelper::prepareLink($link),
+            'social_account_name' => strtolower($provider),
+            'delta' => $inc,
+          ];
+          $inc++;
+        }
       }
       $row->setSourceProperty('links', $prepared_links);
     }

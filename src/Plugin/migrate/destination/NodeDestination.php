@@ -8,6 +8,7 @@ use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Row;
 use Drupal\node\Entity\Node;
+use Drupal\utexas_migrate\MigrateHelper;
 
 /**
  * Provides a 'utexas_migrate_node_destination' destination plugin.
@@ -42,6 +43,9 @@ class NodeDestination extends Entity implements MigrateDestinationInterface {
     try {
       $node = Node::create($this->nodeElements);
       $node->save();
+      if ($alias = MigrateHelper::getSourceAlias('node/' . $row->getSourceProperty('nid'))) {
+        $path = \Drupal::service('path.alias_storage')->save('/node/' . $node->id(), '/' . $alias);
+      }
       return [$node->id()];
     }
     catch (EntityStorageException $e) {

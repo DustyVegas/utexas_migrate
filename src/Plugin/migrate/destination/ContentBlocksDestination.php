@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\Plugin\migrate\destination;
 
 use Drupal\block_content\Entity\BlockContent;
 use Drupal\Core\Entity\EntityStorageException;
+use Drupal\block\Entity\Block;
 use Drupal\migrate\Plugin\migrate\destination\Entity;
 use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
@@ -23,16 +24,33 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
    */
   public function import(Row $row, array $old_destination_id_values = []) {
     try {
+      $migrated_format = $row->getSourceProperty('format');
       $block = BlockContent::create([
         'type' => 'basic',
         'info' => $row->getSourceProperty('info'),
-        'body' => $row->getSourceProperty('body'),
-        // @todo: replace with format that allows <iframe> & <script>
-        // @todo: add minimal text_format mapping for blocks that may be set
-        // to other text formats?
-        'format' => 'flex_html',
+        'body' => [
+          'value' => $row->getSourceProperty('body'),
+          'format' => isset($migrated_format) ? $migrated_format : 'flex_html',
+          // @todo: replace with format that allows <iframe> & <script>
+          // @todo: add minimal text_format mapping for blocks that may be set
+          // to other text formats?
+        ],
       ]);
       $block->save();
+      $region = $row->getSourceProperty('region');
+      if ($region) {
+        $config = \Drupal::config('system.theme');
+        $placed_block = Block::create([
+          'id' => $block->id(),
+          'weight' => 0,
+          'theme' => $config->get('default'),
+          'status' => TRUE,
+          'region' => 'footer_left',
+          'plugin' => 'block_content:' . $block->uuid(),
+          'settings' => [],
+        ]);
+        $placed_block->save();
+      }
       return [$block->id()];
     }
     catch (EntityStorageException $e) {

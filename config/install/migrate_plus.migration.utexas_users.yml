@@ -9,19 +9,26 @@ source:
   target: utexas_migrate
 
 process:
-  uid: uid
   name: name
   pass: pass
   mail: mail
-  status: status
   created: created
-  changed: changed
   access: access
   login: login
+  status: status
   timezone: timezone
-  langcode: language
-  preferred_langcode: language
-  preferred_admin_langcode: language
+  langcode:
+    plugin: user_langcode
+    source: language
+    fallback_to_site_default: false
+  preferred_langcode:
+    plugin: user_langcode
+    source: language
+    fallback_to_site_default: true
+  preferred_admin_langcode:
+    plugin: user_langcode
+    source: language
+    fallback_to_site_default: true
   init: init
 destination:
-  plugin: entity:user
+  plugin: utexas:user

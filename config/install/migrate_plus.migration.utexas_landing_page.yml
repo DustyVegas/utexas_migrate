@@ -12,10 +12,13 @@ label: 'Landing Page node import'
 source:
   plugin: utexas_migrate_landing_page_source
 process:
+  # Find the destination UID; accessible via 
+  # $row->getDestinationProperty('uid');
   uid:
     plugin: migration_lookup
-    migration: utexas_users
     source: uid
+    migration:
+      - utexas_users
 destination:
   plugin: utexas_node_destination
   default_bundle: utexas_flex_page

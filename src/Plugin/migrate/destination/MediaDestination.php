@@ -67,7 +67,7 @@ abstract class MediaDestination extends DestinationBase implements MigrateDestin
       $this->importedFile = file_save_data($file_data, $file_uri, FILE_EXISTS_REPLACE);
       if ($this->importedFile) {
         $this->mediaElements['name'] = $this->importedFile->getFilename();
-        $this->mediaElements['uid'] = $row->getSourceProperty('uid');
+        $this->mediaElements['uid'] = $row->getDestinationProperty('uid');
         // File "status" in Drupal 7 is present, but non-functional.
         // Nevertheless, migrate the value ("1") from the source system.
         $this->mediaElements['status'] = $row->getSourceProperty('status');

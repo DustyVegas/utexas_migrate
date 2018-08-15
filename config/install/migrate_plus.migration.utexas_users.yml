@@ -3,10 +3,7 @@ label: UTDK user migration
 migration_group: utexas
 
 source:
-  plugin: utexas_migrate_user_source
-  # The "target" here refers to the database connection where the source data lives.
-  # You will need to configure this database in your settings.php.
-  target: utexas_migrate
+  plugin: d7_user
 
 process:
   name: name
@@ -29,6 +26,27 @@ process:
     plugin: user_langcode
     source: language
     fallback_to_site_default: true
+  roles:
+    plugin: migration_lookup
+    migration: utexas_roles
+    source: roles
+  # UTDK 8 does not enable user pictures by default.
+  # If your Drupal 7 site does use user pictures,
+  # uncomment the following section.
+  #
+  # user_picture:
+  #   -
+  #     plugin: default_value
+  #     source: picture
+  #     default_value: null
+  #   -
+  #     plugin: migration_lookup
+  #     source: fid
+  #     migration:
+  #       - utexas_media_image
   init: init
 destination:
   plugin: utexas:user
+migration_dependencies:
+  required:
+    - utexas_roles

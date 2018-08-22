@@ -8,44 +8,42 @@ use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Row;
 use Drupal\node\Entity\Node;
+use Drupal\pathauto\PathautoState;
 
 /**
- * Provides a 'utexas_migrate_node_destination' destination plugin.
+ * Update any nodes which have pathauto unchecked.
  *
  * @MigrateDestination(
- *   id = "utexas_node_destination"
+ *   id = "utexas_path_alias_destination"
  * )
  */
-class NodeDestination extends Entity implements MigrateDestinationInterface {
-
-  public $nodeElements = [];
+class PathAliasDestination extends Entity implements MigrateDestinationInterface {
 
   /**
    * Import function that runs on each row.
    */
   public function import(Row $row, array $old_destination_id_values = []) {
-    $basic_node_properties = [
-      'title',
-      'language',
-      'created',
-      'changed',
-      'status',
-      'sticky',
-      'promote',
-    ];
-    foreach ($basic_node_properties as $property) {
-      $this->nodeElements[$property] = $row->getSourceProperty($property);
-    }
-    $this->nodeElements['uid'] = $row->getDestinationProperty('uid');
-    $this->nodeElements['type'] = $this->configuration['default_bundle'];
-
+    // This gets the NID we requested in the "process" declaration's
+    // migration_lookup in utexas_path_aliases.yml.
+    $destination = $row->getDestinationProperty('temp_nid');
     try {
-      $node = Node::create($this->nodeElements);
-      $node->save();
-      return [$node->id()];
+      if ($node = Node::load($destination)) {
+        if ($row->getSourceProperty('pathauto') === '0') {
+          // Look up the alias from the source system.
+          $alias = $row->getSourceProperty('alias');
+          $node->set("path", ["alias" => $alias, "pathauto" => PathautoState::SKIP]);
+          // Save the node with the pathauto & pathalias settings.
+          $node->save();
+        }
+        // Else, leave the pathauto setting alone & just report this as processed.
+        return [$node->id()];
+      }
+      // The destination node couldn't be found.
+      return FALSE;
     }
     catch (EntityStorageException $e) {
-      \Drupal::logger('utexas_migrate')->warning("Import of node failed: :error - Code: :code", [
+      \Drupal::logger('utexas_migrate')->warning("Path alias import to node :nid failed: :error - Code: :code", [
+        ':nid' => $destination,
         ':error' => $e->getMessage(),
         ':code' => $e->getCode(),
       ]);
@@ -89,19 +87,7 @@ class NodeDestination extends Entity implements MigrateDestinationInterface {
    * {@inheritdoc}
    */
   public function rollback(array $destination_identifier) {
-    try {
-      $node = Node::load($destination_identifier['id']);
-      if ($node != NULL) {
-        $node->delete();
-      }
-    }
-    catch (EntityStorageException $e) {
-      \Drupal::logger('utexas_migrate')->warning("Rollback of node with nid of :nid failed: :error - Code: :code", [
-        ':nid' => $destination_identifier['id'],
-        ':error' => $e->getMessage(),
-        ':code' => $e->getCode(),
-      ]);
-    }
+
   }
 
   /**

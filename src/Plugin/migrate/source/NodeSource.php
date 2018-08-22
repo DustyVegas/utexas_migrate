@@ -7,15 +7,15 @@ use Drupal\migrate\Plugin\migrate\source\SqlBase;
 /**
  * Provides a 'utexas_node_source' migrate source.
  *
- * This provides a base source plugin for migrating Standard Page,
- * Landing Page, and other node types from UTDK 7.
+ * This provides a base source plugin for migrating
+ * node types from UTDK 7.
  *
  * @MigrateSource(
  *  id = "utexas_migrate_node_source",
  *  source_module = "utexas_migrate"
  * )
  */
-abstract class NodeSource extends SqlBase {
+class NodeSource extends SqlBase {
 
   /**
    * {@inheritdoc}

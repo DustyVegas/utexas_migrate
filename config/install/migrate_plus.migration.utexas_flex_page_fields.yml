@@ -33,5 +33,5 @@ destination:
 
 migration_dependencies:
   required:
-    - utexas_standard_page
-    - utexas_landing_page
+      - utexas_standard_page
+      - utexas_landing_page

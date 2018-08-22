@@ -50,3 +50,4 @@ destination:
 migration_dependencies:
   required:
     - utexas_roles
+    - utexas_pathauto_patterns

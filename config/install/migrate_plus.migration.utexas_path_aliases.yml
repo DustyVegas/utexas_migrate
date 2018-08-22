@@ -17,6 +17,7 @@ source:
   - landing_page
   - standard_page
   - page
+  - article
 process:
   # Retrieve the destination ID of the corresponding node.
   #
@@ -29,6 +30,7 @@ process:
       - utexas_standard_page
       - utexas_landing_page
       - utexas_basic_page
+      - utexas_article
 destination:
   plugin: utexas_path_alias_destination
 migration_dependencies:
@@ -36,3 +38,4 @@ migration_dependencies:
     - utexas_standard_page
     - utexas_landing_page
     - utexas_basic_page
+    - utexas_article

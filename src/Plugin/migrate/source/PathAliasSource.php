@@ -14,7 +14,7 @@ use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
 use Drupal\utexas_migrate\CustomWidgets\Resource;
 
 /**
- * Query available fields in Drupal 7 database and prepare them..
+ * Retrieve the "pathauto_state" values & the source alias.
  *
  * @MigrateSource(
  *   id = "utexas_path_alias_source",
@@ -29,6 +29,11 @@ class PathAliasSource extends NodeSource {
   public function query() {
     // Inherit SQL joins from NodeSource.
     $query = parent::query();
+    // The "pathauto_state" table in D7 records nodes which have pathauto settings
+    // that *differ* from the node type default. So, this table will either have
+    // a value of "0" or "1" or will not have a row for the node (if it doesn't)
+    // differ from the node_type default. A value of "0" means "NO PATHAUTO". A
+    // value of "1" means "YES PATHAUTO".
     $query->leftJoin('pathauto_state', 'pathauto', 'pathauto.entity_id = n.nid');
     $query->fields('pathauto', ['pathauto']);
     return $query;

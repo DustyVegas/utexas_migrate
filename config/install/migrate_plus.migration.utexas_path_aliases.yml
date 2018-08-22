@@ -1,9 +1,7 @@
 # We typically would migrate node fields along with node data. 
-# However, since some of those fields contain links to *other* nodes,
-# We want to create the nodes first, then the fields in this subsequent migration
-# so that those references can be mapped.
-
-# Migration metadata
+# However, since URL alias values require the node to be created,
+# It's cleaner to run this as a separate migration after the 
+# node types have been migrated.
 id: utexas_path_aliases
 label: Path Aliases (+ pathauto)
 class: null

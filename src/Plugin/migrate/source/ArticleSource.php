@@ -40,7 +40,6 @@ class ArticleSource extends NodeSource {
       ->execute()
       ->fetch();
     $destination_fid = MigrateHelper::getMediaIdFromFid($image['field_image_fid']);
-    print_r($destination_fid);
     $row->setSourceProperty('field_image', [
       'target_id' => $destination_fid,
       'alt' => '@to be replaced with media reference',

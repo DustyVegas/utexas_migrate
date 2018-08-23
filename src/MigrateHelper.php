@@ -41,6 +41,7 @@ class MigrateHelper {
     $tables_to_query = [
       'migrate_map_utexas_landing_page',
       'migrate_map_utexas_standard_page',
+      'migrate_map_utexas_basic_page',
     ];
     foreach ($tables_to_query as $table) {
       $destination_nid = \Drupal::database()->select($table, 'n')
@@ -56,23 +57,29 @@ class MigrateHelper {
   }
 
   /**
-   * Given an internal source path, return its alias, if it exists.
+   * Given an source text format, return an available format.
    *
-   * @param string $internal_source
-   *   The canonical route (e.g., "node/1")
+   * @param string $text_format
+   *   The source format (e.g., 'filtered_html')
    *
    * @return string
-   *   An path alias (e.g., "welcome-your-new-site").
+   *   The destination format (e.g., 'flex_html')
    */
-  public static function getSourceAlias($internal_source) {
-    // Get alias from the legacy DB.
-    Database::setActiveConnection('utexas_migrate');
-    $alias = Database::getConnection()->select('url_alias', 'ua')
-      ->fields('ua', ['alias'])
-      ->condition('source', $internal_source)
-      ->execute()
-      ->fetchField();
-    return $alias;
+  public function getDestinationTextFormat($text_format) {
+    // As much as possible, we want to map the set text formats to their
+    // respective D8 equivalents. If a D8 equivalent doesn't exist, fall back
+    // to 'flex_html'.
+    $destination_text_formats = [
+      'flex_html',
+      'basic_html',
+      'full_html',
+      'restricted_html',
+      'plain_text',
+    ];
+    if (in_array($text_format, $destination_text_formats)) {
+      return $text_format;
+    }
+    return 'flex_html';
   }
 
   /**

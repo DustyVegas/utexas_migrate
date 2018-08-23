@@ -10,8 +10,16 @@ migration_tags:
 migration_group: utexas
 label: 'Standard Page node import'
 source:
-  plugin: utexas_migrate_standard_page_source
+  plugin: utexas_migrate_node_source
+  node_type: standard_page
 process:
+  title: title
+  language: language
+  created: created
+  changed: changed
+  status: status
+  sticky: sticky
+  promote: promote
   # Find the destination UID; accessible via 
   # $row->getDestinationProperty('uid');
   uid:
@@ -20,7 +28,7 @@ process:
     migration:
       - utexas_users
 destination:
-  plugin: utexas_node_destination
+  plugin: entity:node
   default_bundle: utexas_flex_page
 migration_dependencies:
   required:

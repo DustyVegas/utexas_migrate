@@ -21,8 +21,14 @@ abstract class NodeSource extends SqlBase {
    * {@inheritdoc}
    */
   public function query() {
-    $query = $this->select('node', 'n')
-      ->fields('n', array_keys($this->fields()));
+    $query = $this->select('node', 'n');
+    $query->fields('n', array_keys($this->fields()));
+
+    if (isset($this->configuration['node_type'])) {
+      // Use the migration's .yml file's 'node_type' declaration
+      // To filter nodes by bundle.
+      $query->condition('n.type', $this->configuration['node_type'], 'IN');
+    }
     return $query;
   }
 

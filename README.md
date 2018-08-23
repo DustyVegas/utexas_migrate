@@ -19,7 +19,11 @@ $databases['utexas_migrate']['default'] = array(
 ```
 
 For file migration purposes, you'll need to also define a setting for the
-`migration_source_base_url`, '`migration_source_public_file_path` and  '`migration_source_private_file_path`, e.g.:
+- `migration_source_base_url`
+- `migration_source_public_file_path`
+- `migration_source_private_file_path`
+
+Example:
 ```
 // The destination (D8) file private path must be an absolute path.
 $settings['file_private_path'] = '/Users/nnn/Sites/utdk8/web/sites/default/files/private';

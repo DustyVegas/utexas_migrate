@@ -28,20 +28,21 @@ class PathAliasDestination extends Entity implements MigrateDestinationInterface
     $destination = $row->getDestinationProperty('temp_nid');
     try {
       if ($node = Node::load($destination)) {
-        // The "pathauto_state" table in D7 records nodes which have pathauto settings
-        // that *differ* from the node type default. So, this table will either have
-        // a value of "0" or "1" or will not have a row for the node (if it doesn't)
-        // differ from the node_type default. A value of "0" means "SKIP PATHAUTO". A
-        // value of "1" means "USE PATHAUTO". So, in this case, we are changing the 
-        // value to "SKIP" from the Flex Page default of "USE" *only* if that's 
-        // specified in the Drupal 7 node.
+        // The "pathauto_state" table in D7 records nodes which have pathauto
+        // settings that *differ* from the node type default. So, this table
+        // will either have a value of "0" or "1" or will not have a row for
+        // the node (if it doesn't) differ from the node_type default. A value
+        // of "0" means "SKIP PATHAUTO". A value of "1" means "USE PATHAUTO".
+        // So, in this case, we are changing the value to "SKIP" from the
+        // Flex Page default of "USE" *only* if that's specified in the
+        // Drupal 7 node.
         if ($row->getSourceProperty('pathauto') === '0') {
           $alias = $row->getSourceProperty('alias');
           $node->set("path", ["alias" => $alias, "pathauto" => PathautoState::SKIP]);
           // Save the node with the pathauto & pathalias settings.
           $node->save();
         }
-        // Else, leave the pathauto setting alone & just report this as processed.
+        // Else, leave the pathauto setting alone & report this as processed.
         return [$node->id()];
       }
       // The destination node couldn't be found.

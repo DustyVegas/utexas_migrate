@@ -4,12 +4,11 @@ namespace Drupal\utexas_migrate\Plugin\migrate\source;
 
 use Drupal\migrate\Row;
 use Drupal\utexas_migrate\MigrateHelper;
-use Drupal\pathauto\PathautoState;
 
 /**
  * Provides a 'utexas_article_source' migrate source.
  *
- * This provides a base source plugin for migrating 
+ * This provides a base source plugin for migrating
  * article type nodes from Drupal 7.
  *
  * @MigrateSource(

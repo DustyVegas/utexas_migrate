@@ -33,8 +33,14 @@ process:
     plugin: migration_lookup
     migration: utexas_terms
     source: tag_list
-  'field_image/target_id': field_image/target_id
-  'field_image/alt': field_image/alt
+  'field_image/target_id': 
+    plugin: skip_on_empty
+    method: process
+    source: field_image/target_id
+  'field_image/alt':
+    plugin: skip_on_empty
+    method: process
+    source: field_image/alt
 destination:
   plugin: entity:node
   default_bundle: article

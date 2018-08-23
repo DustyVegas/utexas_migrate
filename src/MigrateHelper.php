@@ -42,6 +42,7 @@ class MigrateHelper {
       'migrate_map_utexas_landing_page',
       'migrate_map_utexas_standard_page',
       'migrate_map_utexas_basic_page',
+      'migrate_map_utexas_article',
     ];
     foreach ($tables_to_query as $table) {
       $destination_nid = \Drupal::database()->select($table, 'n')

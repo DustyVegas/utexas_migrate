@@ -57,7 +57,7 @@ class FooterTextSource extends SqlBase {
         // @todo: attempt to preprocess any relational references like internal links or FIDs?
         $row->setSourceProperty('body', $settings['footer_text_area']);
         // The allowed format in D7 was restricted.
-        // This will not prevent D8 users from switching the format after migration.
+        // This will not prevent D8 users from switching format after migration.
         $row->setSourceProperty('format', 'restricted_html');
         $row->setSourceProperty('region', 'footer_left');
       }

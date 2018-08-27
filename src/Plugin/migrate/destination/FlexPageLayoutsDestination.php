@@ -25,9 +25,12 @@ class FlexPageLayoutsDestination extends Entity implements MigrateDestinationInt
     // This gets the NID we requested in the "process" declaration's
     // migration_lookup in utexas_flex_page_fields.yml.
     $destination = $row->getDestinationProperty('temp_nid');
+    $data = $row->getDestinationProperty('layout');
 
     try {
       $node = Node::load($destination);
+      $node->set('layout_builder__layout', $data);
+      $node->save();
       return [$node->id()];
     }
     catch (EntityStorageException $e) {

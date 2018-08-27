@@ -7,6 +7,8 @@ use Drupal\Core\Database\Database;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\Row;
+use Drupal\layout_builder\Section;
+use Drupal\layout_builder\SectionComponent;
 
 /**
  * This plugin takes care of processing a D7 "Page Layout"
@@ -26,7 +28,23 @@ class Layouts extends ProcessPluginBase {
     $layout = unserialize($value);
     $blocks = $layout['block']['blocks'];
 
-    return $value;
+    // @todo: mapping.
+
+    // Output (example only).
+    $data = [
+      ['section' => new Section(
+          'layout_utexas_50_50',
+          [],
+          ['section' => new SectionComponent('ec93b42c-0668-4b92-ae60-d9091684440f', 'left', [
+            'id' => 'field_block:node:utexas_flex_page:field_flex_page_pu',
+            'context_mapping' => [
+              'entity' => 'layout_builder.entity',
+            ],
+          ])]
+        ),
+      ],
+    ];
+    return $data;
   }
 
 }

@@ -34,8 +34,43 @@
         )
 ```
 
-## A D8 Layout Builder *section*, from the `node__layout_builder__layout` table, will look like this:
+## D8 Layout Builder data will look like this:
 
+```php
+    $data = [
+      ['section' => new Section(
+          'layout_utexas_50_50',
+          [],
+          ['section' => new SectionComponent('ec93b42c-0668-4b92-ae60-d9091684440f', 'left', [
+            'id' => 'field_block:node:utexas_flex_page:field_flex_page_pu',
+            'context_mapping' => [
+              'entity' => 'layout_builder.entity',
+            ],
+          ])]
+        ),
+      ],
+    ];
+  ```
+
+### It will be processed like this:
+```php
+foreach ($sections as $section_delta => $section) {
+          $sections[$section_delta] = new Section(
+            $section['layout_id'],
+            $section['layout_settings'],
+            array_map(function (array $component) {
+              return (new SectionComponent(
+                $component['uuid'],
+                $component['region'],
+                $component['configuration'],
+                $component['additional']
+              ))->setWeight($component['weight']);
+            }, $section['components'])
+          );
+        }
+```
+
+### It will be saved into `node__layout_builder__layout` like this:
 ```php
 __PHP_Incomplete_Class Object
 (

@@ -31,29 +31,31 @@ class Layouts extends ProcessPluginBase {
     // @todo: mapping.
 
     // Output (example only).
-    $data = [
+    $fields['field_block:node:utexas_flex_page:field_flex_page_pu'] = ['region' => 'left', 'weight' => 0];
+    $fields['field_block:node:utexas_flex_page:field_flex_page_wysiwyg_b'] = ['region' => 'left', 'weight' => 1];
+    $fields['field_block:node:utexas_flex_page:field_flex_page_pl'] = ['region' => 'right', 'weight' => 0];
+    $components = [];
+
+    // Loop through each field, defined above, to create each section component.
+    foreach ($fields as $id => $settings) {
+      $component = new SectionComponent(random_int(0, 1000), $settings['region'], [
+        'id' => $id,
+        'context_mapping' => ['entity' => 'layout_builder.entity'],
+      ]);
+      $component->setWeight($settings['weight']);
+      $components[] = $component;
+    }
+    // Each section is stored in its own array.
+    $section = [
       [
         'section' => new Section(
           'layout_utexas_50_50',
           [],
-          [
-            '0' => new SectionComponent('ec93b42c-0668-4b92-ae60-d9091684440f', 'left', [
-              'id' => 'field_block:node:utexas_flex_page:field_flex_page_pu',
-              'context_mapping' => [
-                'entity' => 'layout_builder.entity',
-              ],
-            ]),
-            '1' => new SectionComponent('bar', 'right', [
-              'id' => 'field_block:node:utexas_flex_page:field_flex_page_pl',
-              'context_mapping' => [
-                'entity' => 'layout_builder.entity',
-              ],
-            ]),
-          ]
+          $components
         ),
       ],
     ];
-    return $data;
+    return $section;
   }
 
 }

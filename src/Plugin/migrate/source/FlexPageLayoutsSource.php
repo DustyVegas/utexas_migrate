@@ -49,6 +49,20 @@ class FlexPageLayoutsSource extends NodeSource {
       ->execute()
       ->fetchField();
     $row->setSourceProperty('layout', $layout);
+
+    // Retrieve the template name.
+    $template_id = $this->select('field_data_field_template', 't')
+      ->fields('t', ['field_template_target_id'])
+      ->condition('entity_id', $source_nid)
+      ->execute()
+      ->fetchField();
+    $template_name = $this->select('utexas_templates', 't')
+      ->fields('t', ['name'])
+      ->condition('id', $template_id)
+      ->execute()
+      ->fetchField();
+    $row->setSourceProperty('template', $template_name);
+
     return parent::prepareRow($row);
   }
 

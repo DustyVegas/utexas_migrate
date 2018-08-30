@@ -103,9 +103,8 @@ class Layouts extends ProcessPluginBase {
       case 'Full Width Content Page & Title':
       case 'Full Width Content Page':
       case 'Open Text Page':
-        $sections[0]['layout'] = 'layout_utexas_50_50';
+        $sections[0]['layout'] = 'layout_utexas_fullwidth';
         $sections[1]['layout'] = 'layout_utexas_fullwidth';
-        $sections[2]['layout'] = 'layout_utexas_66_33';
         break;
 
       case 'Landing Page Template 1':
@@ -251,6 +250,14 @@ class Layouts extends ProcessPluginBase {
             break;
 
           case 'content_bottom':
+            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
+              'weight' => $settings['weight'],
+            ];
+            break;
+          
+          case 'content':
             $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
               'type' => 'field_block',
               'region' => 'main',

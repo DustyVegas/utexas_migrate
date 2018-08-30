@@ -58,7 +58,7 @@ class Layouts extends ProcessPluginBase {
     // First, manipulate the D7 context into a usable array.
     $template = $row->getSourceProperty('template');
     $nid = $row->getDestinationProperty('temp_nid');
-    $d7_data = self::formatD7Data($value, $template, $nid);
+    $d7_data = self::formatD7Data($value, $template, $nid, $row);
 
     // Next, put those array elements into D8 section objects.
     $sections = [];
@@ -67,10 +67,15 @@ class Layouts extends ProcessPluginBase {
       if (!empty($d7_section['components'])) {
         foreach ($d7_section['components'] as $id => $d7_component) {
           $d8_component = self::createD8SectionComponent($d7_component['type'], md5($id), $id, $d7_component['region'], $d7_component['weight']);
-          $d8_components[] = $d8_component;
+          if ($d8_component) {
+            $d8_components[] = $d8_component;
+          }
         }
-        $section = self::createD8Section($d7_section['layout'], $d8_components);
-        $sections[] = $section;
+        if (!empty($d8_components)) {
+          $section = self::createD8Section($d7_section['layout'], $d8_components);
+          $sections[] = $section;
+        }
+
       }
     }
     return $sections;
@@ -143,22 +148,27 @@ class Layouts extends ProcessPluginBase {
    * @param int $nid
    *   The destination NID.
    */
-  protected static function formatD7Data($value, $template, $nid) {
+  protected static function formatD7Data($value, $template, $nid, $row) {
     // @todo retrieve which D7 layout this is from $row.
     $layout = unserialize($value);
     $blocks = $layout['block']['blocks'];
 
     // Look up presence of "locked" fields & add them programmatically
     // as blocks, potentially adjusting weight of other blocks.
-    $blocks = self::addLockedFieldsAsBlocks($blocks, $template, $nid);
+    $blocks = self::addLockedFieldsAsBlocks($blocks, $template, $nid, $row);
 
     // Build up the D8 sections based on known information about the D7 layout:
     $sections = self::getD8SectionsfromD7Layout($template);
     foreach ($blocks as $id => $settings) {
       if (in_array($id, array_keys(self::$map))) {
         $d8_field = self::$map[$id];
-        $sections = self::placeFieldinSection($sections, $d8_field, $settings, $template);
       }
+      elseif (strpos($id, 'fieldblock-') !== 0) {
+        // The above eliminates fieldblocks that should not be mapped (e.g., Contact Info).
+        // This is not a fieldblock (e.g., Social Links). Just pass the block ID.
+        $d8_field = $id;
+      }
+      $sections = self::placeFieldinSection($sections, $d8_field, $settings, $template);
     }
     return $sections;
   }
@@ -173,9 +183,17 @@ class Layouts extends ProcessPluginBase {
    * @param int $nid
    *   The destination NID.
    */
-  protected static function addLockedFieldsAsBlocks(array $blocks, $template, $nid) {
+  protected static function addLockedFieldsAsBlocks(array $blocks, $template, $nid, $row) {
     $node = Node::load($nid);
+    if ($social_link_id = $row->getSourceProperty('social_link_id')) {
+      // Make a fake D7 block ID that can be identified later on.
+      $blocks[$social_link_id] = [
+        'region' => 'social_links',
+        'weight' => '-1',
+      ];
+    }
     if ($hi = $node->field_flex_page_hi->getValue()) {
+      $region = FALSE;
       switch ($template) {
         case 'Hero Image & Sidebars':
           $region = 'content_top_left';
@@ -203,20 +221,30 @@ class Layouts extends ProcessPluginBase {
       }
     }
     if ($fh = $node->field_flex_page_fh->getValue()) {
+      $region = FALSE;
       switch ($template) {
         case 'Featured Highlight':
           $region = 'featured_highlight';
+          $id = 'fieldblock-553096d7ea242fc7edcddc53f719d074';
+          break;
+
+        case 'Landing Page Template 1':
+        case 'Landing Page Template 2':
+        case 'Landing Page Template 3':
+          $region = 'featured_highlight';
+          $id = 'fieldblock-205723da13bdadd816a716421b436a92';
           break;
       }
       if ($region) {
         // Enforce that this locked field is above other content.
-        $blocks['fieldblock-553096d7ea242fc7edcddc53f719d074'] = [
+        $blocks[$id] = [
           'region' => $region,
           'weight' => '-1',
         ];
       }
     }
     if ($w = $node->field_flex_page_wysiwyg_a->getValue()) {
+      $region = FALSE;
       switch ($template) {
         case 'Open Text Page':
           $region = 'content';
@@ -277,6 +305,14 @@ class Layouts extends ProcessPluginBase {
             $sections[2]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
               'type' => 'field_block',
               'region' => 'main',
+              'weight' => $settings['weight'],
+            ];
+            break;
+
+          case 'social_links':
+            $sections[2]['components']['block_content:' . $d8_field] = [
+              'type' => 'block_content',
+              'region' => 'sidebar',
               'weight' => $settings['weight'],
             ];
             break;
@@ -427,6 +463,14 @@ class Layouts extends ProcessPluginBase {
             ];
             break;
 
+          case 'featured_highlight':
+            $sections[2]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
+              'weight' => $settings['weight'],
+            ];
+            break;
+
           case 'content_bottom':
             $sections[3]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
               'type' => 'field_block',
@@ -489,8 +533,20 @@ class Layouts extends ProcessPluginBase {
         ]);
         $component->setWeight($weight);
         break;
+
+      case 'block_content':
+        $component = new SectionComponent($uuid, $region, [
+          'id' => $id,
+          'provider' => 'block_content',
+          'context_mapping' => [],
+        ]);
+        $component->setWeight($weight);
+        break;
     }
-    return $component;
+    if (isset($component)) {
+      return $component;
+    }
+    return FALSE;
   }
 
 }

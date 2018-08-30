@@ -75,7 +75,7 @@ class Layouts extends ProcessPluginBase {
   }
 
   /**
-   * Helper function to build the sections that will comprise this page's layout.
+   * Build the sections that will comprise this page's layout.
    *
    * @param string $template
    *   The D7 template associated with this page.
@@ -148,7 +148,6 @@ class Layouts extends ProcessPluginBase {
     // @todo: Look up presence of "locked" fields & add them programmatically
     // as blocks, potentially adjusting weight of other blocks.
     // This would likely mean doing a node load based on the destination nid.
-
     // Build up the D8 sections based on known information about the D7 layout:
     $sections = self::getD8SectionsfromD7Layout($template);
     foreach ($blocks as $id => $settings) {
@@ -162,7 +161,7 @@ class Layouts extends ProcessPluginBase {
   }
 
   /**
-   * Given a d7 field setting & template, place this in the equivalent D8 section.
+   * Given a D7 field setting & template, place it in the equivalent D8 section.
    *
    * @param array $sections
    *   The sections as defined in the D8 equivalent layout from D7..
@@ -211,6 +210,27 @@ class Layouts extends ProcessPluginBase {
         }
         break;
 
+      case 'Full Content Page & Sidebar':
+      case 'Promotional Page & Sidebar':
+        switch ($settings['region']) {
+          case 'content':
+            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
+              'weight' => $settings['weight'],
+            ];
+            break;
+
+          case 'sidebar_second':
+            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'sidebar',
+              'weight' => $settings['weight'],
+            ];
+            break;
+        }
+        break;
+
       case 'Hero Image & Sidebars':
       case 'Header with Content & Sidebars':
         switch ($settings['region']) {
@@ -248,9 +268,32 @@ class Layouts extends ProcessPluginBase {
         }
         break;
 
+      case 'Full Width Content Page & Title':
+      case 'Full Width Content Page':
+        switch ($settings['region']) {
+          case 'content_top':
+            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
+              'weight' => $settings['weight'],
+            ];
+            break;
+
+          case 'content_bottom':
+            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
+              'weight' => $settings['weight'],
+            ];
+            break;
+        }
+        break;
+
       case 'Landing Page Template 1':
+      case 'Landing Page Template 2':
       case 'Landing Page Template 3':
         switch ($settings['region']) {
+          case 'content_top_three_pillars':
           case 'content_top_four_pillars':
             $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
               'type' => 'field_block',

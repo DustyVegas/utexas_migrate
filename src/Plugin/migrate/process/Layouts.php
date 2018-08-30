@@ -7,6 +7,7 @@ use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\Row;
 use Drupal\layout_builder\Section;
 use Drupal\layout_builder\SectionComponent;
+use Drupal\node\Entity\Node;
 
 /**
  * Layouts Processor.
@@ -56,7 +57,8 @@ class Layouts extends ProcessPluginBase {
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
     // First, manipulate the D7 context into a usable array.
     $template = $row->getSourceProperty('template');
-    $d7_data = self::formatD7Data($value, $template);
+    $nid = $row->getDestinationProperty('temp_nid');
+    $d7_data = self::formatD7Data($value, $template, $nid);
 
     // Next, put those array elements into D8 section objects.
     $sections = [];
@@ -138,15 +140,18 @@ class Layouts extends ProcessPluginBase {
    *   A serialized array of layout data from the "context" table.
    * @param string $template
    *   The D7 template associated with this page.
+   * @param int $nid
+   *   The destination NID.
    */
-  protected static function formatD7Data($value, $template) {
+  protected static function formatD7Data($value, $template, $nid) {
     // @todo retrieve which D7 layout this is from $row.
     $layout = unserialize($value);
     $blocks = $layout['block']['blocks'];
 
-    // @todo: Look up presence of "locked" fields & add them programmatically
+    // Look up presence of "locked" fields & add them programmatically
     // as blocks, potentially adjusting weight of other blocks.
-    // This would likely mean doing a node load based on the destination nid.
+    $blocks = self::addLockedFieldsAsBlocks($blocks, $template, $nid);
+
     // Build up the D8 sections based on known information about the D7 layout:
     $sections = self::getD8SectionsfromD7Layout($template);
     foreach ($blocks as $id => $settings) {
@@ -155,8 +160,77 @@ class Layouts extends ProcessPluginBase {
         $sections = self::placeFieldinSection($sections, $d8_field, $settings, $template);
       }
     }
-
     return $sections;
+  }
+
+  /**
+   * Add Drupal 7 "locked" fields to D7 data.
+   *
+   * @param array $blocks
+   *   The D7 block data for this given node.
+   * @param string $template
+   *   The D7 template associated with this page.
+   * @param int $nid
+   *   The destination NID.
+   */
+  protected static function addLockedFieldsAsBlocks(array $blocks, $template, $nid) {
+    $node = Node::load($nid);
+    if ($hi = $node->field_flex_page_hi->getValue()) {
+      switch ($template) {
+        case 'Hero Image & Sidebars':
+          $region = 'content_top_left';
+          $id = 'fieldblock-f4361d99a73eca8a4329c07d0724a554';
+          break;
+
+        case 'Promotional Page & Sidebar':
+          $region = 'content';
+          $id = 'fieldblock-f4361d99a73eca8a4329c07d0724a554';
+          break;
+
+        case 'Landing Page Template 1':
+        case 'Landing Page Template 2':
+        case 'Landing Page Template 3':
+          $region = 'hero_image';
+          $id = 'fieldblock-8af3bd2d3cab537c77dbfbb55146ab7b';
+          break;
+      }
+      if ($region) {
+        // Enforce that hero image is above other content.
+        $blocks[$id] = [
+          'region' => $region,
+          'weight' => '-1',
+        ];
+      }
+    }
+    if ($fh = $node->field_flex_page_fh->getValue()) {
+      switch ($template) {
+        case 'Featured Highlight':
+          $region = 'featured_highlight';
+          break;
+      }
+      if ($region) {
+        // Enforce that this locked field is above other content.
+        $blocks['fieldblock-553096d7ea242fc7edcddc53f719d074'] = [
+          'region' => $region,
+          'weight' => '-1',
+        ];
+      }
+    }
+    if ($w = $node->field_flex_page_wysiwyg_a->getValue()) {
+      switch ($template) {
+        case 'Open Text Page':
+          $region = 'content';
+          break;
+      }
+      if ($region) {
+        // Enforce that this locked field is above other content.
+        $blocks['fieldblock-fda604d130a57f15015895c8268f20d2'] = [
+          'region' => $region,
+          'weight' => '-1',
+        ];
+      }
+    }
+    return $blocks;
   }
 
   /**
@@ -179,6 +253,14 @@ class Layouts extends ProcessPluginBase {
             $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
               'type' => 'field_block',
               'region' => 'left',
+              'weight' => $settings['weight'],
+            ];
+            break;
+
+          case 'featured_highlight':
+            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
               'weight' => $settings['weight'],
             ];
             break;
@@ -256,7 +338,7 @@ class Layouts extends ProcessPluginBase {
               'weight' => $settings['weight'],
             ];
             break;
-          
+
           case 'content':
             $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
               'type' => 'field_block',
@@ -296,10 +378,30 @@ class Layouts extends ProcessPluginBase {
         }
         break;
 
+      case 'Open Text Page';
+        switch ($settings['region']) {
+          case 'content':
+            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
+              'weight' => $settings['weight'],
+            ];
+            break;
+        }
+        break;
+
       case 'Landing Page Template 1':
       case 'Landing Page Template 2':
       case 'Landing Page Template 3':
         switch ($settings['region']) {
+          case 'hero_image':
+            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
+              'weight' => $settings['weight'],
+            ];
+            break;
+
           case 'content_top_three_pillars':
           case 'content_top_four_pillars':
             $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [

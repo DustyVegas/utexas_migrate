@@ -22,6 +22,15 @@ use Drupal\node\Entity\Node;
  */
 class Layouts extends ProcessPluginBase {
 
+  protected static $excludedFieldblocks = [
+    'fieldblock-bb03b0e9fbf84510ab65cbb066d872fc' => 'Standard Page Twitter Widget',
+    'fieldblock-bb03b0e9fbf84510ab65cbb066d872fc' => 'Landing Page Twitter Widget',
+    'fieldblock-d83c2a95384186e375ab37cbf1430bf5' => 'Landing Page Contact Info',
+    'fieldblock-38205d43426b33bd0fe595ff8ca61ffd' => 'Standard Page Contact Info',
+    'fieldblock-d41b4a03ee9d7b1084986f74b617921c' => 'Landing Page UT Newsreel',
+    'fieldblock-8e85c2c89f0ccf26e9e4d0378250bf17' => 'Standard Page UT Newsreel',
+  ];
+
   protected static $map = [
     'fieldblock-fda604d130a57f15015895c8268f20d2' => 'field_flex_page_wysiwyg_a',
     'fieldblock-bf40687156268eaa30437ed84189f13e' => 'field_flex_page_wysiwyg_b',
@@ -82,63 +91,6 @@ class Layouts extends ProcessPluginBase {
   }
 
   /**
-   * Build the sections that will comprise this page's layout.
-   *
-   * @param string $template
-   *   The D7 template associated with this page.
-   */
-  protected static function getD8SectionsfromD7Layout($template) {
-    $sections = [];
-    switch ($template) {
-      case 'Featured Highlight':
-        $sections[0]['layout'] = 'layout_utexas_50_50';
-        $sections[1]['layout'] = 'layout_utexas_fullwidth';
-        $sections[2]['layout'] = 'layout_utexas_66_33';
-        break;
-
-      case 'Hero Image & Sidebars':
-      case 'Header with Content & Sidebars':
-        $sections[0]['layout'] = 'layout_utexas_66_33';
-        $sections[1]['layout'] = 'layout_utexas_66_33';
-        break;
-
-      case 'Full Content Page & Sidebar':
-      case 'Promotional Page & Sidebar':
-        $sections[0]['layout'] = 'layout_utexas_66_33';
-        break;
-
-      case 'Full Width Content Page & Title':
-      case 'Full Width Content Page':
-      case 'Open Text Page':
-        $sections[0]['layout'] = 'layout_utexas_fullwidth';
-        $sections[1]['layout'] = 'layout_utexas_fullwidth';
-        break;
-
-      case 'Landing Page Template 1':
-        $sections[0]['layout'] = 'layout_utexas_fullwidth';
-        $sections[1]['layout'] = 'layout_utexas_66_33';
-        $sections[2]['layout'] = 'layout_utexas_fullwidth';
-        $sections[3]['layout'] = 'layout_utexas_66_33';
-        break;
-
-      case 'Landing Page Template 2':
-        $sections[0]['layout'] = 'layout_utexas_fullwidth';
-        $sections[1]['layout'] = 'layout_utexas_fullwidth';
-        $sections[2]['layout'] = 'layout_utexas_fullwidth';
-        $sections[3]['layout'] = 'layout_utexas_fullwidth';
-        break;
-
-      case 'Landing Page Template 3':
-        $sections[0]['layout'] = 'layout_utexas_fullwidth';
-        $sections[1]['layout'] = 'layout_utexas_fullwidth';
-        $sections[2]['layout'] = 'layout_utexas_fullwidth';
-        $sections[3]['layout'] = 'layout_utexas_66_33';
-        break;
-    }
-    return $sections;
-  }
-
-  /**
    * Get Drupal 7 layout data into a traversable format.
    *
    * @param string $value
@@ -147,8 +99,10 @@ class Layouts extends ProcessPluginBase {
    *   The D7 template associated with this page.
    * @param int $nid
    *   The destination NID.
+   * @param Drupal\migrate\Row $row
+   *   Other entity source data related to this specific entity migration.
    */
-  protected static function formatD7Data($value, $template, $nid, $row) {
+  protected static function formatD7Data($value, $template, $nid, Row $row) {
     // @todo retrieve which D7 layout this is from $row.
     $layout = unserialize($value);
     $blocks = $layout['block']['blocks'];
@@ -160,12 +114,17 @@ class Layouts extends ProcessPluginBase {
     // Build up the D8 sections based on known information about the D7 layout:
     $sections = self::getD8SectionsfromD7Layout($template);
     foreach ($blocks as $id => $settings) {
+      if (in_array($id, array_keys(self::$excludedFieldblocks))) {
+        // Skip "excluded" fieldblocks, like Twitter Widget, Contact Info,
+        // since UTDK8 doesn't currently have a location for these.
+      }
       if (in_array($id, array_keys(self::$map))) {
         $d8_field = self::$map[$id];
       }
       elseif (strpos($id, 'fieldblock-') !== 0) {
-        // The above eliminates fieldblocks that should not be mapped (e.g., Contact Info).
-        // This is not a fieldblock (e.g., Social Links). Just pass the block ID.
+        // The above eliminates fieldblocks that are unknown.
+        // This code may need to be refactored to further disambiguate.
+        // This is not a fieldblock (e.g., Social Links). Use the block ID.
         $d8_field = $id;
       }
       $sections = self::placeFieldinSection($sections, $d8_field, $settings, $template);
@@ -182,8 +141,10 @@ class Layouts extends ProcessPluginBase {
    *   The D7 template associated with this page.
    * @param int $nid
    *   The destination NID.
+   * @param Drupal\migrate\Row $row
+   *   Other entity source data related to this specific entity migration.
    */
-  protected static function addLockedFieldsAsBlocks(array $blocks, $template, $nid, $row) {
+  protected static function addLockedFieldsAsBlocks(array $blocks, $template, $nid, Row $row) {
     $node = Node::load($nid);
     if ($social_link_id = $row->getSourceProperty('social_link_id')) {
       // Make a fake D7 block ID that can be identified later on.
@@ -259,6 +220,63 @@ class Layouts extends ProcessPluginBase {
       }
     }
     return $blocks;
+  }
+
+  /**
+   * Build the sections that will comprise this page's layout.
+   *
+   * @param string $template
+   *   The D7 template associated with this page.
+   */
+  protected static function getD8SectionsfromD7Layout($template) {
+    $sections = [];
+    switch ($template) {
+      case 'Featured Highlight':
+        $sections[0]['layout'] = 'layout_utexas_50_50';
+        $sections[1]['layout'] = 'layout_utexas_fullwidth';
+        $sections[2]['layout'] = 'layout_utexas_66_33';
+        break;
+
+      case 'Hero Image & Sidebars':
+      case 'Header with Content & Sidebars':
+        $sections[0]['layout'] = 'layout_utexas_66_33';
+        $sections[1]['layout'] = 'layout_utexas_66_33';
+        break;
+
+      case 'Full Content Page & Sidebar':
+      case 'Promotional Page & Sidebar':
+        $sections[0]['layout'] = 'layout_utexas_66_33';
+        break;
+
+      case 'Full Width Content Page & Title':
+      case 'Full Width Content Page':
+      case 'Open Text Page':
+        $sections[0]['layout'] = 'layout_utexas_fullwidth';
+        $sections[1]['layout'] = 'layout_utexas_fullwidth';
+        break;
+
+      case 'Landing Page Template 1':
+        $sections[0]['layout'] = 'layout_utexas_fullwidth';
+        $sections[1]['layout'] = 'layout_utexas_66_33';
+        $sections[2]['layout'] = 'layout_utexas_fullwidth';
+        $sections[3]['layout'] = 'layout_utexas_66_33';
+        break;
+
+      case 'Landing Page Template 2':
+        $sections[0]['layout'] = 'layout_utexas_fullwidth';
+        $sections[1]['layout'] = 'layout_utexas_fullwidth';
+        $sections[2]['layout'] = 'layout_utexas_fullwidth';
+        $sections[3]['layout'] = 'layout_utexas_fullwidth';
+        break;
+
+      case 'Landing Page Template 3':
+        $sections[0]['layout'] = 'layout_utexas_fullwidth';
+        $sections[1]['layout'] = 'layout_utexas_fullwidth';
+        $sections[2]['layout'] = 'layout_utexas_fullwidth';
+        $sections[3]['layout'] = 'layout_utexas_66_33';
+        break;
+    }
+    return $sections;
   }
 
   /**

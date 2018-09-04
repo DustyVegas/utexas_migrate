@@ -89,6 +89,7 @@ class FlexContentArea {
       ];
       $links = unserialize($instance['links']);
       if (!empty($links)) {
+        $prepared_links = [];
         foreach ($links as $delta => $link) {
           $prepared_links[] = [
             'uri' => MigrateHelper::prepareLink($link['link_url']),

@@ -119,9 +119,11 @@ class Layouts extends ProcessPluginBase {
       if (in_array($id, array_keys(self::$excludedFieldblocks))) {
         // Skip "excluded" fieldblocks, like Twitter Widget, Contact Info,
         // since UTDK8 doesn't currently have a location for these.
+        continue;
       }
-      if (in_array($id, array_keys(self::$map))) {
+      elseif (in_array($id, array_keys(self::$map))) {
         $d8_field = self::$map[$id];
+
       }
       elseif (strlen($id) == '32') {
         // The above eliminates fieldblocks not yet converted to UUIDs.

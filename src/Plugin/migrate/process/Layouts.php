@@ -450,20 +450,9 @@ class Layouts extends ProcessPluginBase {
         break;
 
       case 'Landing Page Template 1':
-      case 'Landing Page Template 2':
-      case 'Landing Page Template 3':
         switch ($settings['region']) {
           case 'hero_image':
             $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-            ];
-            break;
-
-          case 'content_top_three_pillars':
-          case 'content_top_four_pillars':
-            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
@@ -482,6 +471,52 @@ class Layouts extends ProcessPluginBase {
             $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
               'type' => 'field_block',
               'region' => 'sidebar',
+              'weight' => $settings['weight'],
+            ];
+            break;
+
+          case 'featured_highlight':
+            $sections[2]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
+              'weight' => $settings['weight'],
+            ];
+            break;
+
+          case 'content_bottom':
+            $sections[3]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
+              'weight' => $settings['weight'],
+            ];
+            break;
+
+          case 'sidebar_second':
+            $sections[3]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'sidebar',
+              'weight' => $settings['weight'],
+            ];
+            break;
+        }
+        break;
+
+      case 'Landing Page Template 2':
+      case 'Landing Page Template 3':
+        switch ($settings['region']) {
+          case 'hero_image':
+            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
+              'weight' => $settings['weight'],
+            ];
+            break;
+
+          case 'content_top_three_pillars':
+          case 'content_top_four_pillars':
+            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
               'weight' => $settings['weight'],
             ];
             break;

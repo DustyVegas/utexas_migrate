@@ -123,8 +123,9 @@ class Layouts extends ProcessPluginBase {
       if (in_array($id, array_keys(self::$map))) {
         $d8_field = self::$map[$id];
       }
-      elseif (strpos($id, 'fieldblock-') !== 0) {
-        // The above eliminates fieldblocks that are unknown.
+      elseif (strlen($id) == '32') {
+        // The above eliminates fieldblocks not yet converted to UUIDs.
+        // @todo: look up standard blocks' block UUIDs in FlexPageLayoutsSource.php
         // This code may need to be refactored to further disambiguate.
         // This is not a fieldblock (e.g., Social Links). Use the block ID.
         $d8_field = $id;

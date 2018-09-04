@@ -106,7 +106,9 @@ class Layouts extends ProcessPluginBase {
     // @todo retrieve which D7 layout this is from $row.
     $layout = unserialize($value);
     $blocks = $layout['block']['blocks'];
-
+    if (!$blocks) {
+      return [];
+    }
     // Look up presence of "locked" fields & add them programmatically
     // as blocks, potentially adjusting weight of other blocks.
     $blocks = self::addLockedFieldsAsBlocks($blocks, $template, $nid, $row);

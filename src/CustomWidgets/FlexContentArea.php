@@ -55,7 +55,7 @@ class FlexContentArea {
         'copy' => $item->{'field_utexas_flex_content_area_' . $instance . '_copy_value'},
         'links' => $item->{'field_utexas_flex_content_area_' . $instance . '_links'},
         'cta_title' => $item->{'field_utexas_flex_content_area_' . $instance . '_cta_title'},
-        'cta_uri' => $item->{'field_utexas_flex_content_area_' . $instance . '_cta_uri'},
+        'cta_uri' => $item->{'field_utexas_flex_content_area_' . $instance . '_cta_link'},
       ];
     }
     return $prepared;

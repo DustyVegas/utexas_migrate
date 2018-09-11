@@ -116,6 +116,7 @@ class Layouts extends ProcessPluginBase {
     // Build up the D8 sections based on known information about the D7 layout:
     $sections = self::getD8SectionsfromD7Layout($template);
     foreach ($blocks as $id => $settings) {
+      $found = FALSE;
       if (in_array($id, array_keys(self::$excludedFieldblocks))) {
         // Skip "excluded" fieldblocks, like Twitter Widget, Contact Info,
         // since UTDK8 doesn't currently have a location for these.
@@ -123,16 +124,19 @@ class Layouts extends ProcessPluginBase {
       }
       elseif (in_array($id, array_keys(self::$map))) {
         $d8_field = self::$map[$id];
-
+        $found = TRUE;
       }
-      elseif (strlen($id) == '32') {
+      elseif ($settings['region'] == 'social_links') {
         // The above eliminates fieldblocks not yet converted to UUIDs.
         // @todo: look up standard blocks' block UUIDs in FlexPageLayoutsSource.php
         // This code may need to be refactored to further disambiguate.
         // This is not a fieldblock (e.g., Social Links). Use the block ID.
         $d8_field = $id;
+        $found = TRUE;
       }
-      $sections = self::placeFieldinSection($sections, $d8_field, $settings, $template);
+      if ($found) {
+        $sections = self::placeFieldinSection($sections, $d8_field, $settings, $template);
+      }
     }
     return $sections;
   }

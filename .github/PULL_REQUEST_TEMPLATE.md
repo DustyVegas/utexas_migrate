@@ -33,6 +33,7 @@ See https://issues.its.utexas.edu/projects/UDK8/issues/UDK8-NNN
 0. 
 
 ## General Development Setup
-1. Locate this repository in the `modules/` directory of a UTDK8 site
+0. Locate this repository in the `modules/` directory of a UTDK8 site
+1. `git fetch && git checkout ` this branch
 2. Update your settings.local.php per instructions in the [README](https://github.austin.utexas.edu/eis1-wcs/utexas_migrate/blob/master/README.md)
-3. Run `drush en utexas_migrate -y`
+3. Run `lando drush en utexas_migrate -y`

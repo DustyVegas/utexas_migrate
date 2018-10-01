@@ -56,3 +56,22 @@ to run `drush mim MIGRATE_NAME`, e.g.:
 ```
 drush mim utexas_node
 ```
+
+# Migration Behavior
+
+## Breadcrumb visibility
+In the Drupal 7 version of UT Drupal Kit and QuickSites, Standard Pages and Landing Pages may individually specify whether breadcrumbs should display or not. Drupal 8's equivalent supports this for all node types. Thus, the breadcrumb display value, if set in Drupal 7, will be migrated to Drupal 8. In the unlikely scenario that it has not been set, the breadcrumb display will default to the content type setting, as defined in `/admin/structure/types/manage/utexas_flex_page`.
+
+To migrate the breadcrumb value for other node types in other migrations, ensure that the source plugin retrieves the show_breadcrumb value from D7's `node` table:
+
+Example from `NodeSource.php`:
+
+ ```php
+ 'show_breadcrumb' => $this->t('Show breadcrumb'),
+```
+
+On the destination end, map this value to `display_breadcrumbs`. Example from `migrate_plus.migration.utexas_standard_page.yml`:
+
+```yml
+display_breadcrumbs: show_breadcrumb
+```

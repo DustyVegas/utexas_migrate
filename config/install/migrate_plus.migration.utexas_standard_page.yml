@@ -20,6 +20,7 @@ process:
   status: status
   sticky: sticky
   promote: promote
+  display_breadcrumbs: show_breadcrumb
   # Find the destination UID; accessible via 
   # $row->getDestinationProperty('uid');
   uid:

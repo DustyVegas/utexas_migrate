@@ -55,7 +55,7 @@ class SiteSettingsSource extends SqlBase {
       $settings = unserialize($theme_data['values']->value);
       if (!empty($settings)) {
         // Default breadcrumb value.
-        $default_breadcrumb_display = !empty($settings['utexas_standard_page_breadcrumb']) ? $settings['utexas_standard_page_breadcrumb'] : 1;
+        $default_breadcrumb_display = $settings['utexas_standard_page_breadcrumb'];
         $row->setSourceProperty('default_breadcrumb_display', $default_breadcrumb_display);
       }
       else {

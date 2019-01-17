@@ -19,7 +19,7 @@ class ImageLink {
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget.
+   *   Returns an array of field data for the widget.
    */
   public static function convert($instance, $source_nid) {
     $source_data = self::getSourceData($instance, $source_nid);

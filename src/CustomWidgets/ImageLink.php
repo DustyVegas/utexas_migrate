@@ -3,7 +3,6 @@
 namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
-use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\utexas_migrate\MigrateHelper;
 
 /**
@@ -24,8 +23,8 @@ class ImageLink {
    */
   public static function convert($instance, $source_nid) {
     $source_data = self::getSourceData($instance, $source_nid);
-    $paragraph_data = self::save($source_data);
-    return $paragraph_data;
+    $field_data = self::massageFieldData($source_data);
+    return $field_data;
   }
 
   /**
@@ -58,41 +57,25 @@ class ImageLink {
   }
 
   /**
-   * Save data as paragraph(s) & return the paragraph ID(s)
+   * Rearrange data as necessary for destination import.
    *
    * @param array $source
    *   A simple key-value array of subfield & value.
    *
    * @return array
-   *   A simple key-value array returned the metadata about the paragraph.
+   *   A simple key-value array returned the metadata about the field.
    */
-  protected static function save(array $source) {
-    $paragraphs = [];
-    // Technically, there should only ever be one delta.
+  protected static function massageFieldData(array $source) {
+    // Technically, there should only ever be one delta for Image Link.
     foreach ($source as $delta => $instance) {
-      $field_values = [
-        'type' => 'utexas_image_link',
-        'field_utexas_il_link' => [
-          'uri' => MigrateHelper::prepareLink($instance['uri']),
-        ],
-      ];
-      if ($instance['image_fid'] != 0) {
-        $destination_fid = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
-        $field_values['field_utexas_il_image'] = [
-          'target_id' => $destination_fid,
-          'alt' => '@to be replaced with media reference',
-        ];
-      }
-      $paragraph_instance = Paragraph::create($field_values);
-      $paragraph_instance->save();
-      $paragraphs[] = [
-        'target_id' => $paragraph_instance->id(),
-        'target_revision_id' => $paragraph_instance->id(),
-        'delta' => $delta,
-      ];
-    }
+      $instances[$delta]['link'] = MigrateHelper::prepareLink($instance['uri']);
 
-    return $paragraphs;
+      if ($instance['image_fid'] != 0) {
+        $destination_mid = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
+        $instances[$delta]['image'] = $destination_mid;
+      }
+    }
+    return $instances;
   }
 
 }

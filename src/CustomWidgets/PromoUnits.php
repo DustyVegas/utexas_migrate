@@ -3,7 +3,6 @@
 namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
-use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\utexas_migrate\MigrateHelper;
 
 /**
@@ -18,12 +17,12 @@ class PromoUnits {
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget.
+   *   Returns an array of custom compound field data.
    */
   public static function convert($source_nid) {
     $source_data = self::getSourceData($source_nid);
-    $paragraph_data = self::save($source_data);
-    return $paragraph_data;
+    $field_data = self::massageFieldData($source_data);
+    return $field_data;
   }
 
   /**
@@ -59,79 +58,41 @@ class PromoUnits {
   }
 
   /**
-   * Save data as paragraph(s) & return the paragraph ID(s)
+   * Rearrange schema as needed from D7 to D8.
    *
    * @param array $source
    *   A simple key-value array of subfield & value.
    *
    * @return array
-   *   A simple key-value array returned the metadata about the paragraph.
+   *   A simple key-value array of D8 field data.
    */
-  protected static function save(array $source) {
-    $paragraphs = [];
-    // Image style names changed, so we map them. Note that in D7,
-    // the ...no_image style exists, whereas in D8, that field should
-    // just default to the 'landscape' style.
-    $image_style_options = [
-      'utexas_promo_unit_landscape_image' => 'utexas_responsive_image_pu_landscape',
-      'utexas_promo_unit_square_image' => 'utexas_responsive_image_pu_square',
-      'utexas_promo_unit_portrait_image' => 'utexas_responsive_image_pu_portrait',
-      'utexas_promo_unit_no_image' => '',
-    ];
-
-    // First save the promo unit instances as paragraphs & retrieve their IDs.
+  protected static function massageFieldData(array $source) {
+    $destination = [];
+    if (isset($source[0]['title'])) {
+      $destination['headline'] = $source[0]['title'];
+    }
+    $items = [];
     foreach ($source as $delta => $instance) {
-      $style = $instance['size_option'];
-      $field_values = [
-        'type' => 'utexas_promo_unit',
-        'field_utexas_pu_headline' => [
-          'value' => $instance['headline'],
-        ],
-        'field_utexas_pu_copy' => [
-          'value' => $instance['copy'],
-          'format' => 'flex_html',
-        ],
-        'field_utexas_pu_cta_link' => [
-          'uri' => MigrateHelper::prepareLink($instance['cta_uri']),
-          'title' => $instance['cta_title'],
-        ],
-        'field_utexas_pu_image_style' => [
-          'value' => isset($image_style_options[$style]) ? $image_style_options[$style] : 'utexas_responsive_image_pu_landscape',
-        ],
-      ];
-      if ($instance['image_fid'] != 0) {
-        $destination_fid = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
-        $field_values['field_utexas_pu_image'] = [
-          'target_id' => $destination_fid,
-          'alt' => '@to be replaced with media reference',
-        ];
+      if (isset($instance['headline'])) {
+        $items[$delta]['item']['headline'] = $instance['headline'];
       }
-      $paragraph_instance = Paragraph::create($field_values);
-      $paragraph_instance->save();
-      $paragraphs[] = [
-        'target_id' => $paragraph_instance->id(),
-        'target_revision_id' => $paragraph_instance->id(),
-        'delta' => $delta,
-      ];
+      if ($instance['image_fid'] != 0) {
+        $destination_mid = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
+        $items[$delta]['item']['image'] = $destination_mid;
+      }
+      if (isset($instance['copy'])) {
+        $items[$delta]['item']['copy']['value'] = $instance['copy'];
+        $items[$delta]['item']['copy']['format'] = 'flex_html';
+      }
+      if (isset($instance['link'])) {
+        $items[$delta]['item']['link']['url'] = MigrateHelper::prepareLink($instance['cta_uri']);
+        $items[$delta]['item']['link']['title'] = $instance['cta_title'];
+      }
     }
-    if (!empty($paragraphs)) {
-      // Next, save a single Promo Unit Container, with the above
-      // as its paragraph references.
-      // Note that the zeroth delta can be used for the title, since
-      // there is always only one title for Promo Units.
-      $paragraph_container = Paragraph::create([
-        'type' => 'utexas_promo_unit_container',
-        'field_utexas_puc_title' => $source[0]['title'],
-        'field_utexas_puc_items' => $paragraphs,
-      ]);
-      $paragraph_container->save();
-      // Finally, return the *single* Promo Unit Container to the node.
-      return [
-        'target_id' => $paragraph_container->id(),
-        'target_revision_id' => $paragraph_container->id(),
-        'delta' => 0,
-      ];
+    if (!empty($items)) {
+      $destination['promo_unit_items'] = serialize($items);
     }
+    return $destination;
   }
 
 }

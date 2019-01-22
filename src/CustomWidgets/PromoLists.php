@@ -3,7 +3,6 @@
 namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
-use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\utexas_migrate\MigrateHelper;
 
 /**
@@ -18,12 +17,12 @@ class PromoLists {
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget.
+   *   Returns an array of field data for the widget.
    */
   public static function convert($source_nid) {
     $source_data = self::getSourceData($source_nid);
-    $paragraph_data = self::save($source_data);
-    return $paragraph_data;
+    $field_data = self::massageFieldData($source_data);
+    return $field_data;
   }
 
   /**
@@ -62,62 +61,47 @@ class PromoLists {
   }
 
   /**
-   * Save data as paragraph(s) & return the paragraph ID(s)
+   * Save data as paragraph(s) & return the field data.
    *
    * @param array $source
    *   A simple key-value array of subfield & value.
    *
    * @return array
-   *   A simple key-value array returned the metadata about the paragraph.
+   *   A simple key-value array returned the metadata about the field
    */
-  protected static function save(array $source) {
+  protected static function massageFieldData(array $source) {
+    $destination = [];
     foreach ($source as $container_delta => $container) {
-      $paragraphs = [];
-      foreach ($container['items'] as $item_delta => $instance) {
-        $field_values = [
-          'type' => 'utexas_promo_list',
-          'field_utexas_pl_headline' => [
-            'value' => $instance->field_utexas_promo_list_item_headline,
-          ],
-          'field_utexas_pl_copy' => [
-            'value' => $instance->field_utexas_promo_list_item_copy_value,
-            'format' => 'flex_html',
-          ],
-          'field_utexas_pl_link' => [
-            'uri' => MigrateHelper::prepareLink($instance->field_utexas_promo_list_item_link),
-          ],
-        ];
-        if ($instance->field_utexas_promo_list_item_image_fid != 0) {
-          $destination_fid = MigrateHelper::getMediaIdFromFid($instance->field_utexas_promo_list_item_image_fid);
-          $field_values['field_utexas_pl_image'] = [
-            'target_id' => $destination_fid,
-            'alt' => '@to be replaced with media reference',
-          ];
-        }
-        $paragraph_instance = Paragraph::create($field_values);
-        $paragraph_instance->save();
-        $paragraphs[] = [
-          'target_id' => $paragraph_instance->id(),
-          'target_revision_id' => $paragraph_instance->id(),
-          'delta' => $item_delta,
-        ];
+      if (isset($container['headline'])) {
+        $destination[$container_delta]['headline'] = $container['headline'];
       }
-      // Next, save the Promo List Container, with the above
-      // as its paragraph references.
-      $paragraph_container = Paragraph::create([
-        'type' => 'utexas_promo_list_container',
-        'field_utexas_plc_headline' => $container['headline'],
-        'field_utexas_plc_items' => $paragraphs,
-      ]);
-      $paragraph_container->save();
-      $paragraph_containers[] = [
-        'target_id' => $paragraph_container->id(),
-        'target_revision_id' => $paragraph_container->id(),
-        'delta' => $container_delta,
-      ];
+      if (isset($container['items'])) {
+        $destination[$container_delta]['promo_list_items'] = [];
+        foreach ($container['items'] as $item_delta => $item) {
+          if (isset($item->field_utexas_promo_list_item_headline)) {
+            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['headline'] = $item->field_utexas_promo_list_item_headline;
+          }
+          if (isset($item->field_utexas_promo_list_item_image_fid)) {
+            $destination_mid = MigrateHelper::getMediaIdFromFid($item->field_utexas_promo_list_item_image_fid);
+            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['image'] = $destination_mid;
+          }
+          if (isset($item->field_utexas_promo_list_item_link)) {
+            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['link'] = MigrateHelper::prepareLink($item->field_utexas_promo_list_item_link);
+          }
+          if (isset($item->field_utexas_promo_list_item_copy_value)) {
+            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['copy']['value'] = $item->field_utexas_promo_list_item_copy_value;
+          }
+          if (isset($item->field_utexas_promo_list_item_copy_value)) {
+            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['copy']['format'] = 'restricted_html';
+          }
+        }
+      }
+      if (isset($destination[$container_delta]['promo_list_items'])) {
+        $destination[$container_delta]['promo_list_items'] = serialize($destination[$container_delta]['promo_list_items']);
+      }
     }
     // Finally, return all the Promo List Containers to the node.
-    return $paragraph_containers;
+    return $destination;
   }
 
 }

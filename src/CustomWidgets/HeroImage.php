@@ -3,7 +3,6 @@
 namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
-use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\utexas_migrate\MigrateHelper;
 
 /**
@@ -20,12 +19,11 @@ class HeroImage {
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget.
+   *   Returns an array of compound field data for the widget.
    */
   public static function convert($type, $source_nid) {
     $source_data = self::getSourceData($type, $source_nid);
-    $paragraph_data = self::save($source_data);
-    return $paragraph_data;
+    return self::massageFieldData($source_data);
   }
 
   /**
@@ -65,73 +63,45 @@ class HeroImage {
   }
 
   /**
-   * Save data as paragraph(s) & return the paragraph ID(s)
+   * Return field data as an array.
    *
    * @param array $source
    *   A simple key-value array of subfield & value.
    *
    * @return array
-   *   A simple key-value array returned the metadata about the paragraph.
+   *   A simple key-value array returned the metadata about the field.
    */
-  protected static function save(array $source) {
-    $paragraphs = [];
-    // Technically, there should only ever be one delta for Photo Content.
-    // See explanation in getPhotoContentAreaSource().
+  protected static function massageFieldData(array $source) {
+    $destination = [];
     foreach ($source as $delta => $instance) {
-      $display_type_map = [
-        'hero-style-1' => '2',
-        'hero-style-2' => '3',
-        'hero-style-3' => '4',
-        'hero-style-4' => '5',
-        'hero-style-5' => '6',
-      ];
-      // The 'type' value here is the Paragraph type machine name.
-      $field_values = [
-        'type' => 'utexas_hero_image',
-        'field_utexas_hi_photo_credit' => [
-          'value' => $instance['photo_credit'],
-        ],
-        'field_utexas_hi_display_style' => [
-          'value' => isset($display_type_map[$instance['display_style']]) ? $display_type_map[$instance['display_style']] : '1',
-        ],
-        'field_utexas_hi_subheading' => [
-          'value' => $instance['subheading'],
-        ],
-        'field_utexas_hi_link' => [
-          'uri' => MigrateHelper::prepareLink($instance['link_href']),
-          'title' => $instance['link_title'],
-        ],
-      ];
-      // Handle divergence between Hero Photo Full & Hero Photo Standard.
-      if ($instance['type'] == 'standard_page') {
-        $field_values['field_utexas_hi_caption'] = [
-          'value' => $instance['caption'],
-        ];
+      if (!empty($instance['photo_credit'])) {
+        $destination[$delta]['credit'] = $instance['photo_credit'];
       }
-      if ($instance['type'] == 'landing_page') {
-        // Caption is re-used as heading in full hero photo widget(!).
-        $field_values['field_utexas_hi_heading'] = [
-          'value' => $instance['caption'],
-        ];
+      if (!empty($instance['subheading'])) {
+        $destination[$delta]['subheading'] = $instance['subheading'];
+      }
+      if (!empty($instance['link_href'])) {
+        $destination[$delta]['link_uri'] = MigrateHelper::prepareLink($instance['link_href']);
+        $destination[$delta]['link_title'] = $instance['link_title'];
+      }
+      // Handle divergence between Hero Photo Full & Hero Photo Standard.
+      if (!empty($instance['caption'])) {
+        switch ($instance['type']) {
+          case 'standard_page':
+            $destination[$delta]['caption'] = $instance['caption'];
+            break;
+
+          case 'landing_page':
+            // Caption is used as heading in "full" hero widget(Bg5 b5?!).
+            $destination[$delta]['heading'] = $instance['caption'];
+            break;
+        }
       }
       if ($instance['image_fid'] != 0) {
-        $destination_fid = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
-        $field_values['field_utexas_hi_image'] = [
-          'target_id' => $destination_fid,
-          'alt' => '@to be replaced with media reference',
-        ];
+        $destination[$delta]['media'] = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
       }
-      $paragraph_instance = Paragraph::create($field_values);
-      $paragraph_instance->save();
-      $paragraphs[] = [
-        'target_id' => $paragraph_instance->id(),
-        'target_revision_id' => $paragraph_instance->id(),
-        'delta' => $delta,
-      ];
     }
-
-    return $paragraphs;
-
+    return $destination;
   }
 
 }

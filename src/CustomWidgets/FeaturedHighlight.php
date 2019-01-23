@@ -3,7 +3,6 @@
 namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
-use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\utexas_migrate\MigrateHelper;
 
 /**
@@ -71,7 +70,7 @@ class FeaturedHighlight {
     $destination = [];
     foreach ($source as $delta => $instance) {
       // @todo: support Video file entity migration.
-      // This may not require much/any change here -- 
+      // This may not require much/any change here
       // video entities are still just entity IDs.
       if ($instance['image_fid'] != 0) {
         if ($destination_mid = MigrateHelper::getMediaIdFromFid($instance['image_fid'])) {

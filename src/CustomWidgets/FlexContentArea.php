@@ -3,7 +3,6 @@
 namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
-use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\utexas_migrate\MigrateHelper;
 
 /**
@@ -15,17 +14,16 @@ class FlexContentArea {
    * Convert D7 data to D8 structure.
    *
    * @param string $instance
-   *   Whether this is flex_content_area_ 'a' or 'b'.
+   *   Whether this is FCA_ 'a' or 'b'.
    * @param int $source_nid
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget.
+   *   Returns an array of field data for the widget.
    */
   public static function convert($instance, $source_nid) {
     $source_data = self::getSourceData($instance, $source_nid);
-    $paragraph_data = self::save($source_data);
-    return $paragraph_data;
+    return self::massageFieldData($source_data);
   }
 
   /**
@@ -62,59 +60,46 @@ class FlexContentArea {
   }
 
   /**
-   * Save data as paragraph(s) & return the paragraph ID(s)
+   * Rearrange data as necessary for destination import.
    *
    * @param array $source
    *   A simple key-value array of subfield & value.
    *
    * @return array
-   *   A simple key-value array returned the metadata about the paragraph.
+   *   A simple key-value array returned the metadata about the field.
    */
-  protected static function save(array $source) {
-    $paragraphs = [];
+  protected static function massageFieldData(array $source) {
+    $destination = [];
     foreach ($source as $delta => $instance) {
-      $field_values = [
-        'type' => 'utexas_flex_content_area',
-        'field_utexas_fca_headline' => [
-          'value' => $instance['headline'],
-        ],
-        'field_utexas_fca_copy' => [
-          'value' => $instance['copy'],
-          'format' => 'flex_html',
-        ],
-        'field_utexas_fca_cta' => [
-          'uri' => $instance['cta_uri'],
-          'title' => $instance['cta_title'],
-        ],
-      ];
+      if ($instance['image_fid'] != 0) {
+        $destination[$delta]['image'] = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
+      }
+      if (!empty($instance['headline'])) {
+        $destination[$delta]['headline'] = $instance['headline'];
+      }
+      if (!empty($instance['copy'])) {
+        $destination[$delta]['copy_value'] = $instance['copy'];
+        $destination[$delta]['copy_format'] = 'flex_html';
+      }
+      if (!empty($instance['cta_uri'])) {
+        $destination[$delta]['link_uri'] = MigrateHelper::prepareLink($instance['cta_uri']);
+        $destination[$delta]['link_text'] = $instance['cta_title'];
+      }
       $links = unserialize($instance['links']);
       if (!empty($links)) {
         $prepared_links = [];
-        foreach ($links as $delta => $link) {
+        foreach ($links as $i => $link) {
           $prepared_links[] = [
-            'uri' => MigrateHelper::prepareLink($link['link_url']),
+            'url' => MigrateHelper::prepareLink($link['link_url']),
             'title' => $link['link_title'],
-            'delta' => $delta,
           ];
         }
-        $field_values['field_utexas_fca_links'] = $prepared_links;
+        if (!empty($prepared_links)) {
+          $destination[$delta]['links'] = serialize($prepared_links);
+        }
       }
-      if ($instance['image_fid'] != 0) {
-        $destination_fid = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
-        $field_values['field_utexas_fca_image'] = [
-          'target_id' => $destination_fid,
-          'alt' => '@to be replaced with media reference',
-        ];
-      }
-      $paragraph_instance = Paragraph::create($field_values);
-      $paragraph_instance->save();
-      $paragraphs[] = [
-        'target_id' => $paragraph_instance->id(),
-        'target_revision_id' => $paragraph_instance->id(),
-        'delta' => $delta,
-      ];
     }
-    return $paragraphs;
+    return $destination;
   }
 
 }

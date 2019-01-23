@@ -70,8 +70,8 @@ class FlexPageFieldsSource extends NodeSource {
     $row->setSourceProperty('wysiwyg_b', ['value' => $wysiwyg_b, 'format' => 'flex_html']);
 
     // Here, the first parameter to convert() specifies FCA 'A' or 'B' data.
-    // $row->setSourceProperty('fca_a', FlexContentArea::convert('a', $source_nid));
-    // $row->setSourceProperty('fca_b', FlexContentArea::convert('b', $source_nid));
+    $row->setSourceProperty('fca_a', FlexContentArea::convert('a', $source_nid));
+    $row->setSourceProperty('fca_b', FlexContentArea::convert('b', $source_nid));
 
     $row->setSourceProperty('featured_highlight', FeaturedHighlight::convert($source_nid));
 

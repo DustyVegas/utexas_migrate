@@ -3,11 +3,10 @@
 namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
-use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\utexas_migrate\MigrateHelper;
 
 /**
- * Convert D7 custom compound field to D8 paragraph.
+ * Convert D7 custom compound field to D8.
  */
 class PhotoContentArea {
 
@@ -18,12 +17,11 @@ class PhotoContentArea {
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget.
+   *   Returns an array of field data for the widget.
    */
   public static function convert($source_nid) {
     $source_data = self::getSourceData($source_nid);
-    $paragraph_data = self::save($source_data);
-    return $paragraph_data;
+    return self::massageFieldData($source_data);
   }
 
   /**
@@ -33,7 +31,7 @@ class PhotoContentArea {
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget
+   *   Returns an array of source field data from the widget.
    */
   public static function getSourceData($source_nid) {
     // Get all instances from the legacy DB.
@@ -57,63 +55,45 @@ class PhotoContentArea {
   }
 
   /**
-   * Save data as paragraph(s) & return the paragraph ID(s)
+   * Rearrange data as necessary for destination import.
    *
    * @param array $source
    *   A simple key-value array of subfield & value.
    *
    * @return array
-   *   A simple key-value array returned the metadata about the paragraph.
+   *   A simple key-value array returned the metadata about the field.
    */
-  protected static function save(array $source) {
-    $paragraphs = [];
-    // Technically, there should only ever be one delta for Photo Content.
-    // See explanation in getPhotoContentAreaSource().
+  protected static function massageFieldData(array $source) {
+    $destination = [];
     foreach ($source as $delta => $instance) {
-      // The 'type' value here is the Paragraph type machine name.
-      $field_values = [
-        'type' => 'utexas_photo_content_area',
-        'field_utexas_pca_headline' => [
-          'value' => $instance['headline'],
-        ],
-        'field_utexas_pca_copy' => [
-          'value' => $instance['copy'],
-          'format' => 'flex_html',
-        ],
-        'field_utexas_pca_credit' => [
-          'value' => $instance['credit'],
-        ],
-      ];
+      if ($instance['image_fid'] != 0) {
+        $destination[$delta]['image'] = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
+      }
+      if (!empty($instance['headline'])) {
+        $destination[$delta]['headline'] = $instance['headline'];
+      }
+      if (!empty($instance['credit'])) {
+        $destination[$delta]['photo_credit'] = $instance['credit'];
+      }
+      if (!empty($instance['copy'])) {
+        $destination[$delta]['copy_value'] = $instance['copy'];
+        $destination[$delta]['copy_format'] = 'flex_html';
+      }
       $links = unserialize($instance['links']);
       if (!empty($links)) {
-        foreach ($links as $delta => $link) {
+        $prepared_links = [];
+        foreach ($links as $i => $link) {
           $prepared_links[] = [
-            'uri' => MigrateHelper::prepareLink($link['link_url']),
+            'url' => MigrateHelper::prepareLink($link['link_url']),
             'title' => $link['link_title'],
-            'delta' => $delta,
           ];
         }
-        $field_values['field_utexas_pca_links'] = $prepared_links;
+        if (!empty($prepared_links)) {
+          $destination[$delta]['links'] = serialize($prepared_links);
+        }
       }
-      if ($instance['image_fid'] != 0) {
-        $destination_fid = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
-        $field_values['field_utexas_pca_image'] = [
-          'target_id' => $destination_fid,
-          'alt' => '@to be replaced with media reference',
-        ];
-      }
-      $paragraph_instance = Paragraph::create($field_values);
-      $paragraph_instance->save();
-      $paragraphs[] = [
-        'target_id' => $paragraph_instance->id(),
-        'target_revision_id' => $paragraph_instance->id(),
-        'delta' => $delta,
-      ];
     }
-    // @todo --> need to evaluate whether this field is empty.
-
-    return $paragraphs;
-
+    return $destination;
   }
 
 }

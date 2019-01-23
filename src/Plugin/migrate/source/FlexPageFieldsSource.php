@@ -85,7 +85,7 @@ class FlexPageFieldsSource extends NodeSource {
     $row->setSourceProperty('promo_lists', PromoLists::convert($source_nid));
     $row->setSourceProperty('promo_units', PromoUnits::convert($source_nid));
     $row->setSourceProperty('quick_links', QuickLinks::convert($source_nid));
-    // $row->setSourceProperty('photo_content_area', PhotoContentArea::convert($source_nid));
+    $row->setSourceProperty('photo_content_area', PhotoContentArea::convert($source_nid));
     $row->setSourceProperty('resource', Resource::convert($source_nid));
 
     return parent::prepareRow($row);

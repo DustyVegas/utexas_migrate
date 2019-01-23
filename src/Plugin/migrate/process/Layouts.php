@@ -8,6 +8,7 @@ use Drupal\migrate\Row;
 use Drupal\layout_builder\Section;
 use Drupal\layout_builder\SectionComponent;
 use Drupal\node\Entity\Node;
+use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 
 /**
  * Layouts Processor.
@@ -75,7 +76,7 @@ class Layouts extends ProcessPluginBase {
       $d8_components = [];
       if (!empty($d7_section['components'])) {
         foreach ($d7_section['components'] as $id => $d7_component) {
-          $d8_component = self::createD8SectionComponent($d7_component['type'], md5($id), $id, $d7_component['region'], $d7_component['weight']);
+          $d8_component = self::createD8SectionComponent($d7_component['type'], md5($id), $id, $d7_component['region'], $d7_component['weight'], $d7_component['formatter']);
           if ($d8_component) {
             $d8_components[] = $d8_component;
           }
@@ -135,10 +136,46 @@ class Layouts extends ProcessPluginBase {
         $found = TRUE;
       }
       if ($found) {
-        $sections = self::placeFieldinSection($sections, $d8_field, $settings, $template);
+        // Now that we know we have a field, check for a D7 display setting,
+        // and if so, pass an equivalent view_mode to the D8 field formatter.
+        $formatter = self::retrieveFieldDisplaySetting($d8_field, $row);
+
+        $sections = self::placeFieldinSection($sections, $d8_field, $settings, $template, $formatter);
       }
     }
     return $sections;
+  }
+
+  /**
+   * Get Drupal 7 layout data into a traversable format.
+   *
+   * @param string $d8_field
+   *   The Drupal 8 field name (e.g., field_flex_page_fh).
+   * @param Drupal\migrate\Row $row
+   *   Other entity source data related to this specific entity migration.
+   */
+  protected static function retrieveFieldDisplaySetting($d8_field, Row $row) {
+    $nid = $row->getSourceProperty('nid');
+    $formatter = [];
+    switch ($d8_field) {
+      case 'field_flex_page_fh':
+        $style_map = [
+          'light' => 'default',
+          'navy' => 'utexas_featured_highlight_2',
+          'dark' => 'utexas_featured_highlight_3',
+        ];
+        $source = FeaturedHighlight::getSourceData($nid);
+        if (!empty($source[0]['style'])) {
+          $style = $source[0]['style'];
+          $formatter = [
+            'label' => 'hidden',
+            'type' => $style_map[$style],
+          ];
+        }
+        break;
+
+    }
+    return $formatter;
   }
 
   /**
@@ -299,8 +336,10 @@ class Layouts extends ProcessPluginBase {
    *   Field settings, namely region & weight.
    * @param string $template
    *   The D7 template name.
+   * @param string[] $formatter
+   *   The field view mode, if defined.
    */
-  protected static function placeFieldinSection(array $sections, $d8_field, array $settings, $template) {
+  protected static function placeFieldinSection(array $sections, $d8_field, array $settings, $template, array $formatter) {
     switch ($template) {
       case 'Featured Highlight':
         switch ($settings['region']) {
@@ -309,6 +348,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'left',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -317,6 +357,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -325,6 +366,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'right',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -333,6 +375,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -341,6 +384,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'block_content',
               'region' => 'sidebar',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -349,6 +393,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'sidebar',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
         }
@@ -362,6 +407,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -370,6 +416,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'sidebar',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
         }
@@ -383,6 +430,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -391,6 +439,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'sidebar',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -399,6 +448,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -407,6 +457,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -415,6 +466,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'sidebar',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
         }
@@ -428,6 +480,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -436,6 +489,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
         }
@@ -448,6 +502,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
         }
@@ -460,6 +515,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -468,6 +524,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -476,6 +533,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'sidebar',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -484,6 +542,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -492,6 +551,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -500,6 +560,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'sidebar',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
         }
@@ -513,6 +574,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -522,6 +584,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -530,6 +593,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -538,6 +602,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'main',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
 
@@ -546,6 +611,7 @@ class Layouts extends ProcessPluginBase {
               'type' => 'field_block',
               'region' => 'sidebar',
               'weight' => $settings['weight'],
+              'formatter' => $formatter,
             ];
             break;
         }
@@ -585,12 +651,15 @@ class Layouts extends ProcessPluginBase {
    *   The layout region that this component should be placed in.
    * @param int $weight
    *   The vertical order that this component should show in the region.
+   * @param string[] $formatter
+   *   The view mode that the field uses, if any.
    */
-  protected function createD8SectionComponent($type, $uuid, $id, $region, $weight) {
+  protected function createD8SectionComponent($type, $uuid, $id, $region, $weight, array $formatter) {
     switch ($type) {
       case 'field_block':
         $component = new SectionComponent($uuid, $region, [
           'id' => $id,
+          'formatter' => $formatter,
           'context_mapping' => ['entity' => 'layout_builder.entity'],
         ]);
         $component->setWeight($weight);

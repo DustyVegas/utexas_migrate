@@ -66,16 +66,16 @@ class ImageLink {
    *   A simple key-value array returned the metadata about the field.
    */
   protected static function massageFieldData(array $source) {
-    // Technically, there should only ever be one delta for Image Link.
+    $destination = [];
     foreach ($source as $delta => $instance) {
-      $instances[$delta]['link'] = MigrateHelper::prepareLink($instance['uri']);
+      $destination[$delta]['link'] = MigrateHelper::prepareLink($instance['uri']);
 
       if ($instance['image_fid'] != 0) {
         $destination_mid = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
-        $instances[$delta]['image'] = $destination_mid;
+        $destination[$delta]['image'] = $destination_mid;
       }
     }
-    return $instances;
+    return $destination;
   }
 
 }

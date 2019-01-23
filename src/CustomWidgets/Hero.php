@@ -8,7 +8,7 @@ use Drupal\utexas_migrate\MigrateHelper;
 /**
  * Convert D7 custom compound field to D8 paragraph.
  */
-class HeroImage {
+class Hero {
 
   /**
    * Convert D7 data to D8 structure.

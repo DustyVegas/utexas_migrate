@@ -35,13 +35,13 @@ class FlexPageFieldsDestination extends Entity implements MigrateDestinationInte
       // to other classes for more complex field mappings.
       $node->set('field_flex_page_wysiwyg_a', $row->getSourceProperty('wysiwyg_a'));
       $node->set('field_flex_page_wysiwyg_b', $row->getSourceProperty('wysiwyg_b'));
-      $node->set('field_flex_page_fca_a', $row->getSourceProperty('fca_a'));
-      $node->set('field_flex_page_fca_b', $row->getSourceProperty('fca_b'));
-      $node->set('field_flex_page_fh', $row->getSourceProperty('featured_highlight'));
-      $node->set('field_flex_page_hi', $row->getSourceProperty('hero_image'));
+      // $node->set('field_flex_page_fca_a', $row->getSourceProperty('fca_a'));
+      // $node->set('field_flex_page_fca_b', $row->getSourceProperty('fca_b'));
+      // $node->set('field_flex_page_fh', $row->getSourceProperty('featured_highlight'));
+      // $node->set('field_flex_page_hi', $row->getSourceProperty('hero'));
       $node->set('field_flex_page_il_a', $row->getSourceProperty('image_link_a'));
       $node->set('field_flex_page_il_b', $row->getSourceProperty('image_link_b'));
-      $node->set('field_flex_page_pca', $row->getSourceProperty('photo_content_area'));
+      // $node->set('field_flex_page_pca', $row->getSourceProperty('photo_content_area'));
       $node->set('field_flex_page_pl', $row->getSourceProperty('promo_lists'));
       $node->set('field_flex_page_pu', $row->getSourceProperty('promo_units'));
       $node->set('field_flex_page_ql', $row->getSourceProperty('quick_links'));

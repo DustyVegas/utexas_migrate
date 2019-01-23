@@ -5,7 +5,7 @@ namespace Drupal\utexas_migrate\Plugin\migrate\source;
 use Drupal\migrate\Row;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
-use Drupal\utexas_migrate\CustomWidgets\HeroImage;
+use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
 use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
@@ -70,13 +70,13 @@ class FlexPageFieldsSource extends NodeSource {
     $row->setSourceProperty('wysiwyg_b', ['value' => $wysiwyg_b, 'format' => 'flex_html']);
 
     // Here, the first parameter to convert() specifies FCA 'A' or 'B' data.
-    $row->setSourceProperty('fca_a', FlexContentArea::convert('a', $source_nid));
-    $row->setSourceProperty('fca_b', FlexContentArea::convert('b', $source_nid));
+    // $row->setSourceProperty('fca_a', FlexContentArea::convert('a', $source_nid));
+    // $row->setSourceProperty('fca_b', FlexContentArea::convert('b', $source_nid));
 
     $row->setSourceProperty('featured_highlight', FeaturedHighlight::convert($source_nid));
 
     // Hero Images differ between Landing & Standard : pass the "type".
-    $row->setSourceProperty('hero_image', HeroImage::convert($row->getSourceProperty('type'), $source_nid));
+    $row->setSourceProperty('hero', Hero::convert($row->getSourceProperty('type'), $source_nid));
 
     // Here, the first parameter specifies Image Link 'A' or 'B' data.
     $row->setSourceProperty('image_link_a', ImageLink::convert('a', $source_nid));
@@ -85,7 +85,7 @@ class FlexPageFieldsSource extends NodeSource {
     $row->setSourceProperty('promo_lists', PromoLists::convert($source_nid));
     $row->setSourceProperty('promo_units', PromoUnits::convert($source_nid));
     $row->setSourceProperty('quick_links', QuickLinks::convert($source_nid));
-    $row->setSourceProperty('photo_content_area', PhotoContentArea::convert($source_nid));
+    // $row->setSourceProperty('photo_content_area', PhotoContentArea::convert($source_nid));
     $row->setSourceProperty('resource', Resource::convert($source_nid));
 
     return parent::prepareRow($row);

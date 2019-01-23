@@ -7,7 +7,7 @@ use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\utexas_migrate\MigrateHelper;
 
 /**
- * Convert D7 custom compound field to D8 paragraph.
+ * Convert D7 custom compound field to D8.
  */
 class FeaturedHighlight {
 
@@ -18,12 +18,12 @@ class FeaturedHighlight {
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget.
+   *   Returns an array of field data for the widget.
    */
   public static function convert($source_nid) {
     $source_data = self::getSourceData($source_nid);
-    $paragraph_data = self::save($source_data);
-    return $paragraph_data;
+    $field_data = self::massageFieldData($source_data);
+    return $field_data;
   }
 
   /**
@@ -67,49 +67,33 @@ class FeaturedHighlight {
    * @return array
    *   A simple key-value array returned the metadata about the paragraph.
    */
-  protected static function save(array $source) {
-    $paragraphs = [];
-    // Technically, there should only ever be one delta.
+  protected static function massageFieldData(array $source) {
+    $destination = [];
     foreach ($source as $delta => $instance) {
-      // The 'type' value here is the Paragraph type machine name.
-      $field_values = [
-        'type' => 'utexas_featured_highlight',
-        'field_utexas_fh_copy' => [
-          'value' => $instance['copy'],
-          'format' => 'flex_html',
-        ],
-        'field_utexas_fh_headline' => [
-          'value' => $instance['headline'],
-        ],
-        'field_utexas_fh_cta' => [
-          'uri' => MigrateHelper::prepareLink($instance['link_href']),
-          'title' => $instance['link_title'],
-        ],
-      ];
-      if ($instance['date'] != 0) {
-        $field_values['field_utexas_fh_date'] = [
-          'value' => $instance['date'],
-        ];
-      }
-      // @todo: determine how to migrate Featured Highlight highlight style.
       // @todo: support Video file entity migration.
+      // This may not require much/any change here -- 
+      // video entities are still just entity IDs.
       if ($instance['image_fid'] != 0) {
-        if ($destination_fid = MigrateHelper::getMediaIdFromFid($instance['image_fid'])) {
-          $field_values['field_utexas_fh_media'] = [
-            'target_id' => $destination_fid,
-            'alt' => '@to be replaced with media reference',
-          ];
+        if ($destination_mid = MigrateHelper::getMediaIdFromFid($instance['image_fid'])) {
+          $destination[$delta]['media'] = $destination_mid;
         }
       }
-      $paragraph_instance = Paragraph::create($field_values);
-      $paragraph_instance->save();
-      $paragraphs[] = [
-        'target_id' => $paragraph_instance->id(),
-        'target_revision_id' => $paragraph_instance->id(),
-        'delta' => $delta,
-      ];
+      if (!empty($instance['link_href'])) {
+        $destination[$delta]['link_uri'] = MigrateHelper::prepareLink($instance['link_href']);
+        $destination[$delta]['link_text'] = $instance['link_title'];
+      }
+      if (!empty($instance['copy'])) {
+        $destination[$delta]['copy_value'] = $instance['copy'];
+        $destination[$delta]['copy_format'] = 'flex_html';
+      }
+      if (!empty($instance['headline'])) {
+        $destination[$delta]['headline'] = $instance['headline'];
+      }
+      if ($instance['date'] != 0) {
+        $destination[$delta]['date'] = $instance['date'];
+      }
     }
-    return $paragraphs;
+    return $destination;
   }
 
 }

@@ -158,7 +158,9 @@ class Layouts extends ProcessPluginBase {
    */
   protected static function retrieveFieldDisplaySetting($d8_field, Row $row) {
     $nid = $row->getSourceProperty('nid');
-    $formatter = [];
+    $formatter = [
+      'label' => 'hidden',
+    ];
     switch ($d8_field) {
       case 'field_flex_page_fh':
         $style_map = [

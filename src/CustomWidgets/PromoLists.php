@@ -56,6 +56,12 @@ class PromoLists {
         ->execute()
         ->fetchAll();
       $output[$container_delta]['headline'] = $source_promo_list_headline[0]->field_utexas_promo_list_headline_value;
+      $source_promo_list_style = Database::getConnection()->select('field_data_field_utexas_promo_list_style', 's')
+        ->condition('entity_id', $container->field_utexas_promo_list_value)
+        ->fields('s', ['field_utexas_promo_list_style_value'])
+        ->execute()
+        ->fetchAll();
+      $output[$container_delta]['style'] = $source_promo_list_style[0]->field_utexas_promo_list_style_value;
     }
     return $output;
   }

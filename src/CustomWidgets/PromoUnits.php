@@ -76,7 +76,7 @@ class PromoUnits {
       if (isset($instance['headline'])) {
         $items[$delta]['item']['headline'] = $instance['headline'];
       }
-      $items[$delta]['item']['image'][0] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
+      $items[$delta]['item']['image'] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
       if (isset($instance['copy'])) {
         $items[$delta]['item']['copy']['value'] = $instance['copy'];
         $items[$delta]['item']['copy']['format'] = 'flex_html';

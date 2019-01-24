@@ -89,7 +89,7 @@ class PromoLists {
           }
           if (isset($item->field_utexas_promo_list_item_image_fid)) {
             $destination_mid = MigrateHelper::getMediaIdFromFid($item->field_utexas_promo_list_item_image_fid);
-            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['image'][0] = $destination_mid;
+            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['image'] = $destination_mid;
           }
           else {
             $destination[$container_delta]['promo_list_items'][$item_delta]['item']['image'] = 0;

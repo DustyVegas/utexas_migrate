@@ -278,6 +278,23 @@ class Layouts extends ProcessPluginBase {
           break;
       }
       if ($region) {
+        // Enforce that this locked field is above other content,
+        // and is above Quick Links, if present.
+        $blocks[$id] = [
+          'region' => $region,
+          'weight' => '-2',
+        ];
+      }
+    }
+    if ($ql = $node->field_flex_page_ql->getValue()) {
+      $region = FALSE;
+      switch ($template) {
+        case 'Landing Page Template 2':
+          $region = 'quick_links';
+          $id = 'fieldblock-669a6a1f32566fa73ea7974696027184';
+          break;
+      }
+      if ($region) {
         // Enforce that this locked field is above other content.
         $blocks[$id] = [
           'region' => $region,
@@ -629,6 +646,18 @@ class Layouts extends ProcessPluginBase {
               'region' => 'main',
               'weight' => $settings['weight'],
               'formatter' => $formatter,
+            ];
+            break;
+
+          case 'quick_links':
+            $sections[2]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
+              'type' => 'field_block',
+              'region' => 'main',
+              'weight' => $settings['weight'],
+              'formatter' => [
+                'label' => 'hidden',
+                'type' => 'utexas_quick_links_4',
+              ],
             ];
             break;
 

@@ -9,6 +9,7 @@ use Drupal\layout_builder\Section;
 use Drupal\layout_builder\SectionComponent;
 use Drupal\node\Entity\Node;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
+use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 
 /**
  * Layouts Processor.
@@ -167,6 +168,23 @@ class Layouts extends ProcessPluginBase {
         $source = FeaturedHighlight::getSourceData($nid);
         if (!empty($source[0]['style'])) {
           $style = $source[0]['style'];
+          $formatter = [
+            'label' => 'hidden',
+            'type' => $style_map[$style],
+          ];
+        }
+        break;
+
+      case 'field_flex_page_pu':
+        $style_map = [
+          'utexas_promo_unit_landscape_image' => 'default',
+          'utexas_promo_unit_portrait_image' => 'utexas_promo_unit_2',
+          'utexas_promo_unit_square_image' => 'utexas_promo_unit_3',
+          'utexas_promo_unit_no_image' => 'default',
+        ];
+        $source = PromoUnits::getSourceData($nid);
+        if (!empty($source[0]['size_option'])) {
+          $style = $source[0]['size_option'];
           $formatter = [
             'label' => 'hidden',
             'type' => $style_map[$style],

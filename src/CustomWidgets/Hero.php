@@ -97,9 +97,7 @@ class Hero {
             break;
         }
       }
-      if ($instance['image_fid'] != 0) {
-        $destination[$delta]['media'] = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
-      }
+      $destination[$delta]['media'] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
     }
     return $destination;
   }

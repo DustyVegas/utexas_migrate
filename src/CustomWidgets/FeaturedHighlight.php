@@ -72,11 +72,7 @@ class FeaturedHighlight {
       // @todo: support Video file entity migration.
       // This may not require much/any change here
       // video entities are still just entity IDs.
-      if ($instance['image_fid'] != 0) {
-        if ($destination_mid = MigrateHelper::getMediaIdFromFid($instance['image_fid'])) {
-          $destination[$delta]['media'] = $destination_mid;
-        }
-      }
+      $destination[$delta]['media'] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
       if (!empty($instance['link_href'])) {
         $destination[$delta]['link_uri'] = MigrateHelper::prepareLink($instance['link_href']);
         $destination[$delta]['link_text'] = $instance['link_title'];

@@ -70,10 +70,7 @@ class ImageLink {
     foreach ($source as $delta => $instance) {
       $destination[$delta]['link'] = MigrateHelper::prepareLink($instance['uri']);
 
-      if ($instance['image_fid'] != 0) {
-        $destination_mid = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
-        $destination[$delta]['image'] = $destination_mid;
-      }
+      $destination[$delta]['image'] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
     }
     return $destination;
   }

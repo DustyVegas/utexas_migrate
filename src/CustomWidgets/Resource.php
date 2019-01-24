@@ -77,6 +77,9 @@ class Resource {
         $destination_mid = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
         $items[$delta]['item']['image'] = $destination_mid;
       }
+      else {
+        $items[$delta]['item']['image'] = 0;
+      }
       $links = unserialize($instance['links']);
       if (!empty($links)) {
         $prepared_links = [];

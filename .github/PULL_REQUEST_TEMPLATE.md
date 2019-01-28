@@ -30,10 +30,14 @@ See https://issues.its.utexas.edu/projects/UDK8/issues/UDK8-NNN
 ## Evaluation Steps
 <!--- Include notes for both functional testing & code review -->
 0. See general setup, below
-0. 
+0.
 
 ## General Development Setup
 0. Locate this repository in the `modules/` directory of a UTDK8 site
 1. `git fetch && git checkout ` this branch
 2. Update your settings.local.php per instructions in the [README](https://github.austin.utexas.edu/eis1-wcs/utexas_migrate/blob/master/README.md)
 3. Run `lando drush en utexas_migrate -y`
+
+## Potential Reviewers
+
+@twf369 @jmf3658 @rh34438 @mjm6289 @jfg276 @lar3597

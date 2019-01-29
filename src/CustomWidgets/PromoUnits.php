@@ -81,10 +81,8 @@ class PromoUnits {
         $items[$delta]['item']['copy']['value'] = $instance['copy'];
         $items[$delta]['item']['copy']['format'] = 'flex_html';
       }
-      if (isset($instance['link'])) {
-        $items[$delta]['item']['link']['url'] = MigrateHelper::prepareLink($instance['cta_uri']);
-        $items[$delta]['item']['link']['title'] = $instance['cta_title'];
-      }
+      $items[$delta]['item']['link']['url'] = MigrateHelper::prepareLink($instance['cta_uri']);
+      $items[$delta]['item']['link']['title'] = $instance['cta_title'];
     }
     if (!empty($items)) {
       $destination['promo_unit_items'] = serialize($items);

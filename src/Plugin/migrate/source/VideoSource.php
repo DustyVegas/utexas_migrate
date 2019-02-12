@@ -20,8 +20,11 @@ class VideoSource extends MediaSource {
    */
   public function query() {
     $query = parent::query();
-    // VideoSource should only map files with type "video".
-    $query->condition('type', 'video', '=');
+    // VideoSource should only map files with uri scheme of Vimeo or YouTube.
+    $group = $query->orConditionGroup()
+      ->condition('filemime', 'video/youtube', '=')
+      ->condition('filemime', 'video/vimeo', '=');
+    $query->condition($group);;
     return $query;
   }
 

@@ -36,3 +36,4 @@ migration_dependencies:
   required:
     - utexas_users
     - utexas_media_image
+    - utexas_media_video

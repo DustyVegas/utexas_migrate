@@ -19,11 +19,21 @@ class MigrateHelper {
    *   Returns the matching media entity ID imported to the D8 site.
    */
   public static function getMediaIdFromFid($fid) {
-    return \Drupal::database()->select('migrate_map_utexas_media_image')
+    $mid = 0;
+    $mid = \Drupal::database()->select('migrate_map_utexas_media_image')
       ->fields('migrate_map_utexas_media_image', ['destid1'])
       ->condition('sourceid1', $fid, '=')
       ->execute()
       ->fetchField();
+    // Try the video map.
+    if (!$mid) {
+      $mid = \Drupal::database()->select('migrate_map_utexas_media_video')
+        ->fields('migrate_map_utexas_media_video', ['destid1'])
+        ->condition('sourceid1', $fid, '=')
+        ->execute()
+        ->fetchField();
+    }
+    return $mid;
   }
 
   /**

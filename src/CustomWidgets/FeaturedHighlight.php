@@ -69,9 +69,6 @@ class FeaturedHighlight {
   protected static function massageFieldData(array $source) {
     $destination = [];
     foreach ($source as $delta => $instance) {
-      // @todo: support Video file entity migration.
-      // This may not require much/any change here
-      // video entities are still just entity IDs.
       $destination[$delta]['media'] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
       if (!empty($instance['link_href'])) {
         $destination[$delta]['link_uri'] = MigrateHelper::prepareLink($instance['link_href']);

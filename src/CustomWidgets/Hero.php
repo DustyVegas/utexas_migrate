@@ -51,6 +51,7 @@ class Hero {
         'type' => $type,
         'image_fid' => $item->field_utexas_hero_photo_image_fid,
         'caption' => $item->field_utexas_hero_photo_caption,
+        'enable_image_styles' => $item->field_utexas_hero_photo_image_style,
         'display_style' => $item->field_utexas_hero_photo_hero_image_style,
         'position' => $item->field_utexas_hero_photo_hero_image_position,
         'photo_credit' => $item->field_utexas_hero_photo_credit,
@@ -76,6 +77,12 @@ class Hero {
     foreach ($source as $delta => $instance) {
       if (!empty($instance['photo_credit'])) {
         $destination[$delta]['credit'] = $instance['photo_credit'];
+      }
+      if (!empty($instance['enable_image_styles'])) {
+        $destination[$delta]['disable_image_styles'] = 0;
+      }
+      else {
+        $destination[$delta]['disable_image_styles'] = 1;
       }
       if (!empty($instance['subheading'])) {
         $destination[$delta]['subheading'] = $instance['subheading'];

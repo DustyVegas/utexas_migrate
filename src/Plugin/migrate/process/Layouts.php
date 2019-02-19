@@ -9,6 +9,7 @@ use Drupal\layout_builder\Section;
 use Drupal\layout_builder\SectionComponent;
 use Drupal\node\Entity\Node;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
+use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 
@@ -162,6 +163,35 @@ class Layouts extends ProcessPluginBase {
       'label' => 'hidden',
     ];
     switch ($d8_field) {
+      case 'field_flex_page_hi':
+        $style_map = [
+          'default-center' => 'utexas_hero',
+          'hero-style-1-left' => 'utexas_hero_1_left',
+          'hero-style-1-center' => 'utexas_hero_1',
+          'hero-style-1-right' => 'utexas_hero_1_right',
+          'hero-style-2-left' => 'utexas_hero_2_left',
+          'hero-style-2-center' => 'utexas_hero_2',
+          'hero-style-2-right' => 'utexas_hero_2_right',
+          'hero-style-3-left' => 'utexas_hero_3_left',
+          'hero-style-3-center' => 'utexas_hero_3',
+          'hero-style-3-right' => 'utexas_hero_3_right',
+          'hero-style-4-left' => 'utexas_hero_4',
+          'hero-style-4-center' => 'utexas_hero_4',
+          'hero-style-4-right' => 'utexas_hero_4',
+          'hero-style-5-left' => 'utexas_hero_5_left',
+          'hero-style-5-center' => 'utexas_hero_5',
+          'hero-style-5-right' => 'utexas_hero_5_right',
+        ];
+        $source = Hero::getSourceData('placeholder', $nid);
+        $style = $source[0]['display_style'] ?? 'default';
+        $position = $source[0]['position'] ?? 'center';
+        $d7_formatter_name = $style . '-' . $position;
+        $formatter = [
+          'label' => 'hidden',
+          'type' => $style_map[$d7_formatter_name],
+        ];
+        break;
+
       case 'field_flex_page_fh':
         $style_map = [
           'light' => 'default',

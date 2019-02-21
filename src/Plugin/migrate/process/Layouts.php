@@ -663,7 +663,7 @@ class Layouts extends ProcessPluginBase {
             break;
 
           case 'content_top_three_pillars':
-            if (in_array($d8_field, ['field_flex_page_fca_a', 'field_flex_page_fca_a'])) {
+            if (in_array($d8_field, ['field_flex_page_fca_a', 'field_flex_page_fca_b'])) {
               // Special case: FCA in content_top_three_pillars is 3-columns.
               $formatter['type'] = 'utexas_flex_content_area_3';
             }
@@ -676,7 +676,7 @@ class Layouts extends ProcessPluginBase {
             break;
 
           case 'content_top_four_pillars':
-            if (in_array($d8_field, ['field_flex_page_fca_a', 'field_flex_page_fca_a'])) {
+            if (in_array($d8_field, ['field_flex_page_fca_a', 'field_flex_page_fca_b'])) {
               // Special case: FCA in content_top_four_pillars 4-columns.
               $formatter['type'] = 'utexas_flex_content_area_4';
             }

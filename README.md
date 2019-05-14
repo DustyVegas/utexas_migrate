@@ -1,5 +1,5 @@
 # UTexas Migrate
-This module serves as a base for migrating UTDK 7 to 8.
+This module serves as a base for migrating UT Drupal Kit 7 to 8.
 
 # Setup
 ## Configuring local-settings.php for migration
@@ -15,6 +15,18 @@ $databases['utexas_migrate']['default'] = array(
   'password' => 'DB_PASSWORD',
   'host' => 'localhost',
   'port' => '3306',
+);
+```
+
+For a container-based migration (e.g., `lando`), your database might look like this:
+
+```
+$databases['utexas_migrate']['default'] = array(
+  'driver' => 'mysql',
+  'database' => 'drupal7',
+  'username' => 'drupal7',
+  'password' => 'drupal7',
+  'host' => 'database.quicksites.internal',
 );
 ```
 
@@ -46,13 +58,13 @@ information on available migrations sorted by their group:
 
 * To execute all migrations in a migration group, use the machine 
 name of the group (listed in parentheses after the group label) to run 
-`drush mim --group=GROUP_NAME`, e.g.:
+`drush migrate-import --group=GROUP_NAME`, e.g.:
 ```
 drush mim --group=utexas
 ```
 
 * You can execute a specific migration in a group by using the machine name
-to run `drush mim MIGRATE_NAME`, e.g.:
+to run `drush migrate-import MIGRATE_NAME`, e.g.:
 ```
 drush mim utexas_node
 ```
@@ -75,3 +87,8 @@ On the destination end, map this value to `display_breadcrumbs`. Example from `m
 ```yml
 display_breadcrumbs: show_breadcrumb
 ```
+
+## Troubleshooting
+
+### Failed to open stream: Connection refused
+Check your `$settings['migration_source_base_url']` value. If the base URL has an `https` scheme and the site does not have a valid certificate, you get this error when trying to migrate files. The fix is to use `http` as your base URL scheme in this setting.

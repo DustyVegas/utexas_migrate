@@ -115,7 +115,8 @@ class Layouts extends ProcessPluginBase {
     }
     // Look up presence of "locked" fields & add them programmatically
     // as blocks, potentially adjusting weight of other blocks.
-    $blocks = self::addLockedFieldsAsBlocks($blocks, $template, $nid, $row);
+    // @todo: Refactor addLockedFieldsAsBlocks() to use inline blocks.
+    // $blocks = self::addLockedFieldsAsBlocks($blocks, $template, $nid, $row);
 
     // Build up the D8 sections based on known information about the D7 layout:
     $sections = self::getD8SectionsfromD7Layout($template);
@@ -139,11 +140,12 @@ class Layouts extends ProcessPluginBase {
         $found = TRUE;
       }
       if ($found) {
+        // @todo: Revise the placeFieldinSection() method to use inline blocks.
         // Now that we know we have a field, check for a D7 display setting,
         // and if so, pass an equivalent view_mode to the D8 field formatter.
-        $formatter = self::retrieveFieldDisplaySetting($d8_field, $row);
+        // $formatter = self::retrieveFieldDisplaySetting($d8_field, $row);
 
-        $sections = self::placeFieldinSection($sections, $d8_field, $settings, $template, $formatter);
+        // $sections = self::placeFieldinSection($sections, $d8_field, $settings, $template, $formatter);
       }
     }
     return $sections;

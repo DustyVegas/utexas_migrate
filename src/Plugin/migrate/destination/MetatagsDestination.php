@@ -23,7 +23,7 @@ class MetatagsDestination extends Entity implements MigrateDestinationInterface 
    */
   public function import(Row $row, array $old_destination_id_values = []) {
     // This gets the NID we requested in the "process" declaration's
-    // migration_lookup in utexas_flex_page_fields.yml.
+    // migration_lookup.
     $destination = $row->getDestinationProperty('temp_nid');
 
     try {

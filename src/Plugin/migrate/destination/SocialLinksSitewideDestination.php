@@ -22,20 +22,34 @@ class SocialLinksSitewideDestination extends Entity implements MigrateDestinatio
    * Import function that runs on each row.
    */
   public function import(Row $row, array $old_destination_id_values = []) {
-    try {
-      $social_block = BlockContent::create([
-        'type' => 'social_links',
-        'info' => 'Sitewide Social Links',
-        'field_utexas_sl_social_links' => $row->getSourceProperty('links'),
-      ]);
-      $social_block->save();
-      return [$social_block->id()];
+    $links = [];
+    foreach ($row->getSourceProperty('links') as $link_item) {
+      if ($link_item['social_account_url'] != '') {
+        $links[] = [
+          'social_account_url' => $link_item['social_account_url'],
+          'social_account_name' => $link_item['social_account_name'],
+        ];
+      }
     }
-    catch (EntityStorageException $e) {
-      \Drupal::logger('utexas_migrate')->warning("Import of social link block failed: :error - Code: :code", [
-        ':error' => $e->getMessage(),
-        ':code' => $e->getCode(),
-      ]);
+    if (!empty($links)) {
+      try {
+        $social_block = BlockContent::create([
+          'type' => 'social_links',
+          'info' => 'Sitewide Social Links',
+          'field_utexas_sl_social_links' => [
+            'headline' => $row->getSourceProperty('field_utexas_social_links_headline'),
+            'social_account_links' => serialize($links),
+          ],
+        ]);
+        $social_block->save();
+        return [$social_block->id()];
+      }
+      catch (EntityStorageException $e) {
+        \Drupal::logger('utexas_migrate')->warning("Import of social link block failed: :error - Code: :code", [
+          ':error' => $e->getMessage(),
+          ':code' => $e->getCode(),
+        ]);
+      }
     }
   }
 

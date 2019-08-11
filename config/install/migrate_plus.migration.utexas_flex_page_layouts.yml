@@ -30,4 +30,5 @@ destination:
 
 migration_dependencies:
   required:
-    - utexas_flex_page_fields
+    - utexas_landing_page
+    - utexas_standard_page

@@ -8,17 +8,18 @@ use Drupal\migrate\Row;
 use Drupal\layout_builder\Section;
 use Drupal\layout_builder\SectionComponent;
 use Drupal\node\Entity\Node;
+use Drupal\utexas_migrate\MigrateHelper;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
+use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
 
 /**
  * Layouts Processor.
  *
  * This plugin takes care of processing a D7 "Page Layout"
- * setting into something consumable buy a D8 "Layout Builder"
- * setting.
+ * into something consumable buy D8 "Layout Builder".
  *
  * @MigrateProcessPlugin(
  *   id = "utexas_process_layout"
@@ -26,66 +27,39 @@ use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
  */
 class Layouts extends ProcessPluginBase {
 
-  protected static $excludedFieldblocks = [
-    'fieldblock-bb03b0e9fbf84510ab65cbb066d872fc' => 'Standard Page Twitter Widget',
-    'fieldblock-bb03b0e9fbf84510ab65cbb066d872fc' => 'Landing Page Twitter Widget',
-    'fieldblock-d83c2a95384186e375ab37cbf1430bf5' => 'Landing Page Contact Info',
-    'fieldblock-38205d43426b33bd0fe595ff8ca61ffd' => 'Standard Page Contact Info',
-    'fieldblock-d41b4a03ee9d7b1084986f74b617921c' => 'Landing Page UT Newsreel',
-    'fieldblock-8e85c2c89f0ccf26e9e4d0378250bf17' => 'Standard Page UT Newsreel',
-  ];
-
-  protected static $map = [
-    'fieldblock-fda604d130a57f15015895c8268f20d2' => 'field_flex_page_wysiwyg_a',
-    'fieldblock-bf40687156268eaa30437ed84189f13e' => 'field_flex_page_wysiwyg_b',
-    'fieldblock-9c079efa827f76dea650869c5d2631e6' => 'field_flex_page_fca_a',
-    'fieldblock-2c880c8461bc3ce5a6ac19b2e7791346' => 'field_flex_page_fca_a',
-    'fieldblock-208a521aa519bc1ed37d8992aeffae83' => 'field_flex_page_pu',
-    'fieldblock-f4361d99a73eca8a4329c07d0724a554' => 'field_flex_page_hi',
-    'fieldblock-6986914623a8e5646904aca42f9f452e' => 'field_flex_page_il_a',
-    'fieldblock-738c0498378ce2c32ba571a0a69457dc' => 'field_flex_page_il_b',
-    'fieldblock-669a6a1f32566fa73ea7974696027184' => 'field_flex_page_ql',
-    'fieldblock-c4c10ae36665adf0e722e7e3f4be74d4' => 'field_flex_page_pl',
-    'fieldblock-553096d7ea242fc7edcddc53f719d074' => 'field_flex_page_fh',
-    'fieldblock-29dbb1cb2c1033fdddae49c21ad4a9f5' => 'field_flex_page_pca',
-    'fieldblock-e01ea87c2dadf3edda4cc61011b33637' => 'field_flex_page_resource',
-    'fieldblock-6f3b85225f51542463a88e53104f8753' => 'field_flex_page_wysiwyg_a',
-    'fieldblock-9a6760fa853859ac84ff3a273ab79869' => 'field_flex_page_wysiwyg_b',
-    'fieldblock-1a9dd8685785a44b58d5e24ed3f8996d' => 'field_flex_page_fca_a',
-    'fieldblock-171f57c2269e221c96b732a464bae2e0' => 'field_flex_page_fca_a',
-    'fieldblock-9bcf52bbed6b2a3ea84b55a58fdd9c55' => 'field_flex_page_pu',
-    'fieldblock-8af3bd2d3cab537c77dbfbb55146ab7b' => 'field_flex_page_hi',
-    'fieldblock-05826976d27bc7abbc4f0475ba10cb58' => 'field_flex_page_il_a',
-    'fieldblock-21808b5e6c396dac8670f322f5c9e197' => 'field_flex_page_il_b',
-    'fieldblock-eab8c417f7d28e9571473905cfebbd5b' => 'field_flex_page_ql',
-    'fieldblock-1f11b5247df5b10da980b5681b637d17' => 'field_flex_page_pl',
-    'fieldblock-205723da13bdadd816a716421b436a92' => 'field_flex_page_fh',
-    'fieldblock-f28dec811f29578f018fae1a8458c9b4' => 'field_flex_page_pca',
-    'fieldblock-75a75df6422c87166c75aa079ca98c3c' => 'field_flex_page_resource',
-  ];
-
   /**
-   * {@inheritdoc}
+   * The main function.
+   *
+   * Given a row that contains a destination node ID and
+   * the source context for all of the D7 fields, build an array of inline data,
+   * organized by Drupal 8 section components, then save that to the node's
+   * layout (node__layout_builder__layout).
    */
-  public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
-    // First, manipulate the D7 context into a usable array.
+  public function transform($layout, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
+    // 1. Get the template name (e.g., "Featured Highlight")
+    // and the destination ID (e.g., "1")
     $template = $row->getSourceProperty('template');
     $nid = $row->getDestinationProperty('temp_nid');
-    $d7_data = self::formatD7Data($value, $template, $nid, $row);
 
-    // Next, put those array elements into D8 section objects.
+    // This contains all inline field data as well as layout structure,
+    // in a single array.
+    $section_data = self::buildSectionsArray($layout, $template, $nid, $row);
+    // @breakpoint recommendation.
+    // print_r($section_data);
+
+    // 2. Put those array elements into D8 section objects.
     $sections = [];
-    foreach ($d7_data as $d7_section) {
+    foreach ($section_data as $section) {
       $d8_components = [];
-      if (!empty($d7_section['components'])) {
-        foreach ($d7_section['components'] as $id => $d7_component) {
-          $d8_component = self::createD8SectionComponent($d7_component['type'], md5($id), $id, $d7_component['region'], $d7_component['weight'], $d7_component['formatter']);
+      if (!empty($section['components'])) {
+        foreach ($section['components'] as $component) {
+          $d8_component = self::createD8SectionComponent($component);
           if ($d8_component) {
             $d8_components[] = $d8_component;
           }
         }
         if (!empty($d8_components)) {
-          $section = self::createD8Section($d7_section['layout'], $d8_components);
+          $section = self::createD8Section($section['layout'], $section['layoutSettings'], $d8_components);
           $sections[] = $section;
         }
 
@@ -95,9 +69,9 @@ class Layouts extends ProcessPluginBase {
   }
 
   /**
-   * Get Drupal 7 layout data into a traversable format.
+   * Get layout data into a traversable format.
    *
-   * @param string $value
+   * @param string $layout
    *   A serialized array of layout data from the "context" table.
    * @param string $template
    *   The D7 template associated with this page.
@@ -106,29 +80,31 @@ class Layouts extends ProcessPluginBase {
    * @param Drupal\migrate\Row $row
    *   Other entity source data related to this specific entity migration.
    */
-  protected static function formatD7Data($value, $template, $nid, Row $row) {
-    // @todo retrieve which D7 layout this is from $row.
-    $layout = unserialize($value);
-    $blocks = $layout['block']['blocks'];
+  protected static function buildSectionsArray($layout, $template, $nid, Row $row) {
+    $layout_data = unserialize($layout);
+    // Extract the blocks in the layout from the 'context' table.
+    $blocks = $layout_data['block']['blocks'];
     if (!$blocks) {
       return [];
     }
+
     // Look up presence of "locked" fields & add them programmatically
     // as blocks, potentially adjusting weight of other blocks.
-    // @todo: Refactor addLockedFieldsAsBlocks() to use inline blocks.
-    // $blocks = self::addLockedFieldsAsBlocks($blocks, $template, $nid, $row);
+    $blocks = self::addLockedFieldsAsBlocks($blocks, $template, $nid, $row);
 
     // Build up the D8 sections based on known information about the D7 layout:
     $sections = self::getD8SectionsfromD7Layout($template);
+
+    // Loop through all known blocks, building the D8 section components.
     foreach ($blocks as $id => $settings) {
       $found = FALSE;
-      if (in_array($id, array_keys(self::$excludedFieldblocks))) {
+      if (in_array($id, array_keys(MigrateHelper::$excludedFieldblocks))) {
         // Skip "excluded" fieldblocks, like Twitter Widget, Contact Info,
         // since UTDK8 doesn't currently have a location for these.
         continue;
       }
-      elseif (in_array($id, array_keys(self::$map))) {
-        $d8_field = self::$map[$id];
+      elseif (in_array($id, array_keys(MigrateHelper::$includedFieldBlocks))) {
+        $field_name = MigrateHelper::$includedFieldBlocks[$id];
         $found = TRUE;
       }
       elseif ($settings['region'] == 'social_links') {
@@ -136,16 +112,16 @@ class Layouts extends ProcessPluginBase {
         // @todo: look up standard blocks' block UUIDs in FlexPageLayoutsSource.php
         // This code may need to be refactored to further disambiguate.
         // This is not a fieldblock (e.g., Social Links). Use the block ID.
-        $d8_field = $id;
+        $field_name = 'social_links';
         $found = TRUE;
       }
+
       if ($found) {
         // @todo: Revise the placeFieldinSection() method to use inline blocks.
         // Now that we know we have a field, check for a D7 display setting,
         // and if so, pass an equivalent view_mode to the D8 field formatter.
-        // $formatter = self::retrieveFieldDisplaySetting($d8_field, $row);
-
-        // $sections = self::placeFieldinSection($sections, $d8_field, $settings, $template, $formatter);
+        $field_data = self::retrieveFieldData($field_name, $row);
+        $sections = self::placeFieldinSection($sections, $field_data, $settings, $template);
       }
     }
     return $sections;
@@ -154,17 +130,22 @@ class Layouts extends ProcessPluginBase {
   /**
    * Get Drupal 7 layout data into a traversable format.
    *
-   * @param string $d8_field
+   * @param string $field_name
    *   The Drupal 8 field name (e.g., field_flex_page_fh).
    * @param Drupal\migrate\Row $row
    *   Other entity source data related to this specific entity migration.
    */
-  protected static function retrieveFieldDisplaySetting($d8_field, Row $row) {
+  protected static function retrieveFieldData($field_name, Row $row) {
     $nid = $row->getSourceProperty('nid');
     $formatter = [
       'label' => 'hidden',
     ];
-    switch ($d8_field) {
+    switch ($field_name) {
+      case 'social_links':
+        $source = SocialLinks::getFromNid($nid);
+        $block_type = 'social_links';
+        break;
+
       case 'field_flex_page_hi':
         $style_map = [
           'default-center' => 'utexas_hero',
@@ -244,7 +225,12 @@ class Layouts extends ProcessPluginBase {
         break;
 
     }
-    return $formatter;
+    return [
+      'field_name' => $field_name,
+      'block_type' => $block_type,
+      'data' => $source,
+      'format' => $formatter,
+    ];
   }
 
   /**
@@ -261,13 +247,17 @@ class Layouts extends ProcessPluginBase {
    */
   protected static function addLockedFieldsAsBlocks(array $blocks, $template, $nid, Row $row) {
     $node = Node::load($nid);
-    if ($social_link_id = $row->getSourceProperty('social_link_id')) {
+
+    // Check if a social link exists on the source node.
+    if ($social_link = SocialLinks::getRawSourceData($row->getSourceProperty('nid'))) {
       // Make a fake D7 block ID that can be identified later on.
-      $blocks[$social_link_id] = [
+      $blocks['inline_social_links'] = [
+        'type' => 'social_links',
         'region' => 'social_links',
         'weight' => '-1',
       ];
     }
+    return $blocks;
     if ($hi = $node->field_flex_page_hi->getValue()) {
       $region = FALSE;
       switch ($template) {
@@ -362,50 +352,73 @@ class Layouts extends ProcessPluginBase {
    */
   protected static function getD8SectionsfromD7Layout($template) {
     $sections = [];
+    $onecol = [
+      'layout' => 'layout_utexas_onecol',
+    ];
+    $onecol_full_width = [
+      'layout' => 'layout_utexas_onecol',
+      'layoutSettings' => [
+        'layout_builder_styles_style' => [
+          'full_width_of_page',
+        ],
+      ],
+    ];
+    $fifty_fifty = [
+      'layout' => 'layout_utexas_twocol',
+      'layoutSettings' => [
+        'column_widths' => '50-50',
+      ],
+    ];
+    $sixty_six_thirty_three = [
+      'layout' => 'layout_utexas_twocol',
+      'layoutSettings' => [
+        'column_widths' => '67-33',
+      ],
+    ];
     switch ($template) {
       case 'Featured Highlight':
-        $sections[0]['layout'] = 'layout_utexas_50_50';
-        $sections[1]['layout'] = 'layout_utexas_fullwidth';
-        $sections[2]['layout'] = 'layout_utexas_66_33';
+        $sections[0] = $fifty_fifty;
+        $sections[1] = $onecol_full_width;
+        $sections[2] = $sixty_six_thirty_three;
         break;
 
       case 'Hero Image & Sidebars':
       case 'Header with Content & Sidebars':
-        $sections[0]['layout'] = 'layout_utexas_66_33';
-        $sections[1]['layout'] = 'layout_utexas_66_33';
+        $sections[0] = $sixty_six_thirty_three;
+        $sections[1] = $sixty_six_thirty_three;
         break;
 
       case 'Full Content Page & Sidebar':
       case 'Promotional Page & Sidebar':
-        $sections[0]['layout'] = 'layout_utexas_66_33';
+        $sections[0] = $sixty_six_thirty_three;
         break;
 
       case 'Full Width Content Page & Title':
       case 'Full Width Content Page':
       case 'Open Text Page':
-        $sections[0]['layout'] = 'layout_utexas_fullwidth';
-        $sections[1]['layout'] = 'layout_utexas_fullwidth';
+        $sections[0] = $onecol;
+        $sections[1] = $onecol;
         break;
 
       case 'Landing Page Template 1':
-        $sections[0]['layout'] = 'layout_utexas_fullwidth';
-        $sections[1]['layout'] = 'layout_utexas_66_33';
-        $sections[2]['layout'] = 'layout_utexas_fullwidth';
-        $sections[3]['layout'] = 'layout_utexas_66_33';
+        $sections[0] = $onecol;
+        $sections[1] = $sixty_six_thirty_three;
+        $sections[2] = $onecol;
+        $sections[3] = $sixty_six_thirty_three;
         break;
 
       case 'Landing Page Template 2':
-        $sections[0]['layout'] = 'layout_utexas_fullwidth';
-        $sections[1]['layout'] = 'layout_utexas_fullwidth';
-        $sections[2]['layout'] = 'layout_utexas_fullwidth';
-        $sections[3]['layout'] = 'layout_utexas_fullwidth';
+        $sections[0] = $onecol;
+        $sections[1] = $onecol;
+        $sections[2] = $onecol;
+        $sections[3] = $onecol;
         break;
 
       case 'Landing Page Template 3':
-        $sections[0]['layout'] = 'layout_utexas_fullwidth';
-        $sections[1]['layout'] = 'layout_utexas_fullwidth';
-        $sections[2]['layout'] = 'layout_utexas_fullwidth';
-        $sections[3]['layout'] = 'layout_utexas_66_33';
+        $sections[0] = $onecol;
+        $sections[1] = $onecol;
+        $sections[2] = $onecol;
+        $sections[3] = $sixty_six_thirty_three;
         break;
     }
     return $sections;
@@ -416,71 +429,46 @@ class Layouts extends ProcessPluginBase {
    *
    * @param array $sections
    *   The sections as defined in the D8 equivalent layout from D7..
-   * @param string $d8_field
-   *   The machine name of the field.
+   * @param string $field_data
+   *   The field data.
    * @param array $settings
    *   Field settings, namely region & weight.
    * @param string $template
    *   The D7 template name.
-   * @param string[] $formatter
-   *   The field view mode, if defined.
    */
-  protected static function placeFieldinSection(array $sections, $d8_field, array $settings, $template, array $formatter) {
+  protected static function placeFieldinSection(array $sections, $field_data, array $settings, $template) {
+    $d8_field = $field_data['field_name'];
     switch ($template) {
       case 'Featured Highlight':
         switch ($settings['region']) {
           case 'main_content_top_left':
-            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'left',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 0;
+            $region = 'first';
             break;
 
           case 'featured_highlight':
-            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 1;
+            $region = 'main';
             break;
 
           case 'main_content_top_right':
-            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'right',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 0;
+            $region = 'second';
             break;
 
           case 'content_bottom':
-            $sections[2]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 2;
+            $region = 'first';
             break;
 
           case 'social_links':
-            $sections[2]['components']['block_content:' . $d8_field] = [
-              'type' => 'block_content',
-              'region' => 'sidebar',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 2;
+            $region = 'second';
             break;
 
           case 'sidebar_second':
-            $sections[2]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'sidebar',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 2;
+            $region = 'second';
             break;
         }
         break;
@@ -489,21 +477,13 @@ class Layouts extends ProcessPluginBase {
       case 'Promotional Page & Sidebar':
         switch ($settings['region']) {
           case 'content':
-            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 0;
+            $region = 'main';
             break;
 
           case 'sidebar_second':
-            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'sidebar',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 0;
+            $region = 'second';
             break;
         }
         break;
@@ -512,48 +492,28 @@ class Layouts extends ProcessPluginBase {
       case 'Header with Content & Sidebars':
         switch ($settings['region']) {
           case 'content_top_left':
-            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 0;
+            $region = 'first';
             break;
 
           case 'content_top_right':
-            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'sidebar',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 0;
+            $region = 'second';
             break;
 
           case 'content_bottom':
-            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 1;
+            $region = 'main';
             break;
 
           case 'content':
-            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 1;
+            $region = 'main';
             break;
 
           case 'sidebar_second':
-            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'sidebar',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 1;
+            $region = 'second';
             break;
         }
         break;
@@ -562,21 +522,13 @@ class Layouts extends ProcessPluginBase {
       case 'Full Width Content Page':
         switch ($settings['region']) {
           case 'content_top':
-            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 0;
+            $region = 'main';
             break;
 
           case 'content_bottom':
-            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 1;
+            $region = 'main';
             break;
         }
         break;
@@ -584,12 +536,8 @@ class Layouts extends ProcessPluginBase {
       case 'Open Text Page';
         switch ($settings['region']) {
           case 'content':
-            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 0;
+            $region = 'main';
             break;
         }
         break;
@@ -597,57 +545,33 @@ class Layouts extends ProcessPluginBase {
       case 'Landing Page Template 1':
         switch ($settings['region']) {
           case 'hero_image':
-            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 0;
+            $region = 'main';
             break;
 
           case 'content_top_left':
-            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 1;
+            $region = 'first';
             break;
 
           case 'content_top_right':
-            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'sidebar',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 1;
+            $region = 'second';
             break;
 
           case 'featured_highlight':
-            $sections[2]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 2;
+            $region = 'main';
             break;
 
           case 'content_bottom':
-            $sections[3]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 3;
+            $region = 'main';
             break;
 
           case 'sidebar_second':
-            $sections[3]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'sidebar',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 3;
+            $region = 'second';
             break;
         }
         break;
@@ -656,12 +580,8 @@ class Layouts extends ProcessPluginBase {
       case 'Landing Page Template 3':
         switch ($settings['region']) {
           case 'hero_image':
-            $sections[0]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 0;
+            $region = 'main';
             break;
 
           case 'content_top_three_pillars':
@@ -669,12 +589,8 @@ class Layouts extends ProcessPluginBase {
               // Special case: FCA in content_top_three_pillars is 3-columns.
               $formatter['type'] = 'utexas_flex_content_area_3';
             }
-            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 1;
+            $region = 'main';
             break;
 
           case 'content_top_four_pillars':
@@ -682,51 +598,29 @@ class Layouts extends ProcessPluginBase {
               // Special case: FCA in content_top_four_pillars 4-columns.
               $formatter['type'] = 'utexas_flex_content_area_4';
             }
-            $sections[1]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 1;
+            $region = 'main';
             break;
 
           case 'featured_highlight':
-            $sections[2]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 2;
+            $region = 'main';
             break;
 
           case 'quick_links':
-            $sections[2]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => [
-                'label' => 'hidden',
-                'type' => 'utexas_quick_links_4',
-              ],
-            ];
+            $delta = 2;
+            $region = 'main';
+            $formatter['type'] = 'utexas_quick_links_4';
             break;
 
           case 'content_bottom':
-            $sections[3]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'main',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 3;
+            $region = 'main';
             break;
 
           case 'sidebar_second':
-            $sections[3]['components']['field_block:node:utexas_flex_page:' . $d8_field] = [
-              'type' => 'field_block',
-              'region' => 'sidebar',
-              'weight' => $settings['weight'],
-              'formatter' => $formatter,
-            ];
+            $delta = 3;
+            $region = 'second';
             break;
         }
         break;
@@ -735,6 +629,15 @@ class Layouts extends ProcessPluginBase {
         break;
     }
 
+    $sections[$delta]['components'][$d8_field] = [
+      'field_identifier' => $d8_field,
+      'block_data' => $field_data['data'],
+      'block_type' => $field_data['block_type'],
+      'block_format' => $field_data['format'],
+      'region' => $region,
+      'weight' => $settings['weight'],
+      'formatter' => $formatter,
+    ];
     return $sections;
   }
 
@@ -743,51 +646,40 @@ class Layouts extends ProcessPluginBase {
    *
    * @param string $layout
    *   The D8 machine name of the layout to be used.
+   * @param array $layout_settings
+   *   Any layout-level settings (full width, percentages, etc.).
    * @param array $components
    *   An array of sectionComponents (i.e., fields)
    */
-  protected static function createD8Section($layout, array $components) {
+  protected static function createD8Section($layout, array $layout_settings, array $components) {
     // Each section is stored in its own array.
-    $section = new Section($layout, [], $components);
+    $section = new Section($layout, $layout_settings, $components);
     return $section;
   }
 
   /**
    * Helper method to take field data & create a SectionComponent object.
    *
-   * @param string $type
-   *   What type of field is this? Typically "field_block".
-   * @param string $uuid
-   *   The UUID as constructed from the D8 field name.
-   * @param string $id
-   *   The field id.
-   * @param string $region
-   *   The layout region that this component should be placed in.
-   * @param int $weight
-   *   The vertical order that this component should show in the region.
-   * @param string[] $formatter
-   *   The view mode that the field uses, if any.
+   * @param array $component_data
+   *   The data/context of the component (e.g., region, weight, view_mode)
+   *
+   * @return mixed
+   *   The component object or FALSE.
    */
-  protected function createD8SectionComponent($type, $uuid, $id, $region, $weight, array $formatter) {
-    switch ($type) {
-      case 'field_block':
-        $component = new SectionComponent($uuid, $region, [
-          'id' => $id,
-          'formatter' => $formatter,
-          'context_mapping' => ['entity' => 'layout_builder.entity'],
-        ]);
-        $component->setWeight($weight);
-        break;
-
-      case 'block_content':
-        $component = new SectionComponent($uuid, $region, [
-          'id' => $id,
-          'provider' => 'block_content',
-          'context_mapping' => [],
-        ]);
-        $component->setWeight($weight);
-        break;
+  protected function createD8SectionComponent(array $component_data) {
+    if ($block = MigrateHelper::createInlineBlock($component_data)) {
+      // Important: the 'id' value must be "inline_block:" + a valid block type.
+      $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
+        'id' => 'inline_block:' . $component_data['block_type'],
+        'label' => $component_data['field_identifier'],
+        'provider' => 'layout_builder',
+        'label_display' => 0,
+        'view_mode' => 'full',
+        'block_revision_id' => $block->id(),
+      ]);
+      $component->setWeight($component_data['weight']);
     }
+
     if (isset($component)) {
       return $component;
     }

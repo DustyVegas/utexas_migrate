@@ -11,6 +11,28 @@ use Drupal\utexas_migrate\MigrateHelper;
 class ImageLink {
 
   /**
+   * Prepare an array for saving a block.
+   *
+   * @param array $data
+   *   The D7 fields.
+   *
+   * @return array
+   *   D8 block format.
+   */
+  public static function createBlockDefinition(array $data) {
+    $block_definition = [
+      'type' => 'utexas_image_link',
+      'info' => $data['field_identifier'],
+      'field_block_il' => [
+        'image' => $data['block_data'][0]['image'],
+        'link' => $data['block_data'][0]['link'],
+      ],
+      'reusable' => FALSE,
+    ];
+    return $block_definition;
+  }
+
+  /**
    * Convert D7 data to D8 structure.
    *
    * @param string $instance

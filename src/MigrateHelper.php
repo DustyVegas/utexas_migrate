@@ -188,6 +188,10 @@ class MigrateHelper {
         $block_definition = SocialLinks::createBlockDefinition($component_data);
         break;
 
+      case 'image_link_a':
+      case 'image_link_b':
+        $block_definition = ImageLink::createBlockDefinition($component_data);
+        break;
     }
     if (!isset($block_definition)) {
       return FALSE;

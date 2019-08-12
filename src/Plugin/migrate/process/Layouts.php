@@ -11,6 +11,7 @@ use Drupal\node\Entity\Node;
 use Drupal\utexas_migrate\MigrateHelper;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
+use Drupal\utexas_migrate\CustomWidgets\ImageLink;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
@@ -144,6 +145,12 @@ class Layouts extends ProcessPluginBase {
       case 'social_links':
         $source = SocialLinks::getFromNid($nid);
         $block_type = 'social_links';
+        break;
+
+      case 'image_link_a':
+      case 'image_link_b':
+        $block_type = 'utexas_image_link';
+        $source = ImageLink::getFromNid($field_name, $nid);
         break;
 
       case 'field_flex_page_hi':

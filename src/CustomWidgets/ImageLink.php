@@ -6,7 +6,7 @@ use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\MigrateHelper;
 
 /**
- * Convert D7 custom compound field to D8 paragraph.
+ * Convert D7 custom compound field to D8 inline block.
  */
 class ImageLink {
 
@@ -35,16 +35,14 @@ class ImageLink {
   /**
    * Convert D7 data to D8 structure.
    *
-   * @param string $instance
-   *   Whether this is image_link_ 'a' or 'b'.
    * @param int $source_nid
    *   The node ID from the source data.
    *
    * @return array
    *   Returns an array of field data for the widget.
    */
-  public static function convert($instance, $source_nid) {
-    $source_data = self::getSourceData($instance, $source_nid);
+  public static function getFromNid($instance, $source_nid) {
+    $source_data = self::getRawSourceData($instance, $source_nid);
     $field_data = self::massageFieldData($source_data);
     return $field_data;
   }
@@ -58,21 +56,21 @@ class ImageLink {
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget
+   *   Returns an array of IDs of the widget
    */
-  public static function getSourceData($instance, $source_nid) {
+  public static function getRawSourceData($instance, $source_nid) {
     // Get all instances from the legacy DB.
     Database::setActiveConnection('utexas_migrate');
-    $source_data = Database::getConnection()->select('field_data_field_utexas_image_link_' . $instance, 'f')
+    $source_data = Database::getConnection()->select('field_data_field_utexas_' . $instance, 'f')
       ->fields('f')
       ->condition('entity_id', $source_nid)
       ->execute()
       ->fetchAll();
     $prepared = [];
-    foreach ($source_data as $delta => $fca) {
+    foreach ($source_data as $delta => $i) {
       $prepared[$delta] = [
-        'image_fid' => $fca->{'field_utexas_image_link_' . $instance . '_image_fid'},
-        'uri' => $fca->{'field_utexas_image_link_' . $instance . '_link_href'},
+        'image' => $i->{'field_utexas_' . $instance . '_image_fid'},
+        'link' => $i->{'field_utexas_' . $instance . '_link_href'},
       ];
     }
     return $prepared;
@@ -90,9 +88,9 @@ class ImageLink {
   protected static function massageFieldData(array $source) {
     $destination = [];
     foreach ($source as $delta => $instance) {
-      $destination[$delta]['link'] = MigrateHelper::prepareLink($instance['uri']);
+      $destination[$delta]['link'] = MigrateHelper::prepareLink($instance['link']);
 
-      $destination[$delta]['image'] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
+      $destination[$delta]['image'] = $instance['image'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image']) : 0;
     }
     return $destination;
   }

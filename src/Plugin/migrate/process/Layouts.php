@@ -8,6 +8,7 @@ use Drupal\migrate\Row;
 use Drupal\layout_builder\Section;
 use Drupal\layout_builder\SectionComponent;
 use Drupal\node\Entity\Node;
+use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
 use Drupal\utexas_migrate\MigrateHelper;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
@@ -151,6 +152,12 @@ class Layouts extends ProcessPluginBase {
       case 'image_link_b':
         $block_type = 'utexas_image_link';
         $source = ImageLink::getFromNid($field_name, $nid);
+        break;
+
+      case 'wysiwyg_a':
+      case 'wysiwyg_b':
+        $block_type = 'basic';
+        $source = BasicBlock::getFromNid($field_name, $nid);
         break;
 
       case 'field_flex_page_hi':

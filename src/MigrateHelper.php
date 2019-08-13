@@ -5,6 +5,7 @@ namespace Drupal\utexas_migrate;
 use Drupal\block_content\Entity\BlockContent;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Database\Database;
+use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
 
@@ -132,6 +133,33 @@ class MigrateHelper {
   }
 
   /**
+   * Prepare a D7 text format for usage in D8.
+   *
+   * In D7, we had "Filtered HTML", "Filtered HTML for blocks",
+   * and "Full HTML".
+   * In D8, we only have "Flex HTML", and the Drupal provided "Restricted HTML"
+   * and "Full HTML".
+   */
+  public static function prepareTextFormat($d7_format) {
+    switch ($d7_format) {
+      case 'filtered_html':
+      case 'filtered_html_for_blocks':
+        $d8_format = 'flex_html';
+        break;
+
+      case 'full_html':
+        $d8_format = 'full_html';
+        break;
+
+      default:
+        $d8_format = 'flex_html';
+        break;
+    }
+
+    return $d8_format;
+  }
+
+  /**
    * Map of fieldblock IDs that should NOT be migrated right now.
    *
    * @var array
@@ -151,8 +179,8 @@ class MigrateHelper {
    * @var array
    */
   public static $includedFieldBlocks = [
-    //'fieldblock-fda604d130a57f15015895c8268f20d2' => 'field_flex_page_wysiwyg_a',
-    //'fieldblock-bf40687156268eaa30437ed84189f13e' => 'field_flex_page_wysiwyg_b',
+    'fieldblock-fda604d130a57f15015895c8268f20d2' => 'wysiwyg_a',
+    'fieldblock-bf40687156268eaa30437ed84189f13e' => 'wysiwyg_b',
     //'fieldblock-9c079efa827f76dea650869c5d2631e6' => 'field_flex_page_fca_a',
     //'fieldblock-2c880c8461bc3ce5a6ac19b2e7791346' => 'field_flex_page_fca_a',
     //'fieldblock-208a521aa519bc1ed37d8992aeffae83' => 'field_flex_page_pu',
@@ -164,8 +192,8 @@ class MigrateHelper {
     //'fieldblock-553096d7ea242fc7edcddc53f719d074' => 'field_flex_page_fh',
     //'fieldblock-29dbb1cb2c1033fdddae49c21ad4a9f5' => 'field_flex_page_pca',
     //'fieldblock-e01ea87c2dadf3edda4cc61011b33637' => 'field_flex_page_resource',
-    //'fieldblock-6f3b85225f51542463a88e53104f8753' => 'field_flex_page_wysiwyg_a',
-    //'fieldblock-9a6760fa853859ac84ff3a273ab79869' => 'field_flex_page_wysiwyg_b',
+    'fieldblock-6f3b85225f51542463a88e53104f8753' => 'wysiwyg_a',
+    'fieldblock-9a6760fa853859ac84ff3a273ab79869' => 'wysiwyg_b',
     //'fieldblock-1a9dd8685785a44b58d5e24ed3f8996d' => 'field_flex_page_fca_a',
     //'fieldblock-171f57c2269e221c96b732a464bae2e0' => 'field_flex_page_fca_a',
     //'fieldblock-9bcf52bbed6b2a3ea84b55a58fdd9c55' => 'field_flex_page_pu',
@@ -191,6 +219,11 @@ class MigrateHelper {
       case 'image_link_a':
       case 'image_link_b':
         $block_definition = ImageLink::createBlockDefinition($component_data);
+        break;
+
+      case 'wysiwyg_a':
+      case 'wysiwyg_b':
+        $block_definition = BasicBlock::createBlockDefinition($component_data);
         break;
     }
     if (!isset($block_definition)) {

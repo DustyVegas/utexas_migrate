@@ -61,6 +61,9 @@ class Layouts extends ProcessPluginBase {
           }
         }
         if (!empty($d8_components)) {
+          if (!isset($section['layoutSettings'])) {
+            $section['layoutSettings'] = [];
+          }
           $section = self::createD8Section($section['layout'], $section['layoutSettings'], $d8_components);
           $sections[] = $section;
         }
@@ -160,33 +163,9 @@ class Layouts extends ProcessPluginBase {
         $source = BasicBlock::getFromNid($field_name, $nid);
         break;
 
-      case 'field_flex_page_hi':
-        $style_map = [
-          'default-center' => 'utexas_hero',
-          'hero-style-1-left' => 'utexas_hero_1_left',
-          'hero-style-1-center' => 'utexas_hero_1',
-          'hero-style-1-right' => 'utexas_hero_1_right',
-          'hero-style-2-left' => 'utexas_hero_2_left',
-          'hero-style-2-center' => 'utexas_hero_2',
-          'hero-style-2-right' => 'utexas_hero_2_right',
-          'hero-style-3-left' => 'utexas_hero_3_left',
-          'hero-style-3-center' => 'utexas_hero_3',
-          'hero-style-3-right' => 'utexas_hero_3_right',
-          'hero-style-4-left' => 'utexas_hero_4',
-          'hero-style-4-center' => 'utexas_hero_4',
-          'hero-style-4-right' => 'utexas_hero_4',
-          'hero-style-5-left' => 'utexas_hero_5_left',
-          'hero-style-5-center' => 'utexas_hero_5',
-          'hero-style-5-right' => 'utexas_hero_5_right',
-        ];
-        $source = Hero::getSourceData('placeholder', $nid);
-        $style = $source[0]['display_style'] ?? 'default';
-        $position = $source[0]['position'] ?? 'center';
-        $d7_formatter_name = $style . '-' . $position;
-        $formatter = [
-          'label' => 'hidden',
-          'type' => $style_map[$d7_formatter_name],
-        ];
+      case 'hero':
+        $block_type = 'utexas_hero';
+        $source = Hero::getFromNid('hero_photo', $nid);
         break;
 
       case 'field_flex_page_fh':
@@ -271,8 +250,7 @@ class Layouts extends ProcessPluginBase {
         'weight' => '-1',
       ];
     }
-    return $blocks;
-    if ($hi = $node->field_flex_page_hi->getValue()) {
+    if ($hi = Hero::getRawSourceData('hero_photo', $row->getSourceProperty('nid'))) {
       $region = FALSE;
       switch ($template) {
         case 'Hero Image & Sidebars':
@@ -300,6 +278,8 @@ class Layouts extends ProcessPluginBase {
         ];
       }
     }
+    return $blocks;
+
     if ($fh = $node->field_flex_page_fh->getValue()) {
       $region = FALSE;
       switch ($template) {
@@ -374,6 +354,7 @@ class Layouts extends ProcessPluginBase {
       'layoutSettings' => [
         'layout_builder_styles_style' => [
           'full_width_of_page',
+          'utexas_no_padding',
         ],
       ],
     ];
@@ -415,21 +396,24 @@ class Layouts extends ProcessPluginBase {
         break;
 
       case 'Landing Page Template 1':
-        $sections[0] = $onecol;
+        // First section is always hero photo.
+        $sections[0] = $onecol_full_width;
         $sections[1] = $sixty_six_thirty_three;
         $sections[2] = $onecol;
         $sections[3] = $sixty_six_thirty_three;
         break;
 
       case 'Landing Page Template 2':
-        $sections[0] = $onecol;
+        // First section is always hero photo.
+        $sections[0] = $onecol_full_width;
         $sections[1] = $onecol;
         $sections[2] = $onecol;
         $sections[3] = $onecol;
         break;
 
       case 'Landing Page Template 3':
-        $sections[0] = $onecol;
+        // First section is always hero photo.
+        $sections[0] = $onecol_full_width;
         $sections[1] = $onecol;
         $sections[2] = $onecol;
         $sections[3] = $sixty_six_thirty_three;
@@ -688,7 +672,7 @@ class Layouts extends ProcessPluginBase {
         'label' => $component_data['field_identifier'],
         'provider' => 'layout_builder',
         'label_display' => 0,
-        'view_mode' => 'full',
+        'view_mode' => $component_data['block_data'][0]['view_mode'] ?? 'full',
         'block_revision_id' => $block->id(),
       ]);
       $component->setWeight($component_data['weight']);

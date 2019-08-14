@@ -11,36 +11,55 @@ use Drupal\utexas_migrate\MigrateHelper;
 class Hero {
 
   /**
+   * Prepare an array for saving a block.
+   *
+   * @param array $data
+   *   The D7 fields.
+   *
+   * @return array
+   *   D8 block format.
+   */
+  public static function createBlockDefinition(array $data) {
+    $block_definition = [
+      'type' => $data['block_type'],
+      'info' => $data['field_identifier'],
+      'field_block_hero' => $data['block_data'],
+      'reusable' => FALSE,
+    ];
+    return $block_definition;
+  }
+
+  /**
    * Convert D7 data to D8 structure.
    *
-   * @param string $type
-   *   Whether this is landing page or standard page.
    * @param int $source_nid
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of compound field data for the widget.
+   *   Returns an array of field data for the widget.
    */
-  public static function convert($type, $source_nid) {
-    $source_data = self::getSourceData($type, $source_nid);
-    return self::massageFieldData($source_data);
+  public static function getFromNid($instance, $source_nid) {
+    $source_data = self::getRawSourceData($instance, $source_nid);
+    $field_data = self::massageFieldData($source_data);
+    return $field_data;
   }
 
   /**
    * Query the source database for data.
    *
-   * @param string $type
-   *   Whether this is landing page or standard page.
+   * @param string $instance
+   *   The field name from the source site, without the 'utexas' portion
+   *   of the string included.
    * @param int $source_nid
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget
+   *   Returns an array of source data.
    */
-  public static function getSourceData($type, $source_nid) {
+  public static function getRawSourceData($instance, $source_nid) {
     // Get all instances from the legacy DB.
     Database::setActiveConnection('utexas_migrate');
-    $source_data = Database::getConnection()->select('field_data_field_utexas_hero_photo', 'f')
+    $source_data = Database::getConnection()->select('field_data_field_utexas_' . $instance, 'f')
       ->fields('f')
       ->condition('entity_id', $source_nid)
       ->execute()
@@ -48,7 +67,7 @@ class Hero {
     $prepared = [];
     foreach ($source_data as $delta => $item) {
       $prepared[$delta] = [
-        'type' => $type,
+        'type' => $item->bundle,
         'image_fid' => $item->field_utexas_hero_photo_image_fid,
         'caption' => $item->field_utexas_hero_photo_caption,
         'enable_image_styles' => $item->field_utexas_hero_photo_image_style,
@@ -105,6 +124,28 @@ class Hero {
         }
       }
       $destination[$delta]['media'] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
+      $style_map = [
+        'default-center' => 'utexas_hero',
+        'hero-style-1-left' => 'utexas_hero_1_left',
+        'hero-style-1-center' => 'utexas_hero_1',
+        'hero-style-1-right' => 'utexas_hero_1_right',
+        'hero-style-2-left' => 'utexas_hero_2_left',
+        'hero-style-2-center' => 'utexas_hero_2',
+        'hero-style-2-right' => 'utexas_hero_2_right',
+        'hero-style-3-left' => 'utexas_hero_3_left',
+        'hero-style-3-center' => 'utexas_hero_3',
+        'hero-style-3-right' => 'utexas_hero_3_right',
+        'hero-style-4-left' => 'utexas_hero_4',
+        'hero-style-4-center' => 'utexas_hero_4',
+        'hero-style-4-right' => 'utexas_hero_4',
+        'hero-style-5-left' => 'utexas_hero_5_left',
+        'hero-style-5-center' => 'utexas_hero_5',
+        'hero-style-5-right' => 'utexas_hero_5_right',
+      ];
+      $style = $instance['display_style'] ?? 'default';
+      $position = $instance['position'] ?? 'center';
+      $d7_formatter_name = $style . '-' . $position;
+      $destination[$delta]['view_mode'] = $style_map[$d7_formatter_name];
     }
     return $destination;
   }

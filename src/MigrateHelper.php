@@ -6,6 +6,7 @@ use Drupal\block_content\Entity\BlockContent;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
+use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
 use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
@@ -191,7 +192,7 @@ class MigrateHelper {
     'fieldblock-738c0498378ce2c32ba571a0a69457dc' => 'image_link_b',
     'fieldblock-669a6a1f32566fa73ea7974696027184' => 'quick_links',
     //'fieldblock-c4c10ae36665adf0e722e7e3f4be74d4' => 'field_flex_page_pl',
-    //'fieldblock-553096d7ea242fc7edcddc53f719d074' => 'field_flex_page_fh',
+    'fieldblock-553096d7ea242fc7edcddc53f719d074' => 'featured_highlight',
     //'fieldblock-29dbb1cb2c1033fdddae49c21ad4a9f5' => 'field_flex_page_pca',
     //'fieldblock-e01ea87c2dadf3edda4cc61011b33637' => 'field_flex_page_resource',
     'fieldblock-6f3b85225f51542463a88e53104f8753' => 'wysiwyg_a',
@@ -204,7 +205,7 @@ class MigrateHelper {
     'fieldblock-21808b5e6c396dac8670f322f5c9e197' => 'image_link_b',
     'fieldblock-eab8c417f7d28e9571473905cfebbd5b' => 'quick_links',
     //'fieldblock-1f11b5247df5b10da980b5681b637d17' => 'field_flex_page_pl',
-    //'fieldblock-205723da13bdadd816a716421b436a92' => 'field_flex_page_fh',
+    'fieldblock-205723da13bdadd816a716421b436a92' => 'featured_highlight',
     //'fieldblock-f28dec811f29578f018fae1a8458c9b4' => 'field_flex_page_pca',
     //'fieldblock-75a75df6422c87166c75aa079ca98c3c' => 'field_flex_page_resource',
   ];
@@ -235,6 +236,11 @@ class MigrateHelper {
       case 'quick_links':
         $block_definition = QuickLinks::createBlockDefinition($component_data);
         break;
+
+      case 'featured_highlight':
+        $block_definition = FeaturedHighlight::createBlockDefinition($component_data);
+        break;
+
     }
     if (!isset($block_definition)) {
       return FALSE;

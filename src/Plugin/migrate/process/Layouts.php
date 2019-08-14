@@ -49,7 +49,6 @@ class Layouts extends ProcessPluginBase {
     $section_data = self::buildSectionsArray($layout, $template, $nid, $row);
     // @breakpoint recommendation.
     // print_r($section_data);
-
     // 2. Put those array elements into D8 section objects.
     $sections = [];
     foreach ($section_data as $section) {
@@ -174,20 +173,9 @@ class Layouts extends ProcessPluginBase {
         $source = QuickLinks::getFromNid($nid);
         break;
 
-      case 'field_flex_page_fh':
-        $style_map = [
-          'light' => 'default',
-          'navy' => 'utexas_featured_highlight_2',
-          'dark' => 'utexas_featured_highlight_3',
-        ];
-        $source = FeaturedHighlight::getSourceData($nid);
-        if (!empty($source[0]['style'])) {
-          $style = $source[0]['style'];
-          $formatter = [
-            'label' => 'hidden',
-            'type' => $style_map[$style],
-          ];
-        }
+      case 'featured_highlight':
+        $block_type = 'utexas_featured_highlight';
+        $source = FeaturedHighlight::getFromNid($nid);
         break;
 
       case 'field_flex_page_pu':
@@ -284,9 +272,8 @@ class Layouts extends ProcessPluginBase {
         ];
       }
     }
-    return $blocks;
 
-    if ($fh = $node->field_flex_page_fh->getValue()) {
+    if ($fh = FeaturedHighlight::getRawSourceData($row->getSourceProperty('nid'))) {
       $region = FALSE;
       switch ($template) {
         case 'Featured Highlight':
@@ -310,7 +297,8 @@ class Layouts extends ProcessPluginBase {
         ];
       }
     }
-    if ($ql = $node->field_flex_page_ql->getValue()) {
+
+    if ($ql = QuickLinks::getRawSourceData($row->getSourceProperty('nid'))) {
       $region = FALSE;
       switch ($template) {
         case 'Landing Page Template 2':
@@ -326,7 +314,8 @@ class Layouts extends ProcessPluginBase {
         ];
       }
     }
-    if ($w = $node->field_flex_page_wysiwyg_a->getValue()) {
+
+    if ($w = BasicBlock::getFromNid('wysiwyg_a', $nid)) {
       $region = FALSE;
       switch ($template) {
         case 'Open Text Page':

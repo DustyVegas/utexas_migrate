@@ -11,6 +11,25 @@ use Drupal\utexas_migrate\MigrateHelper;
 class FeaturedHighlight {
 
   /**
+   * Prepare an array for saving a block.
+   *
+   * @param array $data
+   *   The D7 fields.
+   *
+   * @return array
+   *   D8 block format.
+   */
+  public static function createBlockDefinition(array $data) {
+    $block_definition = [
+      'type' => $data['block_type'],
+      'info' => $data['field_identifier'],
+      'field_block_featured_highlight' => $data['block_data'],
+      'reusable' => FALSE,
+    ];
+    return $block_definition;
+  }
+
+  /**
    * Convert D7 data to D8 structure.
    *
    * @param int $source_nid
@@ -19,8 +38,8 @@ class FeaturedHighlight {
    * @return array
    *   Returns an array of field data for the widget.
    */
-  public static function convert($source_nid) {
-    $source_data = self::getSourceData($source_nid);
+  public static function getFromNid($source_nid) {
+    $source_data = self::getRawSourceData($source_nid);
     $field_data = self::massageFieldData($source_data);
     return $field_data;
   }
@@ -32,9 +51,9 @@ class FeaturedHighlight {
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget
+   *   Returns an array of the D7 widget data.
    */
-  public static function getSourceData($source_nid) {
+  public static function getRawSourceData($source_nid) {
     // Get all instances from the legacy DB.
     Database::setActiveConnection('utexas_migrate');
     $source_data = Database::getConnection()->select('field_data_field_utexas_featured_highlight', 'f')
@@ -45,6 +64,7 @@ class FeaturedHighlight {
     $prepared = [];
     foreach ($source_data as $delta => $item) {
       $prepared[$delta] = [
+        'type' => $item->bundle,
         'image_fid' => $item->field_utexas_featured_highlight_image_fid,
         'date' => $item->field_utexas_featured_highlight_date,
         'headline' => $item->field_utexas_featured_highlight_headline,
@@ -68,6 +88,11 @@ class FeaturedHighlight {
    */
   protected static function massageFieldData(array $source) {
     $destination = [];
+    $style_map = [
+      'light' => 'default',
+      'navy' => 'utexas_featured_highlight_2',
+      'dark' => 'utexas_featured_highlight_3',
+    ];
     foreach ($source as $delta => $instance) {
       $destination[$delta]['media'] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
       if (!empty($instance['link_href'])) {
@@ -84,6 +109,7 @@ class FeaturedHighlight {
       if ($instance['date'] != 0) {
         $destination[$delta]['date'] = $instance['date'];
       }
+      $destination[$delta]['view_mode'] = $style_map{$source[0]['style']} ?? 'default';
     }
     return $destination;
   }

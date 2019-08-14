@@ -11,6 +11,25 @@ use Drupal\utexas_migrate\MigrateHelper;
 class PhotoContentArea {
 
   /**
+   * Prepare an array for saving a block.
+   *
+   * @param array $data
+   *   The D7 fields.
+   *
+   * @return array
+   *   D8 block format.
+   */
+  public static function createBlockDefinition(array $data) {
+    $block_definition = [
+      'type' => 'utexas_photo_content_area',
+      'info' => $data['field_identifier'],
+      'field_block_pca' => $data['block_data'],
+      'reusable' => FALSE,
+    ];
+    return $block_definition;
+  }
+
+  /**
    * Convert D7 data to D8 structure.
    *
    * @param int $source_nid
@@ -19,8 +38,8 @@ class PhotoContentArea {
    * @return array
    *   Returns an array of field data for the widget.
    */
-  public static function convert($source_nid) {
-    $source_data = self::getSourceData($source_nid);
+  public static function getFromNid($source_nid) {
+    $source_data = self::getRawSourceData($source_nid);
     return self::massageFieldData($source_data);
   }
 
@@ -31,9 +50,9 @@ class PhotoContentArea {
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of source field data from the widget.
+   *   Returns an array of IDs of the widget
    */
-  public static function getSourceData($source_nid) {
+  public static function getRawSourceData($source_nid) {
     // Get all instances from the legacy DB.
     Database::setActiveConnection('utexas_migrate');
     $source_data = Database::getConnection()->select('field_data_field_utexas_photo_content_area', 'f')

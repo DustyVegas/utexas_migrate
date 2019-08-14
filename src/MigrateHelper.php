@@ -9,6 +9,7 @@ use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
+use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
 use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
 
@@ -193,7 +194,7 @@ class MigrateHelper {
     'fieldblock-669a6a1f32566fa73ea7974696027184' => 'quick_links',
     //'fieldblock-c4c10ae36665adf0e722e7e3f4be74d4' => 'field_flex_page_pl',
     'fieldblock-553096d7ea242fc7edcddc53f719d074' => 'featured_highlight',
-    //'fieldblock-29dbb1cb2c1033fdddae49c21ad4a9f5' => 'field_flex_page_pca',
+    'fieldblock-29dbb1cb2c1033fdddae49c21ad4a9f5' => 'photo_content_area',
     //'fieldblock-e01ea87c2dadf3edda4cc61011b33637' => 'field_flex_page_resource',
     'fieldblock-6f3b85225f51542463a88e53104f8753' => 'wysiwyg_a',
     'fieldblock-9a6760fa853859ac84ff3a273ab79869' => 'wysiwyg_b',
@@ -206,7 +207,7 @@ class MigrateHelper {
     'fieldblock-eab8c417f7d28e9571473905cfebbd5b' => 'quick_links',
     //'fieldblock-1f11b5247df5b10da980b5681b637d17' => 'field_flex_page_pl',
     'fieldblock-205723da13bdadd816a716421b436a92' => 'featured_highlight',
-    //'fieldblock-f28dec811f29578f018fae1a8458c9b4' => 'field_flex_page_pca',
+    'fieldblock-f28dec811f29578f018fae1a8458c9b4' => 'photo_content_area',
     //'fieldblock-75a75df6422c87166c75aa079ca98c3c' => 'field_flex_page_resource',
   ];
 
@@ -239,6 +240,10 @@ class MigrateHelper {
 
       case 'featured_highlight':
         $block_definition = FeaturedHighlight::createBlockDefinition($component_data);
+        break;
+
+      case 'photo_content_area':
+        $block_definition = PhotoContentArea::createBlockDefinition($component_data);
         break;
 
     }

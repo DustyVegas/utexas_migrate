@@ -13,6 +13,7 @@ use Drupal\utexas_migrate\MigrateHelper;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
+use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
@@ -176,6 +177,11 @@ class Layouts extends ProcessPluginBase {
       case 'featured_highlight':
         $block_type = 'utexas_featured_highlight';
         $source = FeaturedHighlight::getFromNid($nid);
+        break;
+
+      case 'photo_content_area':
+        $block_type = 'utexas_photo_content_area';
+        $source = PhotoContentArea::getFromNid($nid);
         break;
 
       case 'field_flex_page_pu':

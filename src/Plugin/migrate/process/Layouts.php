@@ -15,6 +15,7 @@ use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
+use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
 
 /**
@@ -166,6 +167,11 @@ class Layouts extends ProcessPluginBase {
       case 'hero':
         $block_type = 'utexas_hero';
         $source = Hero::getFromNid('hero_photo', $nid);
+        break;
+
+      case 'quick_links':
+        $block_type = 'utexas_quick_links';
+        $source = QuickLinks::getFromNid($nid);
         break;
 
       case 'field_flex_page_fh':
@@ -435,6 +441,12 @@ class Layouts extends ProcessPluginBase {
    *   The D7 template name.
    */
   protected static function placeFieldinSection(array $sections, $field_data, array $settings, $template) {
+    // In D7, many sidebar regions apply a border w/ background style to blocks.
+    $layout_builder_styles_border_with_background = [
+      'layout_builder_styles_style' => [
+        'utexas_border_with_background' => 'utexas_border_with_background',
+      ],
+    ];
     $d8_field = $field_data['field_name'];
     switch ($template) {
       case 'Featured Highlight':
@@ -444,14 +456,14 @@ class Layouts extends ProcessPluginBase {
             $region = 'first';
             break;
 
-          case 'featured_highlight':
-            $delta = 1;
-            $region = 'main';
-            break;
-
           case 'main_content_top_right':
             $delta = 0;
             $region = 'second';
+            break;
+
+          case 'featured_highlight':
+            $delta = 1;
+            $region = 'main';
             break;
 
           case 'content_bottom':
@@ -467,6 +479,7 @@ class Layouts extends ProcessPluginBase {
           case 'sidebar_second':
             $delta = 2;
             $region = 'second';
+            $additional = $layout_builder_styles_border_with_background;
             break;
         }
         break;
@@ -476,12 +489,13 @@ class Layouts extends ProcessPluginBase {
         switch ($settings['region']) {
           case 'content':
             $delta = 0;
-            $region = 'main';
+            $region = 'first';
             break;
 
           case 'sidebar_second':
             $delta = 0;
             $region = 'second';
+            $additional = $layout_builder_styles_border_with_background;
             break;
         }
         break;
@@ -501,17 +515,18 @@ class Layouts extends ProcessPluginBase {
 
           case 'content_bottom':
             $delta = 1;
-            $region = 'main';
+            $region = 'first';
             break;
 
           case 'content':
             $delta = 1;
-            $region = 'main';
+            $region = 'first';
             break;
 
           case 'sidebar_second':
             $delta = 1;
             $region = 'second';
+            $additional = $layout_builder_styles_border_with_background;
             break;
         }
         break;
@@ -633,6 +648,7 @@ class Layouts extends ProcessPluginBase {
       'block_type' => $field_data['block_type'],
       'block_format' => $field_data['format'],
       'region' => $region,
+      'additional' => $additional ?? [],
       'weight' => $settings['weight'],
       'formatter' => $formatter,
     ];
@@ -676,6 +692,28 @@ class Layouts extends ProcessPluginBase {
         'block_revision_id' => $block->id(),
       ]);
       $component->setWeight($component_data['weight']);
+      // Add additional component styles, like Layout Builder Styles settings.
+      $default_sidebar_styles = [
+        'layout_builder_styles_style' => [
+          'utexas_border_without_background' => 'utexas_border_without_background',
+        ],
+      ];
+      switch ($component_data['block_type']) {
+        case 'utexas_quick_links':
+          if (!empty($component_data['additional'])) {
+            $component->set('additional', $component_data['additional']);
+          }
+          else {
+            // Quick Links always at least have the border w/o background.
+            $component->set('additional', $default_sidebar_styles);
+          }
+          break;
+
+        case 'social_links':
+          // Social links always displays border w/o background.
+          $component->set('additional', $default_sidebar_styles);
+
+      }
     }
 
     if (isset($component)) {

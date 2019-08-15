@@ -616,7 +616,7 @@ class Layouts extends ProcessPluginBase {
 
           case 'content_bottom':
             $delta = 3;
-            $region = 'first';
+            $region = $template == "Landing Page Template 2" ? 'main' : 'first';
             break;
 
           case 'sidebar_second':

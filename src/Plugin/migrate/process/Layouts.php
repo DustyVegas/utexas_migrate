@@ -49,7 +49,7 @@ class Layouts extends ProcessPluginBase {
     // in a single array.
     $section_data = self::buildSectionsArray($layout, $template, $nid, $row);
     // @breakpoint recommendation.
-    // print_r($section_data);
+    //print_r($section_data);
     // 2. Put those array elements into D8 section objects.
     $sections = [];
     foreach ($section_data as $section) {
@@ -189,20 +189,9 @@ class Layouts extends ProcessPluginBase {
         $source = PromoUnits::getFromNid($nid);
         break;
 
-      case 'field_flex_page_pl':
-        $style_map = [
-          'Single list full (1 item per row)' => 'default',
-          'Single list responsive (2 items per row)' => 'utexas_promo_list_2',
-          'Two lists, side-by-side' => 'utexas_promo_list_3',
-        ];
-        $source = PromoLists::getSourceData($nid);
-        if (!empty($source[0]['style'])) {
-          $style = $source[0]['style'];
-          $formatter = [
-            'label' => 'hidden',
-            'type' => $style_map[$style],
-          ];
-        }
+      case 'promo_list':
+        $block_type = 'utexas_promo_list';
+        $source = PromoLists::getFromNid($nid);
         break;
 
     }

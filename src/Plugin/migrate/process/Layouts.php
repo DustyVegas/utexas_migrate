@@ -390,7 +390,8 @@ class Layouts extends ProcessPluginBase {
         // First section is always hero photo.
         $sections[0] = $onecol_full_width;
         $sections[1] = $sixty_six_thirty_three;
-        $sections[2] = $onecol;
+        // Third section is always Featured Highlight.
+        $sections[2] = $onecol_full_width;
         $sections[3] = $sixty_six_thirty_three;
         break;
 
@@ -398,7 +399,8 @@ class Layouts extends ProcessPluginBase {
         // First section is always hero photo.
         $sections[0] = $onecol_full_width;
         $sections[1] = $onecol;
-        $sections[2] = $onecol;
+        // Third section is always Featured Highlight + Quick Links.
+        $sections[2] = $onecol_full_width;
         $sections[3] = $onecol;
         break;
 
@@ -406,7 +408,8 @@ class Layouts extends ProcessPluginBase {
         // First section is always hero photo.
         $sections[0] = $onecol_full_width;
         $sections[1] = $onecol;
-        $sections[2] = $onecol;
+        // Third section is always Featured Highlight.
+        $sections[2] = $onecol_full_width;
         $sections[3] = $sixty_six_thirty_three;
         break;
     }

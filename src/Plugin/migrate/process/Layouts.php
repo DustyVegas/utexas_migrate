@@ -51,7 +51,6 @@ class Layouts extends ProcessPluginBase {
     // in a single array.
     $section_data = self::buildSectionsArray($layout, $template, $nid, $row);
     // @breakpoint recommendation.
-    // print_r($section_data);
     // 2. Put those array elements into D8 section objects.
     $sections = [];
     foreach ($section_data as $section) {
@@ -63,7 +62,7 @@ class Layouts extends ProcessPluginBase {
             $d8_components[] = $d8_component;
           }
         }
-        if (!empty($d8_components)) {
+        if (!empty($d8_components) && !empty($section['layout'])) {
           if (!isset($section['layoutSettings'])) {
             $section['layoutSettings'] = [];
           }
@@ -584,18 +583,18 @@ class Layouts extends ProcessPluginBase {
             break;
 
           case 'content_top_three_pillars':
-            if (in_array($d8_field, ['field_flex_page_fca_a', 'field_flex_page_fca_b'])) {
+            if (in_array($d8_field, ['flex_content_area_a', 'flex_content_area_b'])) {
               // Special case: FCA in content_top_three_pillars is 3-columns.
-              $formatter['type'] = 'utexas_flex_content_area_3';
+              $view_mode = 'utexas_flex_content_area_3';
             }
             $delta = 1;
             $region = 'main';
             break;
 
           case 'content_top_four_pillars':
-            if (in_array($d8_field, ['field_flex_page_fca_a', 'field_flex_page_fca_b'])) {
+            if (in_array($d8_field, ['flex_content_area_a', 'flex_content_area_b'])) {
               // Special case: FCA in content_top_four_pillars 4-columns.
-              $formatter['type'] = 'utexas_flex_content_area_4';
+              $view_mode = 'utexas_flex_content_area_4';
             }
             $delta = 1;
             $region = 'main';
@@ -609,12 +608,12 @@ class Layouts extends ProcessPluginBase {
           case 'quick_links':
             $delta = 2;
             $region = 'main';
-            $formatter['type'] = 'utexas_quick_links_4';
+            $view_mode = 'utexas_quick_links_4';
             break;
 
           case 'content_bottom':
             $delta = 3;
-            $region = 'main';
+            $region = 'first';
             break;
 
           case 'sidebar_second':
@@ -636,7 +635,7 @@ class Layouts extends ProcessPluginBase {
       'region' => $region,
       'additional' => $additional ?? [],
       'weight' => $settings['weight'],
-      'formatter' => $formatter,
+      'view_mode' => $view_mode,
     ];
     return $sections;
   }
@@ -669,12 +668,13 @@ class Layouts extends ProcessPluginBase {
   protected function createD8SectionComponent(array $component_data) {
     if ($block = MigrateHelper::createInlineBlock($component_data)) {
       // Important: the 'id' value must be "inline_block:" + a valid block type.
+      $component_view_mode = $component_data['block_data'][0]['view_mode'] ?? 'full';
       $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
         'id' => 'inline_block:' . $component_data['block_type'],
         'label' => $component_data['field_identifier'],
         'provider' => 'layout_builder',
         'label_display' => 0,
-        'view_mode' => $component_data['block_data'][0]['view_mode'] ?? 'full',
+        'view_mode' => $component_data['view_mode'] ?? $component_view_mode,
         'block_revision_id' => $block->id(),
       ]);
       $component->setWeight($component_data['weight']);

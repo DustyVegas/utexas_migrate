@@ -32,6 +32,8 @@ class FlexContentArea {
   /**
    * Convert D7 data to D8 structure.
    *
+   * @param string $instance
+   *   Will be: flex_content_area_a or flex_content_area_b.
    * @param int $source_nid
    *   The node ID from the source data.
    *

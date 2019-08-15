@@ -35,6 +35,8 @@ class ImageLink {
   /**
    * Convert D7 data to D8 structure.
    *
+   * @param string $instance
+   *   The field identifier -- image_link_a or image_link_b.
    * @param int $source_nid
    *   The node ID from the source data.
    *

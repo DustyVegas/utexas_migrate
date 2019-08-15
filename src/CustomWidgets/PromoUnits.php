@@ -114,7 +114,7 @@ class PromoUnits {
     ];
     if (!empty($source[0]['size_option'])) {
       $style = $source[0]['size_option'];
-      $destination[$delta]['view_mode'] = $style_map[$style];
+      $destination[0]['view_mode'] = $style_map[$style];
     }
     return $destination;
   }

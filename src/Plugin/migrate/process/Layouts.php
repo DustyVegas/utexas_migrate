@@ -10,6 +10,7 @@ use Drupal\layout_builder\SectionComponent;
 use Drupal\node\Entity\Node;
 use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
 use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
@@ -152,6 +153,12 @@ class Layouts extends ProcessPluginBase {
       case 'featured_highlight':
         $block_type = 'utexas_featured_highlight';
         $source = FeaturedHighlight::getFromNid($nid);
+        break;
+
+      case 'flex_content_area_a':
+      case 'flex_content_area_b':
+        $block_type = 'utexas_flex_content_area';
+        $source = FlexContentArea::getFromNid($field_name, $nid);
         break;
 
       case 'hero':

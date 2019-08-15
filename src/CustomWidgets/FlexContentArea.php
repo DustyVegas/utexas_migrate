@@ -11,18 +11,35 @@ use Drupal\utexas_migrate\MigrateHelper;
 class FlexContentArea {
 
   /**
+   * Prepare an array for saving a block.
+   *
+   * @param array $data
+   *   The D7 fields.
+   *
+   * @return array
+   *   D8 block format.
+   */
+  public static function createBlockDefinition(array $data) {
+    $block_definition = [
+      'type' => $data['block_type'],
+      'info' => $data['field_identifier'],
+      'field_block_fca' => $data['block_data'],
+      'reusable' => FALSE,
+    ];
+    return $block_definition;
+  }
+
+  /**
    * Convert D7 data to D8 structure.
    *
-   * @param string $instance
-   *   Whether this is FCA_ 'a' or 'b'.
    * @param int $source_nid
    *   The node ID from the source data.
    *
    * @return array
    *   Returns an array of field data for the widget.
    */
-  public static function convert($instance, $source_nid) {
-    $source_data = self::getSourceData($instance, $source_nid);
+  public static function getFromNid($instance, $source_nid) {
+    $source_data = self::getRawSourceData($instance, $source_nid);
     return self::massageFieldData($source_data);
   }
 
@@ -37,10 +54,10 @@ class FlexContentArea {
    * @return array
    *   Returns an array of Paragraph ID(s) of the widget
    */
-  public static function getSourceData($instance, $source_nid) {
+  public static function getRawSourceData($instance, $source_nid) {
     // Get all instances from the legacy DB.
     Database::setActiveConnection('utexas_migrate');
-    $source_data = Database::getConnection()->select('field_data_field_utexas_flex_content_area_' . $instance, 'fc')
+    $source_data = Database::getConnection()->select('field_data_field_utexas_' . $instance, 'fc')
       ->fields('fc')
       ->condition('entity_id', $source_nid)
       ->execute()
@@ -48,12 +65,12 @@ class FlexContentArea {
     $prepared = [];
     foreach ($source_data as $delta => $item) {
       $prepared[$delta] = [
-        'headline' => $item->{'field_utexas_flex_content_area_' . $instance . '_headline'},
-        'image_fid' => $item->{'field_utexas_flex_content_area_' . $instance . '_image_fid'},
-        'copy' => $item->{'field_utexas_flex_content_area_' . $instance . '_copy_value'},
-        'links' => $item->{'field_utexas_flex_content_area_' . $instance . '_links'},
-        'cta_title' => $item->{'field_utexas_flex_content_area_' . $instance . '_cta_title'},
-        'cta_uri' => $item->{'field_utexas_flex_content_area_' . $instance . '_cta_link'},
+        'headline' => $item->{'field_utexas_' . $instance . '_headline'},
+        'image_fid' => $item->{'field_utexas_' . $instance . '_image_fid'},
+        'copy' => $item->{'field_utexas_' . $instance . '_copy_value'},
+        'links' => $item->{'field_utexas_' . $instance . '_links'},
+        'cta_title' => $item->{'field_utexas_' . $instance . '_cta_title'},
+        'cta_uri' => $item->{'field_utexas_' . $instance . '_cta_link'},
       ];
     }
     return $prepared;

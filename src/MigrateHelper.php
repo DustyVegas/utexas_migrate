@@ -5,6 +5,7 @@ namespace Drupal\utexas_migrate;
 use Drupal\block_content\Entity\BlockContent;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
+use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
@@ -187,8 +188,8 @@ class MigrateHelper {
   public static $includedFieldBlocks = [
     'fieldblock-fda604d130a57f15015895c8268f20d2' => 'wysiwyg_a',
     'fieldblock-bf40687156268eaa30437ed84189f13e' => 'wysiwyg_b',
-    //'fieldblock-9c079efa827f76dea650869c5d2631e6' => 'field_flex_page_fca_a',
-    //'fieldblock-2c880c8461bc3ce5a6ac19b2e7791346' => 'field_flex_page_fca_a',
+    'fieldblock-9c079efa827f76dea650869c5d2631e6' => 'flex_content_area_a',
+    'fieldblock-2c880c8461bc3ce5a6ac19b2e7791346' => 'flex_content_area_b',
     'fieldblock-208a521aa519bc1ed37d8992aeffae83' => 'promo_unit',
     'fieldblock-f4361d99a73eca8a4329c07d0724a554' => 'hero',
     'fieldblock-6986914623a8e5646904aca42f9f452e' => 'image_link_a',
@@ -200,8 +201,8 @@ class MigrateHelper {
     'fieldblock-e01ea87c2dadf3edda4cc61011b33637' => 'resource',
     'fieldblock-6f3b85225f51542463a88e53104f8753' => 'wysiwyg_a',
     'fieldblock-9a6760fa853859ac84ff3a273ab79869' => 'wysiwyg_b',
-    //'fieldblock-1a9dd8685785a44b58d5e24ed3f8996d' => 'field_flex_page_fca_a',
-    //'fieldblock-171f57c2269e221c96b732a464bae2e0' => 'field_flex_page_fca_a',
+    'fieldblock-1a9dd8685785a44b58d5e24ed3f8996d' => 'flex_content_area_a',
+    'fieldblock-171f57c2269e221c96b732a464bae2e0' => 'flex_content_area_b',
     'fieldblock-9bcf52bbed6b2a3ea84b55a58fdd9c55' => 'promo_unit',
     'fieldblock-8af3bd2d3cab537c77dbfbb55146ab7b' => 'hero',
     'fieldblock-05826976d27bc7abbc4f0475ba10cb58' => 'image_link_a',
@@ -218,26 +219,23 @@ class MigrateHelper {
    */
   public static function createInlineBlock($component_data) {
     switch ($component_data['field_identifier']) {
-      case 'social_links':
-        $block_definition = SocialLinks::createBlockDefinition($component_data);
+
+      case 'featured_highlight':
+        $block_definition = FeaturedHighlight::createBlockDefinition($component_data);
         break;
 
-      case 'image_link_a':
-      case 'image_link_b':
-        $block_definition = ImageLink::createBlockDefinition($component_data);
-        break;
-
-      case 'wysiwyg_a':
-      case 'wysiwyg_b':
-        $block_definition = BasicBlock::createBlockDefinition($component_data);
+      case 'flex_content_area_a':
+      case 'flex_content_area_b':
+        $block_definition = FlexContentArea::createBlockDefinition($component_data);
         break;
 
       case 'hero':
         $block_definition = Hero::createBlockDefinition($component_data);
         break;
 
-      case 'quick_links':
-        $block_definition = QuickLinks::createBlockDefinition($component_data);
+      case 'image_link_a':
+      case 'image_link_b':
+        $block_definition = ImageLink::createBlockDefinition($component_data);
         break;
 
       case 'promo_list':
@@ -248,16 +246,25 @@ class MigrateHelper {
         $block_definition = PromoUnits::createBlockDefinition($component_data);
         break;
 
-      case 'featured_highlight':
-        $block_definition = FeaturedHighlight::createBlockDefinition($component_data);
-        break;
-
       case 'photo_content_area':
         $block_definition = PhotoContentArea::createBlockDefinition($component_data);
         break;
 
+      case 'quick_links':
+        $block_definition = QuickLinks::createBlockDefinition($component_data);
+        break;
+
       case 'resource':
         $block_definition = Resource::createBlockDefinition($component_data);
+        break;
+
+      case 'social_links':
+        $block_definition = SocialLinks::createBlockDefinition($component_data);
+        break;
+
+      case 'wysiwyg_a':
+      case 'wysiwyg_b':
+        $block_definition = BasicBlock::createBlockDefinition($component_data);
         break;
 
     }

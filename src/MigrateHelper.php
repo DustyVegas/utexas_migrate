@@ -4,12 +4,12 @@ namespace Drupal\utexas_migrate;
 
 use Drupal\block_content\Entity\BlockContent;
 use Drupal\Core\Entity\EntityStorageException;
-use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
 use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
+use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
 
@@ -187,7 +187,7 @@ class MigrateHelper {
     'fieldblock-bf40687156268eaa30437ed84189f13e' => 'wysiwyg_b',
     //'fieldblock-9c079efa827f76dea650869c5d2631e6' => 'field_flex_page_fca_a',
     //'fieldblock-2c880c8461bc3ce5a6ac19b2e7791346' => 'field_flex_page_fca_a',
-    //'fieldblock-208a521aa519bc1ed37d8992aeffae83' => 'field_flex_page_pu',
+    'fieldblock-208a521aa519bc1ed37d8992aeffae83' => 'promo_unit',
     'fieldblock-f4361d99a73eca8a4329c07d0724a554' => 'hero',
     'fieldblock-6986914623a8e5646904aca42f9f452e' => 'image_link_a',
     'fieldblock-738c0498378ce2c32ba571a0a69457dc' => 'image_link_b',
@@ -200,7 +200,7 @@ class MigrateHelper {
     'fieldblock-9a6760fa853859ac84ff3a273ab79869' => 'wysiwyg_b',
     //'fieldblock-1a9dd8685785a44b58d5e24ed3f8996d' => 'field_flex_page_fca_a',
     //'fieldblock-171f57c2269e221c96b732a464bae2e0' => 'field_flex_page_fca_a',
-    //'fieldblock-9bcf52bbed6b2a3ea84b55a58fdd9c55' => 'field_flex_page_pu',
+    'fieldblock-9bcf52bbed6b2a3ea84b55a58fdd9c55' => 'promo_unit',
     'fieldblock-8af3bd2d3cab537c77dbfbb55146ab7b' => 'hero',
     'fieldblock-05826976d27bc7abbc4f0475ba10cb58' => 'image_link_a',
     'fieldblock-21808b5e6c396dac8670f322f5c9e197' => 'image_link_b',
@@ -236,6 +236,10 @@ class MigrateHelper {
 
       case 'quick_links':
         $block_definition = QuickLinks::createBlockDefinition($component_data);
+        break;
+
+      case 'promo_unit':
+        $block_definition = PromoUnits::createBlockDefinition($component_data);
         break;
 
       case 'featured_highlight':

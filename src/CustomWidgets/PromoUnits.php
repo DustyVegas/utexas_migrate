@@ -6,9 +6,28 @@ use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\MigrateHelper;
 
 /**
- * Convert D7 custom compound field to D8 paragraph.
+ * Convert D7 custom compound field to D8 field type.
  */
 class PromoUnits {
+
+  /**
+   * Prepare an array for saving a block.
+   *
+   * @param array $data
+   *   The D7 fields.
+   *
+   * @return array
+   *   D8 block format.
+   */
+  public static function createBlockDefinition(array $data) {
+    $block_definition = [
+      'type' => 'utexas_promo_unit',
+      'info' => $data['field_identifier'],
+      'field_block_pu' => $data['block_data'],
+      'reusable' => FALSE,
+    ];
+    return $block_definition;
+  }
 
   /**
    * Convert D7 data to D8 structure.
@@ -19,8 +38,8 @@ class PromoUnits {
    * @return array
    *   Returns an array of custom compound field data.
    */
-  public static function convert($source_nid) {
-    $source_data = self::getSourceData($source_nid);
+  public static function getFromNid($source_nid) {
+    $source_data = self::getRawSourceData($source_nid);
     $field_data = self::massageFieldData($source_data);
     return $field_data;
   }
@@ -32,9 +51,9 @@ class PromoUnits {
    *   The node ID from the source data.
    *
    * @return array
-   *   Returns an array of Paragraph ID(s) of the widget
+   *   Returns an array for the field type
    */
-  public static function getSourceData($source_nid) {
+  public static function getRawSourceData($source_nid) {
     // Get all instances from the legacy DB.
     Database::setActiveConnection('utexas_migrate');
     $source_data = Database::getConnection()->select('field_data_field_utexas_promo_units', 'f')
@@ -86,6 +105,16 @@ class PromoUnits {
     }
     if (!empty($items)) {
       $destination['promo_unit_items'] = serialize($items);
+    }
+    $style_map = [
+      'utexas_promo_unit_landscape_image' => 'default',
+      'utexas_promo_unit_portrait_image' => 'utexas_promo_unit_2',
+      'utexas_promo_unit_square_image' => 'utexas_promo_unit_3',
+      'utexas_promo_unit_no_image' => 'default',
+    ];
+    if (!empty($source[0]['size_option'])) {
+      $style = $source[0]['size_option'];
+      $destination[$delta]['view_mode'] = $style_map[$style];
     }
     return $destination;
   }

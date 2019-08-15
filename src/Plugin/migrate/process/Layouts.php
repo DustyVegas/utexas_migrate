@@ -17,6 +17,7 @@ use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
+use Drupal\utexas_migrate\CustomWidgets\Resource;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
 
 /**
@@ -49,7 +50,7 @@ class Layouts extends ProcessPluginBase {
     // in a single array.
     $section_data = self::buildSectionsArray($layout, $template, $nid, $row);
     // @breakpoint recommendation.
-    //print_r($section_data);
+    // print_r($section_data);
     // 2. Put those array elements into D8 section objects.
     $sections = [];
     foreach ($section_data as $section) {
@@ -147,21 +148,10 @@ class Layouts extends ProcessPluginBase {
       'label' => 'hidden',
     ];
     switch ($field_name) {
-      case 'social_links':
-        $source = SocialLinks::getFromNid($nid);
-        $block_type = 'social_links';
-        break;
 
-      case 'image_link_a':
-      case 'image_link_b':
-        $block_type = 'utexas_image_link';
-        $source = ImageLink::getFromNid($field_name, $nid);
-        break;
-
-      case 'wysiwyg_a':
-      case 'wysiwyg_b':
-        $block_type = 'basic';
-        $source = BasicBlock::getFromNid($field_name, $nid);
+      case 'featured_highlight':
+        $block_type = 'utexas_featured_highlight';
+        $source = FeaturedHighlight::getFromNid($nid);
         break;
 
       case 'hero':
@@ -169,14 +159,10 @@ class Layouts extends ProcessPluginBase {
         $source = Hero::getFromNid('hero_photo', $nid);
         break;
 
-      case 'quick_links':
-        $block_type = 'utexas_quick_links';
-        $source = QuickLinks::getFromNid($nid);
-        break;
-
-      case 'featured_highlight':
-        $block_type = 'utexas_featured_highlight';
-        $source = FeaturedHighlight::getFromNid($nid);
+      case 'image_link_a':
+      case 'image_link_b':
+        $block_type = 'utexas_image_link';
+        $source = ImageLink::getFromNid($field_name, $nid);
         break;
 
       case 'photo_content_area':
@@ -192,6 +178,27 @@ class Layouts extends ProcessPluginBase {
       case 'promo_list':
         $block_type = 'utexas_promo_list';
         $source = PromoLists::getFromNid($nid);
+        break;
+
+      case 'quick_links':
+        $block_type = 'utexas_quick_links';
+        $source = QuickLinks::getFromNid($nid);
+        break;
+
+      case 'resource':
+        $source = Resource::getFromNid($nid);
+        $block_type = 'utexas_resources';
+        break;
+
+      case 'social_links':
+        $source = SocialLinks::getFromNid($nid);
+        $block_type = 'social_links';
+        break;
+
+      case 'wysiwyg_a':
+      case 'wysiwyg_b':
+        $block_type = 'basic';
+        $source = BasicBlock::getFromNid($field_name, $nid);
         break;
 
     }

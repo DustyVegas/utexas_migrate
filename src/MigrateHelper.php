@@ -12,6 +12,7 @@ use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
+use Drupal\utexas_migrate\CustomWidgets\Resource;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
 
 /**
@@ -196,7 +197,7 @@ class MigrateHelper {
     'fieldblock-c4c10ae36665adf0e722e7e3f4be74d4' => 'promo_list',
     'fieldblock-553096d7ea242fc7edcddc53f719d074' => 'featured_highlight',
     'fieldblock-29dbb1cb2c1033fdddae49c21ad4a9f5' => 'photo_content_area',
-    //'fieldblock-e01ea87c2dadf3edda4cc61011b33637' => 'field_flex_page_resource',
+    'fieldblock-e01ea87c2dadf3edda4cc61011b33637' => 'resource',
     'fieldblock-6f3b85225f51542463a88e53104f8753' => 'wysiwyg_a',
     'fieldblock-9a6760fa853859ac84ff3a273ab79869' => 'wysiwyg_b',
     //'fieldblock-1a9dd8685785a44b58d5e24ed3f8996d' => 'field_flex_page_fca_a',
@@ -209,7 +210,7 @@ class MigrateHelper {
     'fieldblock-1f11b5247df5b10da980b5681b637d17' => 'promo_list',
     'fieldblock-205723da13bdadd816a716421b436a92' => 'featured_highlight',
     'fieldblock-f28dec811f29578f018fae1a8458c9b4' => 'photo_content_area',
-    //'fieldblock-75a75df6422c87166c75aa079ca98c3c' => 'field_flex_page_resource',
+    'fieldblock-75a75df6422c87166c75aa079ca98c3c' => 'resource',
   ];
 
   /**
@@ -253,6 +254,10 @@ class MigrateHelper {
 
       case 'photo_content_area':
         $block_definition = PhotoContentArea::createBlockDefinition($component_data);
+        break;
+
+      case 'resource':
+        $block_definition = Resource::createBlockDefinition($component_data);
         break;
 
     }

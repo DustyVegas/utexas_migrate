@@ -1,5 +1,5 @@
 # Migration metadata
-id: utexas_flex_metatags
+id: utexas_metatags
 label: Metatags
 class: null
 field_plugin_method: null
@@ -14,7 +14,7 @@ source:
 process:
   # Retrieve the destination ID of the corresponding node.
   #
-  # Since this field will just be used for computing another property, 
+  # Since this field will just be used for computing another property,
   # prefix it with "temp_".
   temp_nid:
     plugin: migration_lookup

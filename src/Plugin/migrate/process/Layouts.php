@@ -8,6 +8,7 @@ use Drupal\migrate\Row;
 use Drupal\layout_builder\Section;
 use Drupal\layout_builder\SectionComponent;
 use Drupal\node\Entity\Node;
+use Drupal\utexas_migrate\CustomWidgets\BackgroundAccent;
 use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
 use Drupal\utexas_migrate\MigrateHelper;
 use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
@@ -100,7 +101,7 @@ class Layouts extends ProcessPluginBase {
     $blocks = self::addLockedFieldsAsBlocks($blocks, $template, $nid, $row);
 
     // Build up the D8 sections based on known information about the D7 layout:
-    $sections = self::getD8SectionsfromD7Layout($template);
+    $sections = self::getD8SectionsfromD7Layout($template, $nid, $row);
 
     // Loop through all known blocks, building the D8 section components.
     foreach ($blocks as $id => $settings) {
@@ -334,8 +335,12 @@ class Layouts extends ProcessPluginBase {
    *
    * @param string $template
    *   The D7 template associated with this page.
+   * @param int $nid
+   *   The destination NID.
+   * @param Drupal\migrate\Row $row
+   *   Other entity source data related to this specific entity migration.
    */
-  protected static function getD8SectionsfromD7Layout($template) {
+  protected static function getD8SectionsfromD7Layout($template, $nid, Row $row) {
     $sections = [];
     $onecol = [
       'layout' => 'layout_utexas_onecol',
@@ -413,6 +418,20 @@ class Layouts extends ProcessPluginBase {
         $sections[3] = $sixty_six_thirty_three;
         break;
     }
+
+    switch ($template) {
+      case 'Landing Page Template 1':
+      case 'Landing Page Template 2':
+      case 'Landing Page Template 3':
+        // Add a background accent, if present.
+        $background_accent = BackgroundAccent::getRawSourceData($row->getSourceProperty('nid'));
+        if (!empty($background_accent)) {
+          $sections[2]['layoutSettings']['blur'] = $background_accent[0]['blur'];
+          $sections[2]['layoutSettings']['background-accent'] = $background_accent[0]['image'];
+        }
+        break;
+    }
+
     return $sections;
   }
 

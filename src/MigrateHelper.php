@@ -136,6 +136,9 @@ class MigrateHelper {
     if ($link == '<front>') {
       return 'internal:/';
     }
+    if ($link == '<nolink>') {
+      return 'internal:##';
+    }
     return $link;
   }
 

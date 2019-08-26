@@ -18,17 +18,25 @@ $databases['utexas_migrate']['default'] = array(
 );
 ```
 
-For a container-based migration (e.g., `lando`), your database might look like this:
+For a container-based migration (e.g., `lando/docksal`), you can find the host & port for the source migration via:
 
+- `docker network ls` --> note the name of the container (e.g., `quicksites_default`)
+- `docker network inspect <network>` --> note the Gateway IP address
+- From the document root of the source migration, `fin ps` or `lando info` will provide the port number.
+
+```bash
+$databases['utexas_migrate']['default'] = [
+'database' => 'default',
+'username' => 'user',
+'password' => 'user',
+'host' => '<Gateway IP address>',
+'port' => '<Port>',
+'driver' => 'mysql',
+'prefix' => '',
+'collation' => 'utf8mb4_general_ci',
+];
 ```
-$databases['utexas_migrate']['default'] = array(
-  'driver' => 'mysql',
-  'database' => 'drupal7',
-  'username' => 'drupal7',
-  'password' => 'drupal7',
-  'host' => 'database.quicksites.internal',
-);
-```
+
 
 For file migration purposes, you'll need to also define a setting for the
 - `migration_source_base_url`
@@ -49,6 +57,7 @@ $settings['migration_source_private_file_path'] = 'sites/default/files/private';
 
 # Usage
 ## Running migrations via the command line & drush
+* To install a Drupal 8 site without default content (menu links & default page), you can run `drush si utexas utexas_select_extensions.utexas_create_default_content=NULL -y`.
 * Use `drush ms` to list all available migrations. You'll get 
 information on available migrations sorted by their group:
 ```

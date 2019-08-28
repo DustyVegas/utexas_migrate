@@ -21,8 +21,8 @@ class BackgroundAccent {
    * @return array
    *   Returns an array of field data for the widget.
    */
-  public static function getFromNid($instance, $source_nid) {
-    $source_data = self::getRawSourceData($instance, $source_nid);
+  public static function getFromNid($source_nid) {
+    $source_data = self::getRawSourceData($source_nid);
     $field_data = self::massageFieldData($source_data);
     return $field_data;
   }

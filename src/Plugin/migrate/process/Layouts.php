@@ -424,10 +424,10 @@ class Layouts extends ProcessPluginBase {
       case 'Landing Page Template 2':
       case 'Landing Page Template 3':
         // Add a background accent, if present.
-        $background_accent = BackgroundAccent::getRawSourceData($row->getSourceProperty('nid'));
+        $background_accent = BackgroundAccent::getFromNid($row->getSourceProperty('nid'));
         if (!empty($background_accent)) {
-          $sections[2]['layoutSettings']['blur'] = $background_accent[0]['blur'];
-          $sections[2]['layoutSettings']['background-accent'] = $background_accent[0]['image'];
+          $sections[2]['layoutSettings']['blur'] = $background_accent['blur'];
+          $sections[2]['layoutSettings']['background-accent'] = $background_accent['image'];
         }
         break;
     }

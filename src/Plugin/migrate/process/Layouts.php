@@ -31,6 +31,7 @@ use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
  * @MigrateProcessPlugin(
  *   id = "utexas_process_layout"
  * )
+ * @see doc/decisions/0004-migrate-standard-page-and-landing-page-to-flex-page.md
  */
 class Layouts extends ProcessPluginBase {
 

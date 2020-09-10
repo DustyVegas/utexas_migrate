@@ -20,4 +20,3 @@ Provide some transformation methods in a separate helper class for similar tasks
 
 - Developers may easily add breakpoints/debugging output for a single component (rather than getting output from all components when debugging).
 - This will require writing more duplicate method names and foregoing the advantages of class inheritance.
-

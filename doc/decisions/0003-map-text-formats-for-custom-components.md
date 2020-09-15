@@ -19,7 +19,7 @@ If the source data copy format is set to `plain_text` or `full_html` preserve th
 ## Consequences
 
 - Copy entered in version 2 with the `filtered_html` format will migrate to `flex_html` for parity with formatting.
-    - and content editors will see the CKEditor toolbar displayed above the copy input.
+    - and content editors will now see the CKEditor toolbar displayed above the copy input.
     - but newly created content will default to `restricted_html` (no toolbar and more markup limitations)
 - Copy referencing core default formats (`plain_text`, `full_html`) will migrate as-is.
 - Copy referencing any other text formats (i.e., custom) will be set to `flex_html`.

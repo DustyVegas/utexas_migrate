@@ -16,7 +16,7 @@ Version 3's "Flex page" defines no node fields. Content is instead entered as bl
 
 ## Decision
 
-Define separate migration tasks for Standard Page and Landing Page that only migrate first-class node data (title, created, updated, author, published) and adds content-type specific choices (display page title, display breadcrumbs).
+Define separate migration tasks for Standard Page and Landing Page that only migrate first-class node data (title, created, updated, author, published) and add content-type specific choices (display page title, display breadcrumbs).
 
 Define a subsequent, single migration task covering both Standard Pages and Landing pages that retrieves source field and layout data, then transforms the fields into inline blocks and the templated layout into Layout Builder sections, and saves the existing node.
 

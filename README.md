@@ -1,42 +1,54 @@
 # UTexas Migrate
 This module serves as a base for migrating UT Drupal Kit 7 to 8.
 
-# Setup
-## Configuring local-settings.php for migration
+##  Setup
+
+### 1. Add source database connection
+
 The migration relies on available credentials in your `settings.php` or 
 `settings.local.php`. You need to have the `utexas_migrate` key with the 
-source site specific information, e.g.:
-
-```
-$databases['utexas_migrate']['default'] = array(
-  'driver' => 'mysql',
-  'database' => 'myUTDK7Site.local',
-  'username' => 'DB_USERNAME',
-  'password' => 'DB_PASSWORD',
-  'host' => 'localhost',
-  'port' => '3306',
-);
-```
+source site specific information.
 
 For a container-based migration (e.g., `lando/docksal`), you can find the host & port for the source migration via:
 
-- `docker network ls` --> note the name of the container (e.g., `quicksites_default`)
-- `docker network inspect <network>` --> note the Gateway IP address
-- From the document root of the source migration, `fin ps` or `lando info` will provide the port number.
+- `docker network ls`: note the name of the container (e.g., `managed-cms_default`)
+- `docker network inspect <network>`: note the Gateway IP address:
+
+```
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.25.0.0/16",
+                    "Gateway": "172.25.0.1"
+                }
+            ]
+        },
+```
+
+- From the document root of the source migration, `fin ps` or `lando info` will provide the database port number:
+
+```
+managed-cms_db_1        docker-entrypoint.sh mysqld      Up (healthy)   0.0.0.0:32769->3306/tcp
+```
+
+A complete database connection would look like this:
 
 ```bash
 $databases['utexas_migrate']['default'] = [
 'database' => 'default',
 'username' => 'user',
 'password' => 'user',
-'host' => '<Gateway IP address>',
-'port' => '<Port>',
+'host' => '172.25.0.1',
+'port' => '32769',
 'driver' => 'mysql',
 'prefix' => '',
 'collation' => 'utf8mb4_general_ci',
 ];
 ```
 
+### 1. Add source filesystem information
 
 For file migration purposes, you'll need to also define a setting for the
 - `migration_source_base_url`

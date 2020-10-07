@@ -1,15 +1,26 @@
 {
   "name": "utexas/utexas_migrate",
   "description": "Provides migration from UTDK 7 to 8.",
-  "type": "project",
-  "license": "MIT",
+  "type": "drupal-module",
+  "license": "GPL-2.0+",
+  "keywords": ["Drupal"],
+  "homepage": "https://github.austin.utexas.edu/eis1-wcs/utexas-migrate",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://github.austin.utexas.edu/eis1-wcs/utexas-migrate/issues",
+    "source": "https://github.austin.utexas.edu/eis1-wcs/utexas-migrate"
+  },
   "repositories": [
     {
       "type": "composer",
       "url": "https://packages.drupal.org/8"
     }
   ],
+  "config": {
+    "sort-packages": true
+  }
   "require": {
+     "composer/installers": "~1.0",
     "drupal/migrate_plus": "4.0-beta3",
     "drupal/migrate_tools": "4.0-beta3"
   }

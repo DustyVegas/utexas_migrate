@@ -58,7 +58,7 @@ For file migration purposes, you'll need to also define a setting for the
 Example:
 ```
 // The destination (D8) file private path must be an absolute path.
-$settings['file_private_path'] = '/Users/nnn/Sites/utdk8/web/sites/default/files/private';
+$settings['file_private_path'] = '/Users/nnn/Sites/utdk_scaffold/web/sites/default/files/private';
 
 $settings['migration_source_base_url'] = 'http://quicksites.local';
 $settings['migration_source_public_file_path'] = 'sites/default/files';

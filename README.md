@@ -60,7 +60,7 @@ Example:
 // The destination (D8) file private path must be an absolute path.
 $settings['file_private_path'] = '/Users/nnn/Sites/utdk_scaffold/web/sites/default/files/private';
 
-$settings['migration_source_base_url'] = 'http://quicksites.local';
+$settings['migration_source_base_url'] = 'http://managed-cms.docksal';
 $settings['migration_source_public_file_path'] = 'sites/default/files';
 // Private files cannot be retrieved over HTTP.
 $settings['migration_source_base_path'] = '/Users/nnn/Sites/quicksites';

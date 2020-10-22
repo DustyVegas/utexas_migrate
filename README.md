@@ -69,7 +69,7 @@ $settings['migration_source_private_file_path'] = 'sites/default/files/private';
 
 # Usage
 ## Running migrations via the command line & drush
-* To install a Drupal 8 site without default content (menu links & default page), you can run `drush si utexas utexas_select_extensions.utexas_create_default_content=NULL -y`.
+* To install a site without default content (menu links & default page), you can run `drush si utexas utexas_installation_options.default_content=NULL -y`.
 * Use `drush ms` to list all available migrations. You'll get 
 information on available migrations sorted by their group:
 ```

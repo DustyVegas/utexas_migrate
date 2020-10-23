@@ -33,7 +33,7 @@ terminus env:wake $SOURCE_SITE.dev && \
 terminus drush $SOURCE_SITE.dev cc all && \
 terminus backup:create $SOURCE_SITE.dev --element=db && \
 terminus backup:get $SOURCE_SITE.dev  --element=db --to=./db.sql.gz && \
-gunzip -c ./db.sql.gz db.sql && \
+gunzip -c ./db.sql.gz > db.sql && \
 fin db import db.sql --db=utexas_migrate && \
 rm db.sql db.sql.gz
 ```

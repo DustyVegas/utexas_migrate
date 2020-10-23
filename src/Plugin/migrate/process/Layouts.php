@@ -344,14 +344,17 @@ class Layouts extends ProcessPluginBase {
     $sections = [];
     $onecol = [
       'layout' => 'layout_utexas_onecol',
+      'layoutSettings' => [
+        'section_width' => 'readable',
+      ],
     ];
     $onecol_full_width = [
       'layout' => 'layout_utexas_onecol',
       'layoutSettings' => [
         'layout_builder_styles_style' => [
-          'full_width_of_page',
           'utexas_no_padding',
         ],
+        'section_width' => 'container-fluid',
       ],
     ];
     $fifty_fifty = [

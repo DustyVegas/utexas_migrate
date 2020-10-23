@@ -22,27 +22,9 @@ class SiteSettingsSource extends SqlBase {
    * {@inheritdoc}
    */
   public function query() {
-    // An examination query needs to be run to check what the default theme is,
-    // and then to check whether there is footer text defined for that theme,
-    // supporting sites using forty_acres OR a subtheme of forty_acres.
-    $theme_data = $this->getActiveThemeSettings();
-
-    if (isset($theme_data['values']->value)) {
-      $settings = unserialize($theme_data['values']->value);
-      if (!empty($settings)) {
-        // Query for the "theme_THEMENAME_settings" variable,
-        // and parse it in prepareRow().
-        $query = $this->select('variable', 'v')
-          ->fields('v', array_keys($this->fields()))
-          ->condition('name', 'theme_' . $theme_data['name'] . '_settings', '=');
-        return $query;
-      }
-    }
-    // Backup: there are no theme settings defined.
-    // Return a query object that will evaluate as count = 0.
     $query = $this->select('variable', 'v')
       ->fields('v', array_keys($this->fields()))
-      ->condition('name', 'invalid_key_used_for_migration', '=');
+      ->condition('name', 'theme_default', '=');
     return $query;
   }
 
@@ -50,19 +32,8 @@ class SiteSettingsSource extends SqlBase {
    * {@inheritdoc}
    */
   public function prepareRow(Row $row) {
-    $theme_data = $this->getActiveThemeSettings();
-    if (isset($theme_data['values'])) {
-      $settings = unserialize($theme_data['values']->value);
-      if (!empty($settings)) {
-        // Default breadcrumb value.
-        $default_breadcrumb_display = $settings['utexas_standard_page_breadcrumb'];
-        $row->setSourceProperty('default_breadcrumb_display', $default_breadcrumb_display);
-      }
-      else {
-        // If there is no theme data, abandon the import.
-        return FALSE;
-      }
-    }
+    $this->getActiveThemeSettings($row);
+    $this->getTwitterCredentials($row);
   }
 
   /**
@@ -90,24 +61,51 @@ class SiteSettingsSource extends SqlBase {
 
   /**
    * Custom callback to retrieve the active theme's settings.
+   */
+  public function getActiveThemeSettings(&$row) {
+    $theme_machine_name = $this->getVariable('theme_default');
+    $settings = $this->getVariable('theme_' . $theme_machine_name . '_settings');
+    $theme_data = [
+      'name' => $theme_machine_name,
+      'values' => $settings,
+    ];
+    if (isset($theme_data['values'])) {
+      $settings = unserialize($theme_data['values']->value);
+      if (!empty($settings)) {
+        // Default breadcrumb value.
+        $default_breadcrumb_display = $settings['utexas_standard_page_breadcrumb'];
+        $row->setSourceProperty('default_breadcrumb_display', $default_breadcrumb_display);
+      }
+    }
+  }
+
+  /**
+   * Custom callback to source Twitter credentials, if present.
+   */
+  public function getTwitterCredentials(&$row) {
+    $key = $this->getVariable('utexas_twitter_widget_key');
+    if (isset($key)) {
+      $row->setSourceProperty('utexas_twitter_widget_key', $key);
+    }
+    $secret = $this->getVariable('utexas_twitter_widget_secret');
+    if (isset($secret)) {
+      $row->setSourceProperty('utexas_twitter_widget_secret', $secret);
+    }
+  }
+
+  /**
+   * Helper function for DB queries.
    *
    * @return array
-   *   The 'name' is the theme machine name & the 'values' are the settings.
+   *   The unserialized value.
    */
-  public function getActiveThemeSettings() {
-    $theme = $this->database->select('variable', 'v')
-      ->fields('v', ['value'])
-      ->condition('name', 'theme_default', '=')
-      ->execute()
-      ->fetch();
-    $theme_machine_name = unserialize($theme->value);
-    $key = 'theme_' . $theme_machine_name . '_settings';
+  public function getVariable($name) {
     $query = $this->database->select('variable', 'v')
-      ->fields('v', ['name', 'value'])
-      ->condition('name', $key, '=')
+      ->fields('v', ['value'])
+      ->condition('name', $name, '=')
       ->execute()
       ->fetch();
-    return ['name' => $theme_machine_name, 'values' => $query];
+    return unserialize($query->value);
   }
 
 }

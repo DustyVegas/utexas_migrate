@@ -13,7 +13,7 @@ source:
 process:
   # Retrieve the destination ID of the corresponding node.
   #
-  # Since this field will just be used for computing another property, 
+  # Since this field will just be used for computing another property,
   # prefix it with "temp_".
   temp_nid:
     plugin: migration_lookup
@@ -32,3 +32,5 @@ migration_dependencies:
   required:
     - utexas_landing_page
     - utexas_standard_page
+    - twitter_widgets
+    - utexas_content_blocks

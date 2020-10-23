@@ -41,8 +41,6 @@ class TwitterWidgets extends Entity implements MigrateDestinationInterface {
       ]);
       $block->save();
       $region = $row->getSourceProperty('region');
-      // @todo: place block in corresponding region with
-      // corresponding conditions.
       if ($region) {
         $config = \Drupal::config('system.theme');
         $placed_block = Block::create([

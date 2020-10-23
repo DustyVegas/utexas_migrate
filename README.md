@@ -5,16 +5,7 @@ This module serves as a base for migrating UT Drupal Kit v2 to v3.
 
 A migration requires configuration that allows the migration code to discover the source database & files. The simplest way to do this locally -- and also the model for testing this migration -- is described first. Alternate methods follow.
 
-1. Add the following to the end of your `settings.php` file:
-
-```php
-$migration_settings = __DIR__ . "/settings.migration.php";
-if (file_exists($migration_settings)) {
-  include $migration_settings;
-}
-```
-
-2. Add a `settings.migration.php` file with the following contents, adjusting the base_url as appropriate.
+1. Add the following to the very end of your `settings.php` file, adjusting the base_url as appropriate.
 
 ```php
 // Migration connection.
@@ -33,7 +24,7 @@ $settings['migration_source_base_path'] = '/var/www';
 $settings['migration_source_private_file_path'] = 'sites/default/files/private';
 ```
 
-3. Import the remote database into the local `utexas_migrate` database:
+2. Import the remote database into the local `utexas_migrate` database:
 
 ```
 export SOURCE_SITE="utqs-migration-tester"

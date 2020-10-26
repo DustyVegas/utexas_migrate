@@ -23,12 +23,26 @@ class SiteSettingsDestination extends DestinationBase implements MigrateDestinat
    */
   public function import(Row $row, array $old_destination_id_values = []) {
     // Additional site settings may be added here as needed.
-    // Default flex_page breadcrumb is derived from the standard_page value
-    // in the D7 theme settings.
-    $breadcrumb_display = $row->getSourceProperty('default_breadcrumb_display');
-    $flex_page_breadcrumb_display = \Drupal::configFactory()->getEditable('utexas_breadcrumbs_visibility.content_type.utexas_flex_page');
-    $flex_page_breadcrumb_display->set('display_breadcrumbs', $breadcrumb_display);
-    $flex_page_breadcrumb_display->save();
+    $settings = [
+      'default_breadcrumb_display' => [
+        'key' => 'utexas_breadcrumbs_visibility.content_type.utexas_flex_page',
+        'value' => 'display_breadcrumbs',
+      ],
+      'utexas_twitter_widget_key' => [
+        'key' => 'twitter_profile_widget.settings',
+        'value' => 'twitter_widget_key',
+      ],
+      'utexas_twitter_widget_secret' => [
+        'key' => 'twitter_profile_widget.settings',
+        'value' => 'twitter_widget_secret',
+      ],
+    ];
+    foreach ($settings as $source => $destination) {
+      $data = $row->getSourceProperty($source);
+      $config = \Drupal::configFactory()->getEditable($destination['key']);
+      $config->set($destination['value'], $data);
+      $config->save();
+    }
 
     // As an array of 1 item, this will indicate that the migration operation
     // completed its one task (composed of multiple settings).

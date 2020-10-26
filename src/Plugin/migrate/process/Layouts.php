@@ -10,7 +10,7 @@ use Drupal\layout_builder\SectionComponent;
 use Drupal\node\Entity\Node;
 use Drupal\utexas_migrate\CustomWidgets\BackgroundAccent;
 use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
-use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\utexas_migrate\CustomWidgets\EntityReference;
 use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
@@ -21,6 +21,7 @@ use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
 use Drupal\utexas_migrate\CustomWidgets\Resource;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
+use Drupal\utexas_migrate\MigrateHelper;
 
 /**
  * Layouts Processor.
@@ -107,12 +108,17 @@ class Layouts extends ProcessPluginBase {
     foreach ($blocks as $id => $settings) {
       $found = FALSE;
       if (in_array($id, array_keys(MigrateHelper::$excludedFieldblocks))) {
-        // Skip "excluded" fieldblocks, like Twitter Widget, Contact Info,
+        // Skip "excluded" fieldblocks, like Contact Info,
         // since UTDK8 doesn't currently have a location for these.
         continue;
       }
       elseif (in_array($id, array_keys(MigrateHelper::$includedFieldBlocks))) {
         $field_name = MigrateHelper::$includedFieldBlocks[$id];
+        $found = TRUE;
+      }
+      elseif (in_array($id, array_keys(MigrateHelper::$includedReusableBlocks))) {
+        $field_name = MigrateHelper::$includedReusableBlocks[$id];
+        // This will provide for example, `twitter_widget`.
         $found = TRUE;
       }
       elseif ($settings['region'] == 'social_links') {
@@ -125,7 +131,6 @@ class Layouts extends ProcessPluginBase {
       }
 
       if ($found) {
-        // @todo: Revise the placeFieldinSection() method to use inline blocks.
         // Now that we know we have a field, check for a D7 display setting,
         // and if so, pass an equivalent view_mode to the D8 field formatter.
         $field_data = self::retrieveFieldData($field_name, $row);
@@ -208,6 +213,10 @@ class Layouts extends ProcessPluginBase {
         $source = BasicBlock::getFromNid($field_name, $nid);
         break;
 
+      case 'twitter_widget':
+        $block_type = $field_name;
+        $source = EntityReference::getFromNid('utexas_' . $field_name, $nid);
+        break;
     }
     return [
       'field_name' => $field_name,
@@ -688,17 +697,39 @@ class Layouts extends ProcessPluginBase {
    *   The component object or FALSE.
    */
   protected function createD8SectionComponent(array $component_data) {
-    if ($block = MigrateHelper::createInlineBlock($component_data)) {
-      // Important: the 'id' value must be "inline_block:" + a valid block type.
-      $component_view_mode = $component_data['block_data'][0]['view_mode'] ?? 'full';
-      $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
-        'id' => 'inline_block:' . $component_data['block_type'],
-        'label' => $component_data['field_identifier'],
-        'provider' => 'layout_builder',
-        'label_display' => 0,
-        'view_mode' => $component_data['view_mode'] ?? $component_view_mode,
-        'block_revision_id' => $block->id(),
-      ]);
+    // Add view mode fallback after layout regions have had a chance to set it.
+    $component_view_mode = $component_data['block_data'][0]['view_mode'] ?? 'full';
+
+    // Handle creation of inline & reusable block components.
+    switch ($component_data['block_type']) {
+      case 'twitter_widget';
+        // @todo: add Contact info, Menu Blocks, & standard Blocks.
+        $block_uuid = EntityReference::getDestinationUuid($component_data);
+        $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
+          'id' => 'block_content:' . $block_uuid,
+          'label' => $component_data['field_identifier'],
+          'provider' => 'layout_builder',
+          'label_display' => 0,
+          'status' => TRUE,
+          'view_mode' => $component_data['view_mode'] ?? $component_view_mode,
+        ]);
+        break;
+
+      default:
+        $block = MigrateHelper::createInlineBlock($component_data);
+        // Important: the 'id' value must be "inline_block:" + a valid block type.
+        $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
+          'id' => 'inline_block:' . $component_data['block_type'],
+          'label' => $component_data['field_identifier'],
+          'provider' => 'layout_builder',
+          'label_display' => 0,
+          'view_mode' => $component_data['view_mode'] ?? $component_view_mode,
+          'block_revision_id' => $block->id(),
+        ]);
+        break;
+    }
+
+    if ($component) {
       $component->setWeight($component_data['weight']);
       // Add additional component styles, like Layout Builder Styles settings.
       $default_sidebar_styles = [
@@ -712,19 +743,15 @@ class Layouts extends ProcessPluginBase {
             $component->set('additional', $component_data['additional']);
           }
           else {
-            // Quick Links always at least have the border w/o background.
+            // Quick Links always at least has the border w/o background.
             $component->set('additional', $default_sidebar_styles);
           }
           break;
 
         case 'social_links':
-          // Social links always displays border w/o background.
+          // Always display border w/o background.
           $component->set('additional', $default_sidebar_styles);
-
       }
-    }
-
-    if (isset($component)) {
       return $component;
     }
     return FALSE;

@@ -41,6 +41,7 @@ rm db.sql db.sql.gz
 ## Enable this module
 ```
 composer require utexas/utexas_migrate
+(If testing off of a branch, make sure you check out the appropriate branch before enabling the module)
 fin drush en utexas_migrate
 ```
 

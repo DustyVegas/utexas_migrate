@@ -351,16 +351,25 @@ class Layouts extends ProcessPluginBase {
    */
   protected static function getD8SectionsfromD7Layout($template, $nid, Row $row) {
     $sections = [];
-    $onecol = [
+    $onecol_readable_width = [
       'layout' => 'layout_utexas_onecol',
+      'layoutSettings' => [
+        'section_width' => 'readable',
+      ],
+    ];
+    $onecol_container_width = [
+      'layout' => 'layout_utexas_onecol',
+      'layoutSettings' => [
+        'section_width' => 'container',
+      ],
     ];
     $onecol_full_width = [
       'layout' => 'layout_utexas_onecol',
       'layoutSettings' => [
         'layout_builder_styles_style' => [
-          'full_width_of_page',
           'utexas_no_padding',
         ],
+        'section_width' => 'container-fluid',
       ],
     ];
     $fifty_fifty = [
@@ -396,8 +405,8 @@ class Layouts extends ProcessPluginBase {
       case 'Full Width Content Page & Title':
       case 'Full Width Content Page':
       case 'Open Text Page':
-        $sections[0] = $onecol;
-        $sections[1] = $onecol;
+        $sections[0] = $onecol_readable_width;
+        $sections[1] = $onecol_readable_width;
         break;
 
       case 'Landing Page Template 1':
@@ -412,16 +421,16 @@ class Layouts extends ProcessPluginBase {
       case 'Landing Page Template 2':
         // First section is always hero photo.
         $sections[0] = $onecol_full_width;
-        $sections[1] = $onecol;
+        $sections[1] = $onecol_container_width;
         // Third section is always Featured Highlight + Quick Links.
         $sections[2] = $onecol_full_width;
-        $sections[3] = $onecol;
+        $sections[3] = $onecol_container_width;
         break;
 
       case 'Landing Page Template 3':
         // First section is always hero photo.
         $sections[0] = $onecol_full_width;
-        $sections[1] = $onecol;
+        $sections[1] = $onecol_container_width;
         // Third section is always Featured Highlight.
         $sections[2] = $onecol_full_width;
         $sections[3] = $sixty_six_thirty_three;

@@ -7,6 +7,15 @@
 
 /**
  * Implements hook_uninstall().
+ */
+function utexas_migrate_install() {
+  // By default, enable the add-on migrations, as well. They can be
+  // uninstalled if not needed.
+  \Drupal::service('module_installer')->install(['utnews_migrate']);
+}
+
+/**
+ * Implements hook_uninstall().
  *
  * Removes migration_plus config on uninstall.
  * Without this, removing the module leaves behind config

@@ -27,7 +27,7 @@ class UserSource extends User {
       ->fetchCol();
     if (!empty($roles)) {
       $rolenames = $this->getD7RoleNames($roles);
-      $row->setDestinationProperty('roles', $this->MapRoles($rolenames));
+      $row->setDestinationProperty('roles', $this->mapRoles($rolenames));
     }
     return parent::prepareRow($row);
   }
@@ -41,7 +41,7 @@ class UserSource extends User {
    * @return array
    *   The D8 roles of the user.
    */
-  protected function MapRoles(array $d7_roles) {
+  protected function mapRoles(array $d7_roles) {
     $map = [
       'Announcement Editor' => 'utexas_site_manager',
       'Events Editor' => 'utexas_content_editor',
@@ -73,5 +73,5 @@ class UserSource extends User {
       ->fetchCol();
     return $roles;
   }
-}
 
+}

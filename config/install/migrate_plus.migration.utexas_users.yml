@@ -1,10 +1,8 @@
 id: utexas_users
 label: UTDK user migration
 migration_group: utexas
-
 source:
   plugin: d7_user
-
 process:
   name: name
   pass: pass
@@ -26,24 +24,6 @@ process:
     plugin: user_langcode
     source: language
     fallback_to_site_default: true
-  roles:
-    plugin: migration_lookup
-    migration: utexas_roles
-    source: roles
-  # UTDK 8 does not enable user pictures by default.
-  # If your Drupal 7 site does use user pictures,
-  # uncomment the following section.
-  #
-  # user_picture:
-  #   -
-  #     plugin: default_value
-  #     source: picture
-  #     default_value: null
-  #   -
-  #     plugin: migration_lookup
-  #     source: fid
-  #     migration:
-  #       - utexas_media_image
   init: init
 destination:
   plugin: utexas:user

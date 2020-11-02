@@ -1,11 +1,11 @@
-id: utnews_terms
-label: Terms
+id: utevent_terms_tags
+label: Tags
 audit: true
-migration_group: utnews
+migration_group: utevent
 source:
   plugin: d7_taxonomy_term
   bundle:
-    - news_tags
+    - event_tags
 process:
   name: name
   'description/value': description
@@ -27,7 +27,7 @@ process:
   changed: timestamp
 destination:
   plugin: entity:taxonomy_term
-  default_bundle: utnews_tags
+  default_bundle: utevent_tags
   no_stub: true
 migration_dependencies:
   required:

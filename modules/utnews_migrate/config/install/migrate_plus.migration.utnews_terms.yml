@@ -32,6 +32,8 @@ process:
   changed: timestamp
 destination:
   plugin: entity:taxonomy_term
+  default_bundle: utnews_tags
+  no_stub: true
 migration_dependencies:
   required:
-    - utnews_vocabularies
+    - utexas_users

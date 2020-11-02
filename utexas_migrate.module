@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Module file for specific overrides, etc.
+ */
+
+/**
+ * Implements hook_migrate_source_info_alter().
+ */
+function utexas_migrate_migrate_source_info_alter(&$migrations) {
+  // Add ability to specify bundles from source.
+  $migrations['d7_taxonomy_term']['class'] = 'Drupal\utexas_migrate\Plugin\migrate\source\TermSource';
+  // Add ability to specify bundles from source.
+  $migrations['d7_taxonomy_vocabulary']['class'] = 'Drupal\utexas_migrate\Plugin\migrate\source\VocabSource';
+}

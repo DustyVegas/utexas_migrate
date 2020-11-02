@@ -4,9 +4,13 @@ audit: true
 migration_tags:
   - 'Drupal 7'
 migration_group: utexas
-deriver: Drupal\taxonomy\Plugin\migrate\D7TaxonomyTermDeriver
 source:
   plugin: d7_taxonomy_term
+  skip_bundle:
+    - event_location
+    - event_tags
+    - news_tags
+    - team_member_group
 process:
   vid:
     plugin: migration_lookup

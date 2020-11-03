@@ -8,9 +8,9 @@ cck_plugin_method: null
 migration_tags:
   - 'Drupal 7'
 migration_group: utexas
-label: 'Articles'
+label: 'Article nodes'
 source:
-  plugin: utexas_article_source
+  plugin: d7_node
   node_type: article
 process:
   title: title
@@ -20,27 +20,34 @@ process:
   status: status
   sticky: sticky
   promote: promote
-  # Find the destination UID; accessible via 
-  # $row->getDestinationProperty('uid');
   uid:
     plugin: migration_lookup
-    source: uid
+    source: node_uid
     migration:
       - utexas_users
-  'body/format': body/format
-  'body/value': body/value
+  body:
+    plugin: sub_process
+    source: body
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: 'flex_html'
+      summary: summary
   field_tags:
     plugin: migration_lookup
+    source: field_tags
     migration: utexas_terms
-    source: tag_list
-  'field_image/target_id': 
-    plugin: skip_on_empty
-    method: process
-    source: field_image/target_id
-  'field_image/alt':
-    plugin: skip_on_empty
-    method: process
-    source: field_image/alt
+    no_stub: true
+  field_image:
+    plugin: sub_process
+    source: field_image
+    process:
+      alt: alt
+      target_id:
+        plugin: migration_lookup
+        migration: utexas_media_image
+        source: fid
 destination:
   plugin: entity:node
   default_bundle: article

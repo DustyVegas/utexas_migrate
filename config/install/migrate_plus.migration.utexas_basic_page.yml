@@ -8,9 +8,9 @@ cck_plugin_method: null
 migration_tags:
   - 'Drupal 7'
 migration_group: utexas
-label: 'Basic Pages'
+label: 'Basic Page nodes'
 source:
-  plugin: utexas_basic_page_source
+  plugin: d7_node
   node_type: page
 process:
   title: title
@@ -20,15 +20,20 @@ process:
   status: status
   sticky: sticky
   promote: promote
-  # Find the destination UID; accessible via 
-  # $row->getDestinationProperty('uid');
   uid:
     plugin: migration_lookup
-    source: uid
+    source: node_uid
     migration:
       - utexas_users
-  'body/format': body/format
-  'body/value': body/value
+  body:
+    plugin: sub_process
+    source: body
+    process:
+      value: value
+      format:
+        plugin: default_value
+        default_value: 'flex_html'
+      summary: summary
 destination:
   plugin: entity:node
   default_bundle: page

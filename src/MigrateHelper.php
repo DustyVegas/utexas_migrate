@@ -66,15 +66,21 @@ class MigrateHelper {
       'migrate_map_utexas_standard_page',
       'migrate_map_utexas_basic_page',
       'migrate_map_utexas_article',
+      'migrate_map_utevent_nodes',
+      'migrate_map_utprof_nodes',
+      'migrate_map_utnews_nodes',
     ];
+    $connection = \Drupal::database();
     foreach ($tables_to_query as $table) {
-      $destination_nid = \Drupal::database()->select($table, 'n')
-        ->fields('n', ['destid1'])
-        ->condition('n.sourceid1', $source_nid)
-        ->execute()
-        ->fetchField();
-      if ($destination_nid) {
-        return $destination_nid;
+      if ($connection->schema()->tableExists($table)) {
+        $destination_nid = \Drupal::database()->select($table, 'n')
+          ->fields('n', ['destid1'])
+          ->condition('n.sourceid1', $source_nid)
+          ->execute()
+          ->fetchField();
+        if ($destination_nid) {
+          return $destination_nid;
+        }
       }
     }
     return FALSE;
@@ -89,7 +95,7 @@ class MigrateHelper {
    * @return string
    *   The destination format (e.g., 'flex_html')
    */
-  public function getDestinationTextFormat($text_format) {
+  public static function getDestinationTextFormat($text_format) {
     // As much as possible, we want to map the set text formats to their
     // respective D8 equivalents. If a D8 equivalent doesn't exist, fall back
     // to 'flex_html'.
@@ -123,7 +129,7 @@ class MigrateHelper {
     if (strpos($link, 'node/') === 0) {
       $source_nid = substr($link, 5);
       if ($destination_nid = self::getDestinationNid($source_nid)) {
-        return('internal:/node/' . $destination_nid);
+        return ('internal:/node/' . $destination_nid);
       }
       // The destination NID doesn't exist. Print a warning message.
       \Drupal::logger('utexas_migrate')->warning('* Source node %source contained link "@link". No equivalent destination node was found. Link replaced with link to homepage.', [
@@ -278,7 +284,6 @@ class MigrateHelper {
       case 'wysiwyg_b':
         $block_definition = BasicBlock::createBlockDefinition($component_data);
         break;
-
     }
     if (!isset($block_definition)) {
       return FALSE;
@@ -288,8 +293,7 @@ class MigrateHelper {
       $block = BlockContent::create($block_definition);
       $block->save();
       return $block;
-    }
-    catch (EntityStorageException $e) {
+    } catch (EntityStorageException $e) {
       \Drupal::logger('utexas_migrate')->warning("Import of :block_type failed: :error - Code: :code", [
         ':block_type' => $component_data['block_type'],
         ':error' => $e->getMessage(),
@@ -297,5 +301,4 @@ class MigrateHelper {
       ]);
     }
   }
-
 }

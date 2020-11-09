@@ -5,6 +5,11 @@ migration_tags:
 migration_group: utexas
 source:
   plugin: d7_taxonomy_vocabulary
+  skip_bundle:
+    - event_location
+    - event_tags
+    - news_tags
+    - team_member_group
 process:
   vid:
     -

@@ -1,0 +1,8 @@
+name: UTNews Migrate
+type: module
+description: Provides a migration path for the news add-on UTDK 2 to 3.
+core: 8.x
+package: UTexas Migration
+dependencies:
+  - utexas_migrate
+  - utnews_content_type_news

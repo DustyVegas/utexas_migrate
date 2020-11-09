@@ -1,8 +1,8 @@
 name: UTexas Migrate
 type: module
-description: Provides a migration path for UTDK 7 to 8.
+description: Provides a migration path for UTDK 2 to 3.
 core: 8.x
-package: UTexas
+package: UTexas Migration
 dependencies:
   - migrate_plus
   - migrate_tools

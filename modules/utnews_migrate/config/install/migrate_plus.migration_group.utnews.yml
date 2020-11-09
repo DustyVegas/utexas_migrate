@@ -1,9 +1,9 @@
 langcode: en
 status: true
 dependencies: {  }
-id: utexas
-label: 'Kernel'
-description: 'Provides custom logic import for UTDK D2 to UTDK D3'
+id: utnews
+label: 'UTNews'
+description: 'Import UTNews UTDK D2 to UTDK D3'
 source_type: 'Drupal 7'
 module: null
 shared_configuration:

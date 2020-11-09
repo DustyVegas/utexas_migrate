@@ -11,8 +11,16 @@
 function utexas_migrate_install() {
   // By default, enable the add-on migrations, as well. They can be
   // uninstalled if not needed.
-  \Drupal::service('module_installer')->install(['utnews_migrate']);
-  \Drupal::service('module_installer')->install(['utprof_migrate']);
+  $moduleHandler = \Drupal::service('module_handler');
+  if ($moduleHandler->moduleExists('utnews')) {
+    \Drupal::service('module_installer')->install(['utnews_migrate']);
+  }
+  if ($moduleHandler->moduleExists('utprof')) {
+    \Drupal::service('module_installer')->install(['utprof_migrate']);
+  }
+  if ($moduleHandler->moduleExists('utevent')) {
+    \Drupal::service('module_installer')->install(['utevent_migrate']);
+  }
 }
 
 /**

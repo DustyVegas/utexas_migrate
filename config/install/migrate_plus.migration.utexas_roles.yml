@@ -3,6 +3,15 @@ label: UTDK role migration
 migration_group: utexas
 source:
   plugin: d7_user_role
+  skip_name:
+    - "Announcement Editor"
+    - "Events Editor"
+    - "Landing Page Editor"
+    - "News Editor"
+    - "Site Builder"
+    - "Site Manager"
+    - "Standard Page Editor"
+    - "Team Member Editor"
 process:
   id:
     -
@@ -33,3 +42,6 @@ process:
   weight: weight
 destination:
   plugin: entity:user_role
+migration_dependencies:
+  required:
+    - utexas_pathauto_patterns

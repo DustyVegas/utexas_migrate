@@ -6,7 +6,19 @@ This module serves as a base for migrating UT Drupal Kit v2 to v3. It consists o
 
 It has two dependencies, `migrate_plus`, which allows for grouping migration tasks and additional processing plugins, and `migrate_tools`, which provides CLI commands for migration execution.
 
-##  Quickstart Setup
+## Summary of migration changes from version 2 to version 3
+
+### Roles
+
+Version 2 used a more verbose role delegation schema, consisting of individual roles controlling permission to edit the site announcement, create landing pages, etc. Version 3 reduces this to two roles, "Site Manager" and "Content Editor." Users that had been assigned the Version 2 role of `Site Manager` or `Announcement Editor` will be assigned the version 3 role `Site Manager`. Users that had been assigned the Version 2 role of `Site Builder`, `Landing Page Editor`, `Standard Page Editor`, `Events Editor`, `News Editor`, or `Team Member Editor` will be assigned the version 3 role `Content Editor`.
+
+Version 2 roles | Version 3 role
+-- | --
+Landing PageEditor<br>Standard Page Editor<br>Site Builder<br>Team Member Editor<br>News Editor<br>Event Editor | Content Editor
+Site Manager<br>Announcement Editor | Site Manager
+
+
+## Quickstart Setup (Development & Testing)
 
 A migration requires configuration that allows the migration code to discover the source database & files. The simplest way to do this locally -- and also the model for testing this migration -- is described first. Alternate methods follow.
 
@@ -82,8 +94,8 @@ fin drush migrate-rollback --group=utexas
 
 ### 1. Add source database connection
 
-The migration relies on available credentials in your `settings.php` or 
-`settings.local.php`. You need to have the `utexas_migrate` key with the 
+The migration relies on available credentials in your `settings.php` or
+`settings.local.php`. You need to have the `utexas_migrate` key with the
 source site specific information.
 
 For a container-based migration (e.g., `lando/docksal`), you can find the host & port for the source migration via:
@@ -147,15 +159,15 @@ $settings['migration_source_private_file_path'] = 'sites/default/files/private';
 # Usage
 ## Running migrations via the command line & drush
 * To install a site without default content (menu links & default page), you can run `drush si utexas utexas_installation_options.default_content=NULL -y`.
-* Use `drush ms` to list all available migrations. You'll get 
+* Use `drush ms` to list all available migrations. You'll get
 information on available migrations sorted by their group:
 ```
  Group: Import from UTDK Drupal 7 (utexas)  Status  Total  Imported  Unprocessed
- utexas_node                                Idle    15     0         15        
+ utexas_node                                Idle    15     0         15
 ```
 
-* To execute all migrations in a migration group, use the machine 
-name of the group (listed in parentheses after the group label) to run 
+* To execute all migrations in a migration group, use the machine
+name of the group (listed in parentheses after the group label) to run
 `drush migrate-import --group=GROUP_NAME`, e.g.:
 ```
 drush mim --group=utexas

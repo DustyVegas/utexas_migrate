@@ -1,5 +1,10 @@
 # UTexas Migrate
-This module serves as a base for migrating UT Drupal Kit v2 to v3.
+This module serves as a base for migrating UT Drupal Kit v2 to v3. It consists of:
+
+- a base module, `utexas_migrate`, that provides two migration groups, `utexas` (which migrates all of the standard content) and `utexas_end` (which migrates content that is dependent on node references)
+- sub-modules for each of the add-ons, `utprof_migrate`, `utnews_migrate`, and `utevent_migrate`.
+
+It has two dependencies, `migrate_plus`, which allows for grouping migration tasks and additional processing plugins, and `migrate_tools`, which provides CLI commands for migration execution.
 
 ##  Quickstart Setup
 
@@ -38,16 +43,27 @@ fin db import db.sql --db=utexas_migrate && \
 rm db.sql db.sql.gz
 ```
 
-## Enable this module
+## Add & enable this module & dependencies
 ```
 composer require utexas/utexas_migrate
+composer require utexas/utprof
+composer require utexas/utnews
+composer require utexas/utevent
 (If testing off of a branch, make sure you check out the appropriate branch before enabling the module)
-fin drush en utexas_migrate
+fin drush en utexas_migrate -y
 ```
 
-## List the migration status
+## If running one or more of the add-on migrations...
+
 ```
-fin drush migrate-status --group=utexas
+fin drush en utprof_migrate -y
+fin drush en utnews_migrate -y
+fin drush en utevent_migrate -y
+```
+
+## List the migration status by group
+```
+fin drush migrate-status
 ```
 
 ## Run the import

@@ -3,7 +3,7 @@ label: Menus
 migration_tags:
   - Drupal 7
   - Configuration
-migration_group: utexas
+migration_group: utexas_end
 source:
   plugin: menu
 process:

@@ -1,6 +1,6 @@
-# We typically would migrate node fields along with node data. 
+# We typically would migrate node fields along with node data.
 # However, since URL alias values require the node to be created,
-# It's cleaner to run this as a separate migration after the 
+# It's cleaner to run this as a separate migration after the
 # node types have been migrated.
 id: utexas_path_aliases
 label: Path Aliases (+ pathauto)
@@ -9,19 +9,20 @@ field_plugin_method: null
 cck_plugin_method: null
 migration_tags:
   - 'Drupal 7'
-migration_group: utexas
+migration_group: utexas_end
 source:
   plugin: utexas_path_alias_source
   # Update this with the node types that should have pathauto.
-  node_type: 
+  node_type:
   - landing_page
   - standard_page
   - page
   - article
+  - news
 process:
   # Retrieve the destination ID of the corresponding node.
   #
-  # Since this field will just be used for computing another property, 
+  # Since this field will just be used for computing another property,
   # prefix it with "temp_".
   temp_nid:
     plugin: migration_lookup
@@ -31,6 +32,7 @@ process:
       - utexas_landing_page
       - utexas_basic_page
       - utexas_article
+      - utnews_nodes
 destination:
   plugin: utexas_path_alias_destination
 migration_dependencies:

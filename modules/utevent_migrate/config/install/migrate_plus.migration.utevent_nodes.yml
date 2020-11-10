@@ -1,0 +1,41 @@
+langcode: en
+status: true
+dependencies: {  }
+id: utevent_nodes
+class: null
+field_plugin_method: null
+cck_plugin_method: null
+migration_tags:
+  - 'Drupal 7'
+migration_group: utevent
+label: 'Nodes'
+source:
+  plugin: utexas_event_entity
+  node_type: event
+process:
+  title: title
+  field_utevent_featured: featured
+  field_utevent_main_media:
+    plugin: migration_lookup
+    migration: utexas_media_image
+    source: image_fid
+    no_stub: true
+  field_utevent_body/value: detail_text
+  field_utevent_body/summary: summary_text
+  field_utevent_body/format: detail_format
+  field_utevent_tags:
+    plugin: migration_lookup
+    migration: utevent_terms_tags
+    source: field_event_tags_tid
+  field_utevent_location:
+    plugin: migration_lookup
+    migration: utevent_terms_location
+    source: field_event_location_tid
+destination:
+  plugin: entity:node
+  default_bundle: utevent_event
+migration_dependencies:
+  required:
+    - utevent_terms_location
+    - utevent_terms_tags
+    - utexas_users

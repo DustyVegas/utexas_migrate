@@ -116,6 +116,13 @@ class PromoUnits {
       $style = $source[0]['size_option'];
       $destination[0]['view_mode'] = $style_map[$style];
     }
+    // Per https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1176,
+    // Promo Units need to retain 1 item per row behavior.
+    $destination['additional'] = [
+      'layout_builder_styles_style' => [
+        'utexas_onecol' => 'utexas_onecol',
+      ],
+    ];
     return $destination;
   }
 

@@ -466,13 +466,15 @@ class Layouts extends ProcessPluginBase {
    *   The D7 template name.
    */
   protected static function placeFieldinSection(array $sections, $field_data, array $settings, $template) {
-    // In D7, many sidebar regions apply a border w/ background style to blocks.
-    $layout_builder_styles_border_with_background = [
+    // In v2, Standard page sidebar regions apply a border w/ background style
+    // to blocks.
+    $layout_builder_styles = [];
+    $border_with_background = [
       'layout_builder_styles_style' => [
         'utexas_border_with_background' => 'utexas_border_with_background',
       ],
     ];
-    $d8_field = $field_data['field_name'];
+    $field = $field_data['field_name'];
     switch ($template) {
       case 'Featured Highlight':
         switch ($settings['region']) {
@@ -504,7 +506,10 @@ class Layouts extends ProcessPluginBase {
           case 'sidebar_second':
             $delta = 2;
             $region = 'second';
-            $additional = $layout_builder_styles_border_with_background;
+            // Add border with background to all fields except those listed.
+            if (!in_array($field, ['social_links'])) {
+              $layout_builder_styles = $border_with_background;
+            }
             break;
         }
         break;
@@ -520,7 +525,10 @@ class Layouts extends ProcessPluginBase {
           case 'sidebar_second':
             $delta = 0;
             $region = 'second';
-            $additional = $layout_builder_styles_border_with_background;
+            // Add border with background to all fields except those listed.
+            if (!in_array($field, ['social_links'])) {
+              $layout_builder_styles = $border_with_background;
+            }
             break;
         }
         break;
@@ -551,7 +559,10 @@ class Layouts extends ProcessPluginBase {
           case 'sidebar_second':
             $delta = 1;
             $region = 'second';
-            $additional = $layout_builder_styles_border_with_background;
+            // Add border with background to all fields except those listed.
+            if (!in_array($field, ['social_links'])) {
+              $layout_builder_styles = $border_with_background;
+            }
             break;
         }
         break;
@@ -623,8 +634,10 @@ class Layouts extends ProcessPluginBase {
             break;
 
           case 'content_top_three_pillars':
-            if (in_array($d8_field, ['flex_content_area_a', 'flex_content_area_b'])) {
+            if (in_array($field, ['flex_content_area_a', 'flex_content_area_b'])) {
               // Special case: FCA in content_top_three_pillars is 3-columns.
+              // @todo: adjust when 1-4 item per row behavior changes:
+              // https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1184
               $view_mode = 'utexas_flex_content_area_3';
             }
             $delta = 1;
@@ -632,8 +645,10 @@ class Layouts extends ProcessPluginBase {
             break;
 
           case 'content_top_four_pillars':
-            if (in_array($d8_field, ['flex_content_area_a', 'flex_content_area_b'])) {
+            if (in_array($field, ['flex_content_area_a', 'flex_content_area_b'])) {
               // Special case: FCA in content_top_four_pillars 4-columns.
+              // @todo: adjust when 1-4 item per row behavior changes:
+              // https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1184
               $view_mode = 'utexas_flex_content_area_4';
             }
             $delta = 1;
@@ -649,6 +664,8 @@ class Layouts extends ProcessPluginBase {
             $delta = 2;
             $region = 'main';
             $view_mode = 'utexas_quick_links_4';
+            // @todo: adjust when 1-4 item per row behavior changes:
+            // https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1184
             break;
 
           case 'content_bottom':
@@ -666,14 +683,25 @@ class Layouts extends ProcessPluginBase {
       default:
         break;
     }
-
-    $sections[$delta]['components'][$d8_field] = [
-      'field_identifier' => $d8_field,
+    // Above, *sections* have had a chance to set *block*-level Layout Builder
+    // Styles (to preserve v2 Layout theming).
+    // Next, check if *blocks* specify any Layout Builder Styles & add it.
+    if ($field_data['data']['additional']['layout_builder_styles_style']) {
+      // Append field-specific styles (e.g., Promo Unit Limit to 1 item per row)
+      // into those specified by the v2 section design (e.g., in v2,
+      // all items placed in Standard Page sidebar second received a border
+      // w/ background).
+      foreach ((array) $field_data['data']['additional']['layout_builder_styles_style'] as $key => $value) {
+        $layout_builder_styles['layout_builder_styles_style'][$key] = $value;
+      }
+    }
+    $sections[$delta]['components'][$field] = [
+      'field_identifier' => $field,
       'block_data' => $field_data['data'],
       'block_type' => $field_data['block_type'],
       'block_format' => $field_data['format'],
       'region' => $region,
-      'additional' => $additional ?? [],
+      'additional' => $layout_builder_styles,
       'weight' => $settings['weight'],
       'view_mode' => $view_mode,
     ];
@@ -705,11 +733,11 @@ class Layouts extends ProcessPluginBase {
    * @return mixed
    *   The component object or FALSE.
    */
-  protected function createD8SectionComponent(array $component_data) {
+  protected static function createD8SectionComponent(array $component_data) {
     // Add view mode fallback after layout regions have had a chance to set it.
     $component_view_mode = $component_data['block_data'][0]['view_mode'] ?? 'full';
 
-    // Handle creation of inline & reusable block components.
+    // Switch creation between inline & reusable block components.
     switch ($component_data['block_type']) {
       case 'twitter_widget';
         // @todo: add Contact info, Menu Blocks, & standard Blocks.
@@ -725,8 +753,9 @@ class Layouts extends ProcessPluginBase {
         break;
 
       default:
+        // All other block types are migrated as inline blocks.
         $block = MigrateHelper::createInlineBlock($component_data);
-        // Important: the 'id' value must be "inline_block:" + a valid block type.
+        // Important: the 'id' value must be "inline_block:" + valid block type.
         $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
           'id' => 'inline_block:' . $component_data['block_type'],
           'label' => $component_data['field_identifier'],
@@ -740,27 +769,11 @@ class Layouts extends ProcessPluginBase {
 
     if ($component) {
       $component->setWeight($component_data['weight']);
-      // Add additional component styles, like Layout Builder Styles settings.
-      $default_sidebar_styles = [
-        'layout_builder_styles_style' => [
-          'utexas_border_without_background' => 'utexas_border_without_background',
-        ],
-      ];
-      switch ($component_data['block_type']) {
-        case 'utexas_quick_links':
-          if (!empty($component_data['additional'])) {
-            $component->set('additional', $component_data['additional']);
-          }
-          else {
-            // Quick Links always at least has the border w/o background.
-            $component->set('additional', $default_sidebar_styles);
-          }
-          break;
 
-        case 'social_links':
-          // Always display border w/o background.
-          $component->set('additional', $default_sidebar_styles);
-      }
+      // Add additional component styles, like Layout Builder Styles settings.
+      // Ensure data type of array passed to component's `additional` element.
+      $existing_additional = is_array($component_data['additional']) ? $component_data['additional'] : [];
+      $component->set('additional', $existing_additional);
       return $component;
     }
     return FALSE;

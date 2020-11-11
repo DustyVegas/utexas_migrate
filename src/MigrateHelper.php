@@ -321,7 +321,8 @@ class MigrateHelper {
       $block = BlockContent::create($block_definition);
       $block->save();
       return $block;
-    } catch (EntityStorageException $e) {
+    }
+    catch (EntityStorageException $e) {
       \Drupal::logger('utexas_migrate')->warning("Import of :block_type failed: :error - Code: :code", [
         ':block_type' => $component_data['block_type'],
         ':error' => $e->getMessage(),
@@ -329,4 +330,5 @@ class MigrateHelper {
       ]);
     }
   }
+
 }

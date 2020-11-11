@@ -5,7 +5,6 @@ namespace Drupal\utexas_migrate;
 use Drupal\block_content\Entity\BlockContent;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
-use Drupal\utexas_migrate\CustomWidgets\EntityReference;
 use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
@@ -110,6 +109,35 @@ class MigrateHelper {
       return $text_format;
     }
     return 'flex_html';
+  }
+
+  /**
+   * Given a source path, provide a destination path.
+   *
+   * @param string $source
+   *   A source path, such as `node/4` or `file/2`.
+   *
+   * @return mixed
+   *   A corresponding destination path, such as `node/8` or `media/6` or FALSE.
+   */
+  public static function getDestinationFromSource($source) {
+    if (strpos($source, 'node/') === 0) {
+      $source_nid = substr($source, 5);
+      $destination_nid = self::getDestinationNid($source_nid);
+      if (!$destination_nid) {
+        return FALSE;
+      }
+      return 'node/' . $destination_nid;
+    }
+    elseif (strpos($source, 'file/') === 0) {
+      $source_fid = substr($source, 5);
+      $destination_fid = self::getMediaIdFromFid($source_fid);
+      if (!$destination_fid) {
+        return FALSE;
+      }
+      return 'media/' . $destination_fid;
+    }
+    return $source;
   }
 
   /**

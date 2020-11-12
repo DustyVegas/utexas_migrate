@@ -34,6 +34,7 @@ class SiteSettingsSource extends SqlBase {
   public function prepareRow(Row $row) {
     $this->getActiveThemeSettings($row);
     $this->getTwitterCredentials($row);
+    $this->getGtmSettings($row);
   }
 
   /**
@@ -90,6 +91,20 @@ class SiteSettingsSource extends SqlBase {
     $secret = $this->getVariable('utexas_twitter_widget_secret');
     if (isset($secret)) {
       $row->setSourceProperty('utexas_twitter_widget_secret', $secret);
+    }
+  }
+
+  /**
+   * Custom callback to source GTM settings, if present.
+   */
+  public function getGtmSettings(&$row) {
+    $gtm_code = $this->getVariable('utexas_google_tag_manager_gtm_code');
+    if (isset($gtm_code)) {
+      $row->setSourceProperty('utexas_google_tag_manager_gtm_code', $gtm_code);
+    }
+    $exclude_paths = $this->getVariable('utexas_google_tag_manager_gtm_exclude_paths');
+    if (isset($exclude_paths)) {
+      $row->setSourceProperty('utexas_google_tag_manager_gtm_exclude_paths', $exclude_paths);
     }
   }
 

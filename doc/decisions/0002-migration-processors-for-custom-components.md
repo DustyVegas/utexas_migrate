@@ -8,13 +8,15 @@ Accepted
 
 ## Context
 
-Drupal's Migrate API architecture uses the 3-stage “Extract-Transform-Load” (ETL) process ([reference](https://www.drupal.org/docs/8/api/migrate-api/migrate-api-overview#s-migrations-are-extract-transform-load-etl-processes)). Migration development time overwhelmingly consists of inspecting the source data and transforming it into the correct destination format. Although UT Drupal Kit custom components share similar elements such as a list of links or a call to action field, transformation details will differ due to machine names and schema structure.
+Migrating custom components on the Standard & Landing Page content types involves mapping data from the Context module to Layout Builder section data, which is done as a separate migration task after the nodes themselves have been migrated.
+
+Managing the particulars of each custom components' logic in this single, necessarily large migration task requires an architecture that facilitates debugging and easily following the lifecycle of a given component's transformation.
 
 ## Decision
 
-Provide separate base helper classes for each custom component migration instead of an abstract class that can be extended. In each class, define callbacks for extracting the source data, and for transforming it into a format that can be loaded in version 3.
+Provide separate traits for each custom component that may be `use`d by the `Layouts` process plugin. In each trait, define methods for extracting the source data and for transforming it into a format that can be loaded in version 3.
 
-Provide separate helper class for similar tasks (preparing a link, getting the destination media ID from the source FID), but minimize the amount of abstraction so that the developer can more easily debug an individual component in the base class.
+Provide separate helper class for similar tasks (preparing a link, getting the destination media ID from the source FID), but minimize the amount of abstraction so that the developer can more easily debug an individual component in the trait.
 
 ## Consequences
 

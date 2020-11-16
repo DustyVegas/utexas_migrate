@@ -57,9 +57,14 @@ class SiteSettingsDestination extends DestinationBase implements MigrateDestinat
       $migrated_paths = $row->getSourceProperty('utexas_google_tag_manager_gtm_exclude_paths');
       // Convert incoming paths to array.
       $migrated_paths = explode("\n", $migrated_paths);
-      // Loop through paths to prefix slash.
-      foreach ($migrated_paths as &$path) {
+      // Loop through incoming paths.
+      foreach ($migrated_paths as $key => &$path) {
+        // Preppend slash for D8 compliance.
         $path = "/" . $path;
+        // If path already in default D8 GTM config, remove to avoid duplicate.
+        if (strpos($excluded_paths, $path) !== FALSE) {
+          unset($migrated_paths[$key]);
+        }
       }
       // Convert parsed paths back to string.
       $migrated_paths = implode("\n", $migrated_paths);

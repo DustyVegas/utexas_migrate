@@ -11,6 +11,9 @@ use Drupal\migrate\Row;
  *   id = "flex_page_layouts_source",
  *   source_module = "utexas_migrate"
  * )
+ *
+ * @see doc/decisions/0004-migrate-standard-page-and-landing-page-to-flex-page.md
+ * @see doc/decisions/0002-migration-processors-for-custom-components.md
  */
 class FlexPageLayoutsSource extends NodeSource {
 

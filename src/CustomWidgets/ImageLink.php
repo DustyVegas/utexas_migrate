@@ -7,6 +7,8 @@ use Drupal\utexas_migrate\MigrateHelper;
 
 /**
  * Convert D7 custom compound field to D8 inline block.
+ *
+ * @see doc/decisions/0002-migration-processors-for-custom-components.md
  */
 class ImageLink {
 

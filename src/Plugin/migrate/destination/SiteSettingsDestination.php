@@ -53,7 +53,19 @@ class SiteSettingsDestination extends DestinationBase implements MigrateDestinat
       $container->set('id', 'utexas_migrated_gtm');
       $container->set('label', 'Migrated GTM');
       $container->set('container_id', $row->getSourceProperty('utexas_google_tag_manager_gtm_code'));
-      $container->set('path_list', $row->getSourceProperty('utexas_google_tag_manager_gtm_exclude_paths'));
+      $excluded_paths = $container->get('path_list');
+      $migrated_paths = $row->getSourceProperty('utexas_google_tag_manager_gtm_exclude_paths');
+      // Convert incoming paths to array.
+      $migrated_paths = explode("\n", $migrated_paths);
+      // Loop through paths to prefix slash.
+      foreach ($migrated_paths as &$path) {
+        $path = "/" . $path;
+      }
+      // Convert parsed paths back to string.
+      $migrated_paths = implode("\n", $migrated_paths);
+      // Append paths to list.
+      $excluded_paths .= "\n" . $migrated_paths;
+      $container->set('path_list', $excluded_paths);
       // Save container.
       $container->save();
     }

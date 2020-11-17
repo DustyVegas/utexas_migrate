@@ -245,6 +245,7 @@ class MigrateHelper {
 
     switch ($d7_display_id) {
       case 'views-news-news_with_thumbnails':
+      case 'views-news-news_titles_only':
         if ($moduleHandler->moduleExists('utnews_block_type_news_listing')) {
           return $d7_display_id;
         }
@@ -341,6 +342,7 @@ class MigrateHelper {
         break;
 
       case 'views-news-news_with_thumbnails':
+      case 'views-news-news_titles_only':
         $block_definition = ViewsBlock::createBlockDefinition($component_data);
         break;
     }

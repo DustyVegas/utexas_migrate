@@ -227,6 +227,7 @@ class Layouts extends ProcessPluginBase {
         break;
 
       case 'views-news-news_with_thumbnails':
+      case 'views-news-news_titles_only':
         $block_type = 'utnews_article_listing';
         $source = ViewsBlock::getBlockData($field_name);
         break;

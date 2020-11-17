@@ -45,6 +45,14 @@ class ViewsBlock {
         $data['count'] = self::getVariable('utexas_news_number_items_thumbnails');
         $data['title'] = self::getVariable('utexas_news_thumbnails_view_title');
         break;
+
+      case 'views-news-news_titles_only':
+        $data['thumbnails'] = FALSE;
+        $data['dates'] = TRUE;
+        $data['summaries'] = FALSE;
+        $data['count'] = self::getVariable('utexas_news_number_items_titles');
+        $data['title'] = self::getVariable('utexas_news_titles_view_title');
+        break;
     }
     return $data;
   }

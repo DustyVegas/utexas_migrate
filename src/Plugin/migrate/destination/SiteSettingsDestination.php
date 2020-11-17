@@ -8,6 +8,7 @@ use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Row;
+use Drupal\google_tag\Entity\Container;
 
 /**
  * Provides a 'utexas_site_settings_destination' destination plugin.
@@ -44,6 +45,35 @@ class SiteSettingsDestination extends DestinationBase implements MigrateDestinat
       $config->save();
     }
 
+    // Validate if there is a google tag to migrate.
+    if ($row->getSourceProperty('utexas_google_tag_manager_gtm_code') !== NULL) {
+      // Create container with GTM source settings.
+      $container = new Container([], 'google_tag_container');
+      $container->enforceIsNew();
+      $container->set('id', 'utexas_migrated_gtm');
+      $container->set('label', 'Migrated GTM');
+      $container->set('container_id', $row->getSourceProperty('utexas_google_tag_manager_gtm_code'));
+      $excluded_paths = $container->get('path_list');
+      $migrated_paths = $row->getSourceProperty('utexas_google_tag_manager_gtm_exclude_paths');
+      // Convert default and incoming paths to arrays.
+      $migrated_paths = explode("\n", $migrated_paths);
+      $excluded_paths = explode("\n", $excluded_paths);
+      // Loop through incoming paths.
+      foreach ($migrated_paths as $key => &$path) {
+        // Preppend slash for D8 compliance.
+        $path = "/" . $path;
+        // If path not in default array, add it.
+        if (!in_array($path, $excluded_paths)) {
+          array_push($excluded_paths, $path);
+        }
+      }
+      // Convert parsed paths back to string.
+      $excluded_paths = implode("\n", $excluded_paths);
+      // Append paths to list.
+      $container->set('path_list', $excluded_paths);
+      // Save container.
+      $container->save();
+    }
     // As an array of 1 item, this will indicate that the migration operation
     // completed its one task (composed of multiple settings).
     return ['site_settings'];
@@ -69,6 +99,9 @@ class SiteSettingsDestination extends DestinationBase implements MigrateDestinat
       $flex_page_breadcrumb_display = \Drupal::configFactory()->getEditable('utexas_breadcrumbs_visibility.content_type.utexas_flex_page');
       $flex_page_breadcrumb_display->set('display_breadcrumbs', 1);
       $flex_page_breadcrumb_display->save();
+      // Delete GTM container.
+      $container = \Drupal::configFactory()->getEditable('google_tag.container.utexas_migrated_gtm');
+      $container->delete();
     }
     catch (EntityStorageException $e) {
       \Drupal::logger('utexas_migrate')->warning("Rollback of site_settings failed. :error - Code: :code", [

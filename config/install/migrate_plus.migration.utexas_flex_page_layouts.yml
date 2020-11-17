@@ -5,7 +5,7 @@ field_plugin_method: null
 cck_plugin_method: null
 migration_tags:
   - 'Drupal 7'
-migration_group: utexas
+migration_group: utexas_end
 
 source:
   plugin: flex_page_layouts_source

@@ -21,6 +21,7 @@ use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
 use Drupal\utexas_migrate\CustomWidgets\Resource;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
+use Drupal\utexas_migrate\CustomWidgets\ViewsBlock;
 use Drupal\utexas_migrate\MigrateHelper;
 
 /**
@@ -122,6 +123,10 @@ class Layouts extends ProcessPluginBase {
         // This will provide for example, `twitter_widget`.
         $found = TRUE;
       }
+      elseif ($field_name = MigrateHelper::isSupportedViewsBlock($id)) {
+        // Sets field name like `views-news-news_with_thumbnails`.
+        $found = TRUE;
+      }
       elseif ($settings['region'] == 'social_links') {
         // The above eliminates fieldblocks not yet converted to UUIDs.
         // @todo: look up standard blocks' block UUIDs in FlexPageLayoutsSource.php
@@ -151,6 +156,8 @@ class Layouts extends ProcessPluginBase {
    */
   protected static function retrieveFieldData($field_name, Row $row) {
     $nid = $row->getSourceProperty('nid');
+    // Below, component types can define any block-level formatters that should
+    // be applied.
     $formatter = [
       'label' => 'hidden',
     ];
@@ -218,6 +225,12 @@ class Layouts extends ProcessPluginBase {
         $block_type = $field_name;
         $source = EntityReference::getFromNid('utexas_' . $field_name, $nid);
         break;
+
+      case 'views-news-news_with_thumbnails':
+        $block_type = 'utnews_article_listing';
+        $source = ViewsBlock::getBlockData($field_name);
+        break;
+
     }
     return [
       'field_name' => $field_name,
@@ -759,9 +772,9 @@ class Layouts extends ProcessPluginBase {
         // Important: the 'id' value must be "inline_block:" + valid block type.
         $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
           'id' => 'inline_block:' . $component_data['block_type'],
-          'label' => $component_data['field_identifier'],
+          'label' => $component_data['block_data']['title'] ?? $component_data['field_identifier'],
           'provider' => 'layout_builder',
-          'label_display' => 0,
+          'label_display' => $component_data['block_data']['label'] ?? 0,
           'view_mode' => $component_data['view_mode'] ?? $component_view_mode,
           'block_revision_id' => $block->id(),
         ]);

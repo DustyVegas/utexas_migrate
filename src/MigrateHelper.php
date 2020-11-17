@@ -15,6 +15,7 @@ use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
 use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
 use Drupal\utexas_migrate\CustomWidgets\Resource;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
+use Drupal\utexas_migrate\CustomWidgets\ViewsBlock;
 
 /**
  * Helper functions for migration.
@@ -229,6 +230,30 @@ class MigrateHelper {
   ];
 
   /**
+   * Check if Views block can be migrated to inline blocks.
+   *
+   * @param string $d7_display_id
+   *   The source views block ID.
+   *
+   * @return mixed
+   *   The view block identifier or FALSE.
+   */
+  public static function isSupportedViewsBlock($d7_display_id) {
+    // We should only try to create D8 blocks if the modules that provide them
+    // have been enabled.
+    $moduleHandler = \Drupal::moduleHandler();
+
+    switch ($d7_display_id) {
+      case 'views-news-news_with_thumbnails':
+        if ($moduleHandler->moduleExists('utnews_block_type_news_listing')) {
+          return $d7_display_id;
+        }
+        break;
+    }
+    return FALSE;
+  }
+
+  /**
    * Map of fieldblock IDs that SHOULD be migrated right now.
    *
    * @var array
@@ -313,6 +338,10 @@ class MigrateHelper {
       case 'wysiwyg_a':
       case 'wysiwyg_b':
         $block_definition = BasicBlock::createBlockDefinition($component_data);
+        break;
+
+      case 'views-news-news_with_thumbnails':
+        $block_definition = ViewsBlock::createBlockDefinition($component_data);
         break;
     }
     if (!isset($block_definition)) {

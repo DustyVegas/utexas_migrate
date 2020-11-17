@@ -93,6 +93,8 @@ class MigrateHelper {
    *
    * @return string
    *   The destination format (e.g., 'flex_html')
+   *
+   * @see /doc/decisions/0003-map-text-formats-for-custom-components.md
    */
   public static function getDestinationTextFormat($text_format) {
     // As much as possible, we want to map the set text formats to their

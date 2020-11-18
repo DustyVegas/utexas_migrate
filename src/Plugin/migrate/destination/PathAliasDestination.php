@@ -27,6 +27,9 @@ class PathAliasDestination extends Entity implements MigrateDestinationInterface
     // migration_lookup in utexas_path_aliases.yml.
     $destination = $row->getDestinationProperty('temp_nid');
     try {
+      if ($destination === NULL) {
+        throw new EntityStorageException('Node ID is NULL', -1);
+      }
       if ($node = Node::load($destination)) {
         // The "pathauto_state" table in D7 records nodes which have pathauto
         // settings that *differ* from the node type default. So, this table
@@ -49,10 +52,10 @@ class PathAliasDestination extends Entity implements MigrateDestinationInterface
       return FALSE;
     }
     catch (EntityStorageException $e) {
-      \Drupal::logger('utexas_migrate')->warning("Path alias import to node :nid failed: :error - Code: :code", [
-        ':nid' => $destination,
-        ':error' => $e->getMessage(),
-        ':code' => $e->getCode(),
+      \Drupal::logger('utexas_migrate')->warning("Path alias import to node @nid failed: @error - Code: @code", [
+        '@nid' => $destination,
+        '@error' => $e->getMessage(),
+        '@code' => $e->getCode(),
       ]);
     }
   }

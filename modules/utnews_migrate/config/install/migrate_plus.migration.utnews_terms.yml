@@ -9,7 +9,9 @@ source:
 process:
   name: name
   'description/value': description
-  'description/format': format
+  'description/format':
+    plugin: utexas_text_formats
+    source: format
   weight: weight
   # Only attempt to stub real (non-zero) parents.
   parent_id:
@@ -19,7 +21,7 @@ process:
       source: parent
     -
       plugin: migration_lookup
-      migration: d7_taxonomy_term
+      migration: utnews_terms
   parent:
     plugin: default_value
     default_value: 0

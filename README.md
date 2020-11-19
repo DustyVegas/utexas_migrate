@@ -41,18 +41,20 @@ $settings['migration_source_base_path'] = '/var/www';
 $settings['migration_source_private_file_path'] = 'sites/default/files/private';
 ```
 
-2. Import the remote database into the local `utexas_migrate` database:
+2. Import the remote database into the local `utexas_migrate` database (for efficiency, this is shown as a bash script, which can be executed from the project root as `migrate-sync`):
 
 ```
-export SOURCE_SITE="utqs-migration-tester"
-fin db create utexas_migrate && \
-terminus env:wake $SOURCE_SITE.dev && \
-terminus drush $SOURCE_SITE.dev cc all && \
-terminus backup:create $SOURCE_SITE.dev --element=db && \
-terminus backup:get $SOURCE_SITE.dev  --element=db --to=./db.sql.gz && \
-gunzip -c ./db.sql.gz > db.sql && \
-fin db import db.sql --db=utexas_migrate && \
-rm db.sql db.sql.gz
+migrate-sync() {
+  export SOURCE_SITE="utqs-migration-tester"
+  fin db create utexas_migrate && \
+  terminus env:wake $SOURCE_SITE.dev && \
+  terminus drush $SOURCE_SITE.dev cc all && \
+  terminus backup:create $SOURCE_SITE.dev --element=db && \
+  terminus backup:get $SOURCE_SITE.dev  --element=db --to=./db.sql.gz && \
+  gunzip -c ./db.sql.gz > db.sql && \
+  fin db import db.sql --db=utexas_migrate && \
+  rm db.sql db.sql.gz
+}
 ```
 
 ## Add & enable this module & dependencies

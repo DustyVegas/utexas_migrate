@@ -250,6 +250,16 @@ class MigrateHelper {
           return $d7_display_id;
         }
         break;
+
+      case 'views-events-block_1':
+      case 'views-events-block_2':
+      case 'views-events-block_3':
+      case 'views-events-block_4':
+        if ($moduleHandler->moduleExists('utevent_block_type_event_listing')) {
+          return $d7_display_id;
+        }
+        break;
+
     }
     return FALSE;
   }
@@ -343,6 +353,10 @@ class MigrateHelper {
 
       case 'views-news-news_with_thumbnails':
       case 'views-news-news_titles_only':
+      case 'views-events-block_1':
+      case 'views-events-block_2':
+      case 'views-events-block_3':
+      case 'views-events-block_4':
         $block_definition = ViewsBlock::createBlockDefinition($component_data);
         break;
     }

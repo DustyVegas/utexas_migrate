@@ -27,6 +27,7 @@ process:
   init: init
 destination:
   plugin: utexas:user
+  no_stub: true
 migration_dependencies:
   required:
     - utexas_roles

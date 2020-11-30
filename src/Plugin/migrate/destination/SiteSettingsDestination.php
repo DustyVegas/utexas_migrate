@@ -26,7 +26,7 @@ class SiteSettingsDestination extends DestinationBase implements MigrateDestinat
     // Additional site settings may be added here as needed.
     $settings = [
       'default_breadcrumb_display' => [
-        'key' => 'utexas_breadcrumbs_visibility.content_type.utexas_flex_page',
+        'key' => 'breadcrumbs_visibility.content_type.utexas_flex_page',
         'value' => 'display_breadcrumbs',
       ],
       'utexas_twitter_widget_key' => [
@@ -96,7 +96,7 @@ class SiteSettingsDestination extends DestinationBase implements MigrateDestinat
   public function rollback(array $destination_identifier) {
     try {
       // Config for flex_page defaults to 1 for breadcrumb visibility. Reset.
-      $flex_page_breadcrumb_display = \Drupal::configFactory()->getEditable('utexas_breadcrumbs_visibility.content_type.utexas_flex_page');
+      $flex_page_breadcrumb_display = \Drupal::configFactory()->getEditable('breadcrumbs_visibility.content_type.utexas_flex_page');
       $flex_page_breadcrumb_display->set('display_breadcrumbs', 1);
       $flex_page_breadcrumb_display->save();
       // Delete GTM container.

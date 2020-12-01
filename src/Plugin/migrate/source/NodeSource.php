@@ -76,7 +76,7 @@ class NodeSource extends SqlBase {
     if ($show_breadcrumb === NULL && in_array($source_type, ['landing_page', 'standard_page'])) {
       $type = $row->getSourceProperty('type');
       // Check what the default value for the content type is.
-      $default_display = \Drupal::config('utexas_breadcrumbs_visibility.content_type.utexas_flex_page')->get('display_breadcrumbs');
+      $default_display = \Drupal::config('breadcrumbs_visibility.content_type.utexas_flex_page')->get('display_breadcrumbs');
       // If a node-type default is set, use it.
       if ($default_display !== NULL) {
         $row->setSourceProperty('show_breadcrumb', $default_display);

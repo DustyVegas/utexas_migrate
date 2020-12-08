@@ -25,7 +25,7 @@ class QuickLinks {
     $block_definition = [
       'type' => 'utexas_quick_links',
       'info' => $data['field_identifier'],
-      'field_block_ql' => $data['block_data'],
+      'field_block_ql' => $data['block_data']['field'],
       'reusable' => FALSE,
     ];
     return $block_definition;
@@ -85,22 +85,32 @@ class QuickLinks {
    */
   protected static function massageFieldData(array $source) {
     // Technically, there should only ever be one delta for Quick Links.
-    // See explanation in getQuickLinksSource().
     $instances = [];
+    // If the first Quick Links instance has a headline, populate the block
+    // title with it.
+    if (!empty($source[0]['headline'])) {
+      $instances['title'] = $source[0]['headline'];
+    }
+    $instances['label'] = TRUE;
+    // Note: label => TRUE: Quick Links headlines from v2 are migrated to
+    // block titles in v3.
+
     foreach ($source as $delta => $instance) {
-      $instances[$delta]['headline'] = $instance['headline'];
-      $instances[$delta]['copy_value'] = $instance['copy'];
-      $instances[$delta]['copy_format'] = 'restricted_html';
+      // Migrate the headline field into the block title (see above).
+      $instances['field'][$delta]['headline'] = '';
+
+      $instances['field'][$delta]['copy_value'] = $instance['copy'];
+      $instances['field'][$delta]['copy_format'] = 'restricted_html';
 
       $links = unserialize($instance['links']);
       if (!empty($links)) {
         foreach ($links as $i => $link) {
           $prepared_links[] = [
-            'url' => MigrateHelper::prepareLink($link['link_url']),
+            'uri' => MigrateHelper::prepareLink($link['link_url']),
             'title' => $link['link_title'],
           ];
         }
-        $instances[$delta]['links'] = serialize($prepared_links);
+        $instances['field'][$delta]['links'] = serialize($prepared_links);
       }
     }
     // Quick Links should always display with border w/o background.

@@ -67,7 +67,7 @@ class BackgroundAccent {
     $destination = [];
     if (!empty($source)) {
       $destination['blur'] = $source[0]['blur'];
-      $destination['image'] = $source[0]['image'] != 0 ? MigrateHelper::getMediaIdFromFid($source[0]['image']) : 0;
+      $destination['image'] = $source[0]['image'] != 0 ? MigrateHelper::getDestinationMid($source[0]['image']) : 0;
     }
     return $destination;
   }

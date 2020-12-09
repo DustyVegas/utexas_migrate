@@ -87,7 +87,7 @@ class PhotoContentArea {
   protected static function massageFieldData(array $source) {
     $destination = [];
     foreach ($source as $delta => $instance) {
-      $destination[$delta]['image'] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
+      $destination[$delta]['image'] = $instance['image_fid'] != 0 ? MigrateHelper::getDestinationMid($instance['image_fid']) : 0;
       if (!empty($instance['headline'])) {
         $destination[$delta]['headline'] = $instance['headline'];
       }

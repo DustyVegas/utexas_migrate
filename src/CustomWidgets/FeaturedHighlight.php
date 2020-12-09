@@ -96,7 +96,7 @@ class FeaturedHighlight {
       'dark' => 'utexas_featured_highlight_3',
     ];
     foreach ($source as $delta => $instance) {
-      $destination[$delta]['media'] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
+      $destination[$delta]['media'] = $instance['image_fid'] != 0 ? MigrateHelper::getDestinationMid($instance['image_fid']) : 0;
       if (!empty($instance['link_href'])) {
         $destination[$delta]['link_uri'] = MigrateHelper::prepareLink($instance['link_href']);
         $destination[$delta]['link_text'] = $instance['link_title'];

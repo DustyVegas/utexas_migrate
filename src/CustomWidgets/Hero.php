@@ -125,7 +125,7 @@ class Hero {
             break;
         }
       }
-      $destination[$delta]['media'] = $instance['image_fid'] != 0 ? MigrateHelper::getMediaIdFromFid($instance['image_fid']) : 0;
+      $destination[$delta]['media'] = $instance['image_fid'] != 0 ? MigrateHelper::getDestinationMid($instance['image_fid']) : 0;
       $style_map = [
         'default-center' => 'utexas_hero',
         'hero-style-1-left' => 'utexas_hero_1_left',

@@ -95,7 +95,7 @@ class Resource {
         $items[$delta]['item']['headline'] = $instance['headline'];
       }
       if ($instance['image_fid'] != 0) {
-        $destination_mid = MigrateHelper::getMediaIdFromFid($instance['image_fid']);
+        $destination_mid = MigrateHelper::getDestinationMid($instance['image_fid']);
         $items[$delta]['item']['image'] = $destination_mid;
       }
       else {

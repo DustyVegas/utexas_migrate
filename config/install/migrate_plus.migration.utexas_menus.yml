@@ -20,6 +20,3 @@ process:
   description: description
 destination:
   plugin: entity:menu
-migration_dependencies:
-  required:
-    - utexas_path_aliases

@@ -16,6 +16,7 @@ use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
 use Drupal\utexas_migrate\CustomWidgets\Resource;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
 use Drupal\utexas_migrate\CustomWidgets\ViewsBlock;
+use Drupal\Core\Url;
 
 /**
  * Helper functions for migration.
@@ -28,11 +29,10 @@ class MigrateHelper {
    * @param int $fid
    *   The file ID from the D7 site.
    *
-   * @return int
-   *   Returns the matching media entity ID imported to the D8 site.
+   * @return mixed
+   *   Returns the matching media entity ID or FALSE.
    */
-  public static function getMediaIdFromFid($fid) {
-    $mid = 0;
+  public static function getDestinationMid($fid) {
     $mid = \Drupal::database()->select('migrate_map_utexas_media_image')
       ->fields('migrate_map_utexas_media_image', ['destid1'])
       ->condition('sourceid1', $fid, '=')
@@ -50,13 +50,32 @@ class MigrateHelper {
   }
 
   /**
+   * Retrieve a user entity ID from the migration map.
+   *
+   * @param int $uid
+   *   A user entity ID from the source site.
+   *
+   * @return mixed
+   *   Returns the matching media entity ID or FALSE.
+   */
+  public static function getDestinationUid($uid) {
+    $table = 'migrate_map_utexas_users';
+    $destination_id = \Drupal::database()->select($table)
+      ->fields($table, ['destid1'])
+      ->condition('sourceid1', $uid, '=')
+      ->execute()
+      ->fetchField();
+    return $destination_id;
+  }
+
+  /**
    * Given a source nid, return a destination nid if there is one.
    *
    * @param int $source_nid
    *   The NID from the D7 site.
    *
-   * @return int
-   *   Returns the matching media entity ID imported to the D8 site.
+   * @return mixed
+   *   Returns the node ID or FALSE
    */
   public static function getDestinationNid($source_nid) {
     // Each node type migration must be queried individually,
@@ -124,21 +143,27 @@ class MigrateHelper {
    *   A corresponding destination path, such as `node/8` or `media/6` or FALSE.
    */
   public static function getDestinationFromSource($source) {
+    // @todo: Add coverage for taxonomy ID mapping.
     if (strpos($source, 'node/') === 0) {
       $source_nid = substr($source, 5);
       $destination_nid = self::getDestinationNid($source_nid);
-      if (!$destination_nid) {
-        return FALSE;
+      if ($destination_nid) {
+        return 'node/' . $destination_nid;
       }
-      return 'node/' . $destination_nid;
     }
     elseif (strpos($source, 'file/') === 0) {
       $source_fid = substr($source, 5);
-      $destination_fid = self::getMediaIdFromFid($source_fid);
-      if (!$destination_fid) {
-        return FALSE;
+      $destination_fid = self::getDestinationMid($source_fid);
+      if ($destination_fid) {
+        return 'media/' . $destination_fid;
       }
-      return 'media/' . $destination_fid;
+    }
+    elseif (strpos($source, 'user/') === 0) {
+      $source_uid = substr($source, 5);
+      $destination_uid = self::getDestinationUid($source_uid);
+      if ($destination_uid) {
+        return 'user/' . $destination_uid;
+      }
     }
     return $source;
   }
@@ -146,7 +171,7 @@ class MigrateHelper {
   /**
    * Receive a Drupal 7 link & format it for Drupal 8.
    *
-   * @param string $link
+   * @param string $value
    *   A link, in string format.
    * @param string $source_path
    *   The source path that referenced this link.
@@ -154,30 +179,40 @@ class MigrateHelper {
    * @return string
    *   The appropriate link for D8.
    */
-  public static function prepareLink($link, $source_path = '') {
-    // Check for node/ links.
-    // @todo: check for taxonomy/term/, file/, and other internal links (e.g., Views routes)
-    if (strpos($link, 'node/') === 0) {
-      $source_nid = substr($link, 5);
-      if ($destination_nid = self::getDestinationNid($source_nid)) {
-        return ('internal:/node/' . $destination_nid);
-      }
-      // The destination NID doesn't exist. Print a warning message.
-      \Drupal::logger('utexas_migrate')->warning('* Source node %source contained link "@link". No equivalent destination node was found. Link replaced with link to homepage.', [
-        '@link' => $link,
-        '%source' => $source_path,
-      ]);
-      return 'internal:/';
-    }
+  public static function prepareLink($value, $source_path = '') {
+    // This processing is modeled on the Drupal core link_uri process plugin,
+    // but is provided as a helper method so that its processing can be used in
+    // contexts such as links in custom components and in WYSIWYG areas.
+    $path = ltrim($value, '/');
+    if (parse_url($path, PHP_URL_SCHEME) === NULL) {
+      // Attempt to find entity mapping from source.
+      $path = self::getDestinationFromSource($path);
 
-    // Handle <front>.
-    if ($link == '<front>') {
-      return 'internal:/';
+      if ($path == '<front>') {
+        $path = '';
+      }
+      elseif ($path == '<nolink>') {
+        return 'route:<nolink>';
+      }
+      $path = 'internal:/' . $path;
+
+      // Convert entity URIs to the entity scheme, if the path matches a route
+      // of the form "entity.$entity_type_id.canonical".
+      // @see \Drupal\Core\Url::fromEntityUri()
+      $url = Url::fromUri($path);
+      if ($url->isRouted()) {
+        $route_name = $url->getRouteName();
+        foreach (array_keys(\Drupal::entityTypeManager()->getDefinitions()) as $entity_type_id) {
+          if ($route_name == "entity.{$entity_type_id}.canonical" && isset($url->getRouteParameters()[$entity_type_id])) {
+            return "entity:{$entity_type_id}/" . $url->getRouteParameters()[$entity_type_id];
+          }
+        }
+      }
+      else {
+        return $url->getUri();
+      }
     }
-    if ($link == '<nolink>') {
-      return 'internal:##';
-    }
-    return $link;
+    return $path;
   }
 
   /**

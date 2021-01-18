@@ -102,7 +102,7 @@ class PromoUnits {
         $items[$delta]['item']['copy']['value'] = $instance['copy'];
         $items[$delta]['item']['copy']['format'] = 'flex_html';
       }
-      $items[$delta]['item']['link']['url'] = MigrateHelper::prepareLink($instance['cta_uri']);
+      $items[$delta]['item']['link']['uri'] = MigrateHelper::prepareLink($instance['cta_uri']);
       $items[$delta]['item']['link']['title'] = $instance['cta_title'] != "" ? $instance['cta_title'] : 'Read story';
     }
     if (!empty($items)) {

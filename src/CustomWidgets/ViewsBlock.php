@@ -27,7 +27,7 @@ class ViewsBlock {
    * Query the source database for data.
    *
    * @param string $views_block_id
-   *  The Views block ID as defined in the source site.
+   *   The Views block ID as defined in the source site.
    *
    * @return array
    *   Returns contextual data about the Views block being used.

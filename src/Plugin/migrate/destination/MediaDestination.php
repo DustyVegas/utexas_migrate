@@ -3,6 +3,7 @@
 namespace Drupal\utexas_migrate\Plugin\migrate\destination;
 
 use Drupal\Core\Entity\EntityStorageException;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\media\Entity\Media;
 use Drupal\migrate\Plugin\migrate\destination\DestinationBase;
 use Drupal\migrate\Plugin\MigrateDestinationInterface;
@@ -51,7 +52,6 @@ abstract class MediaDestination extends DestinationBase implements MigrateDestin
     $filepath = str_replace("%2F", "/", urlencode($filepath));
     $filepath = str_replace("+", "%20", $filepath);
 
-
     if (strpos($file_uri, 'public://') !== FALSE) {
       $location_path = $this->migrationSourcePublicFilePath . $filepath;
       // Public files.
@@ -62,16 +62,24 @@ abstract class MediaDestination extends DestinationBase implements MigrateDestin
       $location_path = $this->migrationSourcePrivateFilePath . $filepath;
       $path_to_file = $this->migrationSourceBasePath . $location_path;
     }
-
     try {
       // This saves a new Managed File.
-      $file_data = file_get_contents($path_to_file);
+      $public = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://");
       $dirname = dirname($file_uri);
       // Prepare subdirectories of the filesystem.
+      $existing = $public . '/' . $filepath;
       if (!in_array($dirname, ['public:', 'private:'])) {
-        file_prepare_directory($dirname, FILE_CREATE_DIRECTORY);
+        \Drupal::service('file_system')->prepareDirectory($dirname, FileSystemInterface::CREATE_DIRECTORY);
+        $existing = $public . '/' . $dirname . '/' . $filepath;
       }
-      $this->importedFile = file_save_data($file_data, $file_uri, FILE_EXISTS_REPLACE);
+      if (file_exists($existing)) {
+        // If the destination file exists (e.g., previous migration), use that.
+        $file_data = file_get_contents($existing);
+      }
+      else {
+        $file_data = file_get_contents($path_to_file);
+      }
+      $this->importedFile = file_save_data($file_data, $file_uri, FileSystemInterface::EXISTS_REPLACE);
       if ($this->importedFile) {
         $this->mediaElements['name'] = $this->importedFile->getFilename();
         $this->mediaElements['uid'] = $row->getDestinationProperty('uid');

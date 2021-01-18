@@ -9,6 +9,7 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Row;
 use Drupal\google_tag\Entity\Container;
+use Drupal\utexas_migrate\MigrateHelper;
 
 /**
  * Provides a 'utexas_site_settings_destination' destination plugin.
@@ -37,6 +38,18 @@ class SiteSettingsDestination extends DestinationBase implements MigrateDestinat
         'key' => 'twitter_profile_widget.settings',
         'value' => 'twitter_widget_secret',
       ],
+      'site_mail' => [
+        'key' => 'system.site',
+        'value' => 'mail',
+      ],
+      'site_name' => [
+        'key' => 'system.site',
+        'value' => 'name',
+      ],
+      'site_slogan' => [
+        'key' => 'system.site',
+        'value' => 'slogan',
+      ],
     ];
     foreach ($settings as $source => $destination) {
       $data = $row->getSourceProperty($source);
@@ -44,6 +57,16 @@ class SiteSettingsDestination extends DestinationBase implements MigrateDestinat
       $config->set($destination['value'], $data);
       $config->save();
     }
+
+    // Front page & 403 & 404 pages.
+    $config = \Drupal::configFactory()->getEditable('system.site');
+    $front = MigrateHelper::getDestinationFromSource($row->getSourceProperty('site_frontpage'));
+    $site403 = MigrateHelper::getDestinationFromSource($row->getSourceProperty('site_403'));
+    $site404 = MigrateHelper::getDestinationFromSource($row->getSourceProperty('site_404'));
+    $config->set('page.front', $front);
+    $config->set('page.403', $site403);
+    $config->set('page.404', $site404);
+    $config->save();
 
     // Validate if there is a google tag to migrate.
     if ($row->getSourceProperty('utexas_google_tag_manager_gtm_code') !== NULL) {

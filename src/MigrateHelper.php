@@ -148,21 +148,21 @@ class MigrateHelper {
       $source_nid = substr($source, 5);
       $destination_nid = self::getDestinationNid($source_nid);
       if ($destination_nid) {
-        return 'node/' . $destination_nid;
+        return '/node/' . $destination_nid;
       }
     }
     elseif (strpos($source, 'file/') === 0) {
       $source_fid = substr($source, 5);
       $destination_fid = self::getDestinationMid($source_fid);
       if ($destination_fid) {
-        return 'media/' . $destination_fid;
+        return '/media/' . $destination_fid;
       }
     }
     elseif (strpos($source, 'user/') === 0) {
       $source_uid = substr($source, 5);
       $destination_uid = self::getDestinationUid($source_uid);
       if ($destination_uid) {
-        return 'user/' . $destination_uid;
+        return '/user/' . $destination_uid;
       }
     }
     return $source;
@@ -194,7 +194,10 @@ class MigrateHelper {
       elseif ($path == '<nolink>') {
         return 'route:<nolink>';
       }
-      $path = 'internal:/' . $path;
+      if (strpos($path, '/') !== 0) {
+        $path = '/' . $path;
+      }
+      $path = 'internal:' . $path;
 
       // Convert entity URIs to the entity scheme, if the path matches a route
       // of the form "entity.$entity_type_id.canonical".

@@ -35,6 +35,7 @@ class SiteSettingsSource extends SqlBase {
     $this->getActiveThemeSettings($row);
     $this->getTwitterCredentials($row);
     $this->getGtmSettings($row);
+    $this->getSiteInformation($row);
   }
 
   /**
@@ -92,6 +93,27 @@ class SiteSettingsSource extends SqlBase {
     if (isset($secret)) {
       $row->setSourceProperty('utexas_twitter_widget_secret', $secret);
     }
+  }
+
+  /**
+   * Custom callback to site info variables.
+   */
+  public function getSiteInformation(&$row) {
+    $info = [
+      'site_frontpage',
+      'site_403',
+      'site_404',
+      'site_slogan',
+      'site_mail',
+      'site_name',
+    ];
+    foreach ($info as $key) {
+      $value = $this->getVariable($key);
+      if (isset($value)) {
+        $row->setSourceProperty($key, $value);
+      }
+    }
+
   }
 
   /**

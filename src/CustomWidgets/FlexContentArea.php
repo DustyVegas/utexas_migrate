@@ -109,7 +109,7 @@ class FlexContentArea {
         $prepared_links = [];
         foreach ($links as $i => $link) {
           $prepared_links[] = [
-            'url' => MigrateHelper::prepareLink($link['link_url']),
+            'uri' => MigrateHelper::prepareLink($link['link_url']),
             'title' => $link['link_title'],
           ];
         }

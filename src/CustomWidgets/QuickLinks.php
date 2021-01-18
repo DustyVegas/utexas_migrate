@@ -94,7 +94,6 @@ class QuickLinks {
     $instances['label'] = TRUE;
     // Note: label => TRUE: Quick Links headlines from v2 are migrated to
     // block titles in v3.
-
     foreach ($source as $delta => $instance) {
       // Migrate the headline field into the block title (see above).
       $instances['field'][$delta]['headline'] = '';

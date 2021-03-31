@@ -1,7 +1,7 @@
 {
   "name": "utexas/utexas_migrate",
   "description": "Provides migration from UTDK 7 to 8.",
-  "type": "drupal-module",
+  "type": "drupal-custom-module",
   "license": ["GPL-2.0-or-later"],
   "keywords": ["Drupal"],
   "homepage": "https://github.austin.utexas.edu/eis1-wcs/utexas-migrate",

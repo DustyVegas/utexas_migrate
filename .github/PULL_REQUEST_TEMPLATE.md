@@ -13,8 +13,3 @@ Fixes #
 ## Evaluation Steps
 1. See general setup & testing steps in https://github.austin.utexas.edu/eis1-wcs/utexas_migrate/wiki#add--enable-this-module--dependencies
 1.
-
-
-## Potential Reviewers
-
-@eis1-wcs/drupal-utdk

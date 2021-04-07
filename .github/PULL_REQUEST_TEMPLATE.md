@@ -11,10 +11,5 @@ Fixes #
 - [ ] I have added content to https://https://dev-utqs-migration-tester.pantheonsite.io/ to demonstrate the migration.
 
 ## Evaluation Steps
-1. See general setup & testing steps in the `README.md`
+1. See general setup & testing steps in https://github.austin.utexas.edu/eis1-wcs/utexas_migrate/wiki#add--enable-this-module--dependencies
 1.
-
-
-## Potential Reviewers
-
-@eis1-wcs/drupal-utdk

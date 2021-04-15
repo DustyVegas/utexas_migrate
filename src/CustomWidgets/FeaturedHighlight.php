@@ -111,7 +111,7 @@ class FeaturedHighlight {
       if ($instance['date'] != 0) {
         $destination[$delta]['date'] = $instance['date'];
       }
-      $destination[$delta]['view_mode'] = $style_map{$source[0]['style']} ?? 'default';
+      $destination[$delta]['view_mode'] = $style_map[$source[0]['style']] ?? 'default';
     }
     return $destination;
   }

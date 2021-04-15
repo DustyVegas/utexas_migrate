@@ -42,6 +42,7 @@ class UserSource extends User {
    *   The D8 roles of the user.
    */
   protected function mapRoles(array $d7_roles) {
+    $d8_roles = [];
     $map = [
       'Announcement Editor' => 'utexas_site_manager',
       'Events Editor' => 'utexas_content_editor',
@@ -58,6 +59,7 @@ class UserSource extends User {
       }
       $d8_roles[] = $map[$label];
     }
+
     return array_unique($d8_roles);
   }
 

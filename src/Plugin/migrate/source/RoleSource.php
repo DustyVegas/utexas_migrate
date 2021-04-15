@@ -35,7 +35,7 @@ class RoleSource extends Role {
         ->condition('name', $this->configuration['skip_name'], 'NOT IN')
         ->countQuery()->execute()->fetchField();
       if ($count == 0) {
-        $query->condition('v.name', (array) $this->configuration['skip_name'], 'NOT IN');
+        $query->condition('name', (array) $this->configuration['skip_name'], 'NOT IN');
       }
       else {
         $query = $this->select('role', 'v')

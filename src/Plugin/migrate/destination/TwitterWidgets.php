@@ -29,7 +29,7 @@ class TwitterWidgets extends Entity implements MigrateDestinationInterface {
         'info' => $row->getSourceProperty('name'),
         'field_twitter_profile_widget' => [
           'headline' => $row->getSourceProperty('headline'),
-          'list_type' => $row->getSourceProperty('type'),
+          'list_type' => $row->getSourceProperty('type') ?? 'account',
           'search' => $row->getSourceProperty('search'),
           'account' => $row->getSourceProperty('account'),
           'timeline' => $row->getSourceProperty('timeline_list'),

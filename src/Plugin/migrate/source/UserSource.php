@@ -18,6 +18,17 @@ class UserSource extends User {
   /**
    * {@inheritdoc}
    */
+  public function query() {
+    // This overrides the core class, which excludes user 0.
+    // We want to create a mapping from user 0 to user 0, so that nodes
+    // assigned to the anonymous user are migrateable.
+    return $this->select('users', 'u')
+      ->fields('u');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function prepareRow(Row $row) {
     $uid = $row->getSourceProperty('uid');
     $roles = $this->select('users_roles', 'ur')
@@ -59,7 +70,6 @@ class UserSource extends User {
       }
       $d8_roles[] = $map[$label];
     }
-
     return array_unique($d8_roles);
   }
 

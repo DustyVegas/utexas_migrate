@@ -62,8 +62,8 @@ class Layouts extends ProcessPluginBase {
       if (!empty($section['components'])) {
         foreach ($section['components'] as $component) {
           $d8_component = self::createD8SectionComponent($component);
-          if ($d8_component) {
-            $d8_components[] = $d8_component;
+          foreach ($d8_component as $c) {
+            $d8_components[] = $c;
           }
         }
         if (!empty($d8_components) && !empty($section['layout'])) {
@@ -232,10 +232,10 @@ class Layouts extends ProcessPluginBase {
       case 'views-events-block_2':
       case 'views-events-block_3':
       case 'views-events-block_4':
+      case 'views-team_members-block_1':
         $source = ViewsBlock::getBlockData($field_name);
         $block_type = $source['block_type'];
         break;
-
     }
     return [
       'field_name' => $field_name,
@@ -755,10 +755,9 @@ class Layouts extends ProcessPluginBase {
   protected static function createD8SectionComponent(array $component_data) {
     // Add view mode fallback after layout regions have had a chance to set it.
     $component_view_mode = $component_data['block_data'][0]['view_mode'] ?? 'full';
-
     // Switch creation between inline & reusable block components.
     switch ($component_data['block_type']) {
-      case 'twitter_widget';
+      case 'twitter_widget':
         // @todo: add Contact info, Menu Blocks, & standard Blocks.
         $block_uuid = EntityReference::getDestinationUuid($component_data);
         $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
@@ -771,11 +770,41 @@ class Layouts extends ProcessPluginBase {
         ]);
         break;
 
+      case 'utprof_profile_listing':
+        $components = [];
+        // Team Member block migrates from one to many blocks, so we need to
+        // create multiple section components.
+        foreach ($component_data['block_data']['blocks'] as $i) {
+          $additional = [];
+          if ($i['field_utprof_view_mode'] === 'node.utexas_prominent') {
+            $additional = [
+              'layout_builder_styles_style' => [
+                'utexas_onecol' => 'utexas_onecol',
+              ],
+            ];
+          }
+          $block = MigrateHelper::createInlineBlock($i);
+          // Important: 'id' value must be "inline_block:" + valid block type.
+          $component = new SectionComponent(md5($i['field_identifier'] . $i['title']), $component_data['region'], [
+            'id' => 'inline_block:' . $i['block_type'],
+            'label' => $i['title'] ?? $i['field_identifier'],
+            'provider' => 'layout_builder',
+            'label_display' => TRUE,
+            'block_revision_id' => $block->id(),
+          ]);
+          if ($component) {
+            $component->setWeight($component_data['weight']);
+            $component->set('additional', $additional);
+            $components[] = $component;
+          }
+        }
+        return $components;
+
       default:
         // All other block types are migrated as inline blocks.
         $block = MigrateHelper::createInlineBlock($component_data);
         // Important: the 'id' value must be "inline_block:" + valid block type.
-        $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
+        $component = new SectionComponent(md5($component_data['field_identifier'] . $component_data['block_data']['title']), $component_data['region'], [
           'id' => 'inline_block:' . $component_data['block_type'],
           'label' => $component_data['block_data']['title'] ?? $component_data['field_identifier'],
           'provider' => 'layout_builder',
@@ -793,7 +822,7 @@ class Layouts extends ProcessPluginBase {
       // Ensure data type of array passed to component's `additional` element.
       $existing_additional = is_array($component_data['additional']) ? $component_data['additional'] : [];
       $component->set('additional', $existing_additional);
-      return $component;
+      return [$component];
     }
     return FALSE;
   }

@@ -289,6 +289,12 @@ class MigrateHelper {
         }
         break;
 
+      case 'views-team_members-block_1':
+        if ($moduleHandler->moduleExists('utprof_block_type_profile_listing')) {
+          return $d7_display_id;
+        }
+        break;
+
       case 'views-events-block_1':
       case 'views-events-block_2':
       case 'views-events-block_3':
@@ -395,6 +401,7 @@ class MigrateHelper {
       case 'views-events-block_2':
       case 'views-events-block_3':
       case 'views-events-block_4':
+      case 'views-team_members-block_1':
         $block_definition = ViewsBlock::createBlockDefinition($component_data);
         break;
     }

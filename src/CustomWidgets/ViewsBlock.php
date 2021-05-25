@@ -3,6 +3,7 @@
 namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
+use Drupal\utexas_migrate\ProfileMigrateHelper;
 
 /**
  * Convert D7 Views block to D8 Inline blocks.
@@ -36,7 +37,6 @@ class ViewsBlock {
     $data = [];
     // All views blocks in D7 displayed their label.
     $data['label'] = TRUE;
-
     switch ($views_block_id) {
       case 'views-news-news_with_thumbnails':
         $data['thumbnails'] = TRUE;
@@ -100,13 +100,11 @@ class ViewsBlock {
         $data['block_type'] = 'utevent_event_listing';
         break;
 
-      case 'views-news-news_titles_only':
-        $data['thumbnails'] = FALSE;
-        $data['dates'] = TRUE;
-        $data['summaries'] = FALSE;
-        $data['count'] = self::getVariable('utexas_news_number_items_titles');
-        $data['title'] = self::getVariable('utexas_news_titles_view_title');
+      case 'views-team_members-block_1':
+        $data['block_type'] = 'utprof_profile_listing';
+        $data['blocks'] = ProfileMigrateHelper::generateListings();
         break;
+
     }
     return $data;
   }
@@ -160,6 +158,21 @@ class ViewsBlock {
         $block_definition['field_utevent_display_cta']['value'] = $data['block_data']['cta'];
         break;
 
+      case 'utprof_profile_listing':
+        $block_definition['field_utprof_list_method'] = $data['field_utprof_list_method'];
+        $block_definition['field_utprof_specific_profiles'] = $data['field_utprof_specific_profiles'];
+        $block_definition['field_utprof_view_mode'] = $data['field_utprof_view_mode'];
+        // Sample output:
+        // [title] => Faculty
+        // [field_identifier] => views-team_members-block_1
+        // [block_type] => utprof_profile_listing
+        // [field_utprof_list_method] => pick
+        // [field_utprof_specific_profiles] => Array
+        //     (
+        //         [0] => 31
+        //         [1] => 32
+        //     )
+        break;
     }
     return $block_definition;
   }

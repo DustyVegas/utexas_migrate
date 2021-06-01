@@ -26,15 +26,18 @@ process:
   # Since this field will just be used for computing another property,
   # prefix it with "temp_".
   temp_nid:
-    plugin: migration_lookup
-    source: nid
-    migration:
-      - utexas_standard_page
-      - utexas_landing_page
-      - utexas_basic_page
-      - utexas_article
-      - utnews_nodes
-      - utprof_nodes
+    -
+      plugin: migration_lookup
+      source: nid
+      migration:
+        - utexas_standard_page
+        - utexas_landing_page
+        - utexas_basic_page
+        - utexas_article
+        - utnews_nodes
+        - utprof_nodes
+    -
+      plugin: utexas_path_alias_process
 destination:
   plugin: utexas_path_alias_destination
 migration_dependencies:

@@ -8,7 +8,7 @@ Fixes #
 
 ## Checklist
 - [ ] Code follows the coding style of this project.
-- [ ] I have added content to https://https://dev-utqs-migration-tester.pantheonsite.io/ to demonstrate the migration.
+- [ ] Content exists in https://https://live-utqs-migration-tester.pantheonsite.io/ to demonstrate the migration task.
 
 ## Run the migration
 

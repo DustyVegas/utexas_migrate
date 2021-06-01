@@ -11,6 +11,7 @@ use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Row;
 use Drupal\Core\Site\Settings;
+use Drupal\file\Entity\File;
 
 /**
  * Provides a 'utexas_media_destination' destination plugin.
@@ -167,7 +168,8 @@ abstract class MediaDestination extends DestinationBase implements MigrateDestin
     $result = array_keys($query->execute()->fetchAllAssoc('fid'));
     if (!empty($result)) {
       foreach ($result as $fid) {
-        file_delete($fid);
+        $file = File::load($fid);
+        $file->delete();
       }
     }
   }

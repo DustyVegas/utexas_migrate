@@ -17,7 +17,7 @@ composer create-project utexas/utdk-project utdk-project --stability=dev --remov
     && cd utdk-project \
     && (cd upstream-configuration && composer require utexas/utdk_profile:dev-develop --no-update) \
     && composer require utexas/utdk_localdev:dev-master \
-    && fin init && fin init-site --wcs \
+    && fin init && fin drush si utexas utexas_installation_options.default_content=NULL -y \
     && composer require utexas/utprof:dev-develop \
     && fin drush -y en utprof utprof_block_type_profile_listing utprof_content_type_profile utprof_view_profiles utprof_vocabulary_groups utprof_vocabulary_tags \
     && composer require utexas/utnews:dev-develop \

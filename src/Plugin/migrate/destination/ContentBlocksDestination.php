@@ -45,7 +45,7 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
           'weight' => 0,
           'theme' => $config->get('default'),
           'status' => TRUE,
-          'region' => 'footer_left',
+          'region' => $region,
           'plugin' => 'block_content:' . $block->uuid(),
           'settings' => [],
         ]);

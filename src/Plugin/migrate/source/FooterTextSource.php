@@ -60,6 +60,7 @@ class FooterTextSource extends SqlBase {
         // most closely matches it.
         $row->setSourceProperty('format', 'flex_html');
         $row->setSourceProperty('region', 'footer_left');
+        $row->setSourceProperty('weight', '10');
       }
       else {
         // If there is no footer text data, abandon the import.

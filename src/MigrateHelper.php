@@ -3,6 +3,7 @@
 namespace Drupal\utexas_migrate;
 
 use Drupal\block_content\Entity\BlockContent;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
 use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
@@ -22,6 +23,26 @@ use Drupal\Core\Url;
  * Helper functions for migration.
  */
 class MigrateHelper {
+
+  /**
+   * Helper function for DB queries.
+   *
+   * @return array
+   *   The unserialized value.
+   */
+  public static function getVariable($name) {
+    Database::setActiveConnection('utexas_migrate');
+    $query = Database::getConnection()->select('variable', 'v')
+      ->fields('v', ['value'])
+      ->condition('name', $name, '=')
+      ->execute()
+      ->fetch();
+    Database::setActiveConnection('default');
+    if (empty($query->value)) {
+      return NULL;
+    }
+    return unserialize($query->value);
+  }
 
   /**
    * Retrieve a media entity ID for an equivalent D7 file from migration map.

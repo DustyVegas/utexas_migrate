@@ -15,6 +15,7 @@ use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
+use Drupal\utexas_migrate\CustomWidgets\MenuBlock;
 use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
@@ -127,6 +128,10 @@ class Layouts extends ProcessPluginBase {
         // Sets field name like `views-news-news_with_thumbnails`.
         $found = TRUE;
       }
+      elseif ($field_name = MigrateHelper::isMenuBlock($id)) {
+        // Sets field to `menu_block`.
+        $found = TRUE;
+      }
       elseif ($settings['region'] == 'social_links') {
         // The above eliminates fieldblocks not yet converted to UUIDs.
         // @todo: look up standard blocks' block UUIDs in FlexPageLayoutsSource.php
@@ -237,6 +242,13 @@ class Layouts extends ProcessPluginBase {
         $block_type = $source['block_type'];
         break;
     }
+    // Menu block IDs are incremental, so we handle them outside the
+    // main switch statement.
+    if (MigrateHelper::isMenuBlock($field_name)) {
+      $block_type = 'menu_block';
+      $source = MenuBlock::getBlockData($field_name);
+    }
+
     return [
       'field_name' => $field_name,
       'block_type' => $block_type,
@@ -526,7 +538,7 @@ class Layouts extends ProcessPluginBase {
             $delta = 2;
             $region = 'second';
             // Add border with background to all fields except those listed.
-            if (!in_array($field, ['social_links'])) {
+            if (MigrateHelper::shouldReceiveBorderWithBackground($field)) {
               $layout_builder_styles = $border_with_background;
             }
             break;
@@ -545,7 +557,7 @@ class Layouts extends ProcessPluginBase {
             $delta = 0;
             $region = 'second';
             // Add border with background to all fields except those listed.
-            if (!in_array($field, ['social_links'])) {
+            if (MigrateHelper::shouldReceiveBorderWithBackground($field)) {
               $layout_builder_styles = $border_with_background;
             }
             break;
@@ -579,7 +591,7 @@ class Layouts extends ProcessPluginBase {
             $delta = 1;
             $region = 'second';
             // Add border with background to all fields except those listed.
-            if (!in_array($field, ['social_links'])) {
+            if (MigrateHelper::shouldReceiveBorderWithBackground($field)) {
               $layout_builder_styles = $border_with_background;
             }
             break;
@@ -758,7 +770,7 @@ class Layouts extends ProcessPluginBase {
     // Switch creation between inline & reusable block components.
     switch ($component_data['block_type']) {
       case 'twitter_widget':
-        // @todo: add Contact info, Menu Blocks, & standard Blocks.
+        // @todo: add Contact info & standard Blocks.
         $block_uuid = EntityReference::getDestinationUuid($component_data);
         $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
           'id' => 'block_content:' . $block_uuid,
@@ -767,6 +779,25 @@ class Layouts extends ProcessPluginBase {
           'label_display' => 0,
           'status' => TRUE,
           'view_mode' => $component_data['view_mode'] ?? $component_view_mode,
+        ]);
+        break;
+
+      case 'menu_block':
+        $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
+          'id' => $component_data['block_data']['menu_block_id'],
+          'label' => $component_data['block_data']['admin_title'],
+          'provider' => 'menu_block',
+          'label_display' => $component_data['block_data']['display_title'],
+          'follow' => $component_data['block_data']['follow'],
+          'follow_parent' => '',
+          'child' => '',
+          'label_type' => $component_data['block_data']['label_type'],
+          'label_link' => $component_data['block_data']['label_link'],
+          'level' => $component_data['block_data']['level'],
+          'depth' => $component_data['block_data']['depth'],
+          'expand_all_items' => $component_data['block_data']['expanded'],
+          'parent' => $component_data['block_data']['parent'],
+          'status' => TRUE,
         ]);
         break;
 

@@ -127,6 +127,30 @@ class MigrateHelper {
   }
 
   /**
+   * Given an source menu, return the destination menu.
+   *
+   * @param string $menu
+   *   The source menu (e.g., 'main-menu')
+   *
+   * @return string
+   *   The destination menu (e.g., 'main')
+   */
+  public static function getMappedMenuName($menu) {
+    // Some default Drupal menu names changed between Drupal 7 and 8. For those, we map them to the new name. For others,
+    // we leave them as-is.
+    $menu_map = [
+      'main-menu' => 'main',
+      'management' => 'admin',
+      'navigation' => 'tools',
+      'user-menu:' => 'account',
+    ];
+    if (in_array($menu, array_keys($menu_map))) {
+      return $menu_map[$menu];
+    }
+    return $menu;
+  }
+
+  /**
    * Given an source text format, return an available format.
    *
    * @param string $text_format
@@ -287,6 +311,41 @@ class MigrateHelper {
     'fieldblock-bb03b0e9fbf84510ab65cbb066d872fc' => 'twitter_widget',
     'fieldblock-5e45b57e2023b0d28f5a9dc785ea12fa' => 'twitter_widget',
   ];
+
+  /**
+   * Check if the ID identifies this as a menu block.
+   *
+   * @param string $d7_display_id
+   *   The source block ID.
+   *
+   * @return mixed
+   *   The menu block identifier or FALSE.
+   */
+  public static function isMenuBlock($d7_display_id) {
+    if (strpos($d7_display_id, 'menu_block-') === 0) {
+      return $d7_display_id;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Check if the field should receive a border.
+   *
+   * @param string $field
+   *   The source block name.
+   *
+   * @return bool
+   *   Whether or not the field should receive a border.
+   */
+  public static function shouldReceiveBorderWithBackground($field) {
+    if (self::isMenuBlock($field)) {
+      return FALSE;
+    }
+    if ($field === 'social_links') {
+      return FALSE;
+    }
+    return TRUE;
+  }
 
   /**
    * Check if Views block can be migrated to inline blocks.

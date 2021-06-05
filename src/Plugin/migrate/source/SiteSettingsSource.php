@@ -67,17 +67,8 @@ class SiteSettingsSource extends SqlBase {
   public function getActiveThemeSettings(&$row) {
     $theme_machine_name = $this->getVariable('theme_default');
     $settings = $this->getVariable('theme_' . $theme_machine_name . '_settings');
-    $theme_data = [
-      'name' => $theme_machine_name,
-      'values' => $settings,
-    ];
-    if (isset($theme_data['values'])) {
-      $settings = unserialize($theme_data['values']->value);
-      if (!empty($settings)) {
-        // Default breadcrumb value.
-        $default_breadcrumb_display = $settings['utexas_standard_page_breadcrumb'];
-        $row->setSourceProperty('default_breadcrumb_display', $default_breadcrumb_display);
-      }
+    foreach ($settings as $key => $value) {
+      $row->setSourceProperty($key, $value);
     }
   }
 

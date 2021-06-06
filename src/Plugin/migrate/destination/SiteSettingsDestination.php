@@ -50,9 +50,22 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
         'key' => 'system.site',
         'value' => 'slogan',
       ],
+      'parent_link_title' => [
+        'key' => 'forty_acres.settings',
+        'value' => 'parent_link_title',
+      ],
+      'parent_link' => [
+        'key' => 'forty_acres.settings',
+        'value' => 'parent_link',
+      ],
+      'logo_height' => [
+        'key' => 'forty_acres.settings',
+        'value' => 'logo_height',
+      ],
     ];
     foreach ($settings as $source => $destination) {
       $data = $row->getSourceProperty($source);
+      print_r($data);
       $config = \Drupal::configFactory()->getEditable($destination['key']);
       $config->set($destination['value'], $data);
       $config->save();

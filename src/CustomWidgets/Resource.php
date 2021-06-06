@@ -118,6 +118,13 @@ class Resource {
     if (!empty($items)) {
       $destination['resource_items'] = serialize($items);
     }
+    // Per https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1316,
+    // Resources need to retain 1 item per row behavior.
+    $destination['additional'] = [
+      'layout_builder_styles_style' => [
+        'utexas_onecol' => 'utexas_onecol',
+      ],
+    ];
     return $destination;
   }
 

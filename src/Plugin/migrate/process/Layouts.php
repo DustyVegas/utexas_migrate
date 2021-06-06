@@ -700,7 +700,12 @@ class Layouts extends ProcessPluginBase {
           case 'quick_links':
             $delta = 2;
             $region = 'main';
-            $layout_builder_styles = $four_col;
+            $layout_builder_styles = [
+              'layout_builder_styles_style' => [
+                'utexas_border_without_background' => 'utexas_border_without_background',
+                'utexas_fourcol' => 'utexas_fourcol',
+              ]
+            ];
             break;
 
           case 'content_bottom':
@@ -724,7 +729,7 @@ class Layouts extends ProcessPluginBase {
     if (in_array($field, ['flex_content_area_a', 'flex_content_area_b']) && in_array($template, ['Landing Page Template 2', 'Landing Page Template 3'])) {
       // Do not allow field defaults to override the layout behavior.
     }
-    if (in_array($field, ['quick_links']) && in_array($region, ['content_top_four_pillars'])) {
+    if (in_array($field, ['quick_links']) && in_array($settings['region'], ['content_top_four_pillars'])) {
       // Do not allow field defaults to override the layout behavior.
     }
     elseif ($field_data['data']['additional']['layout_builder_styles_style']) {

@@ -65,7 +65,6 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
     ];
     foreach ($settings as $source => $destination) {
       $data = $row->getSourceProperty($source);
-      print_r($data);
       $config = \Drupal::configFactory()->getEditable($destination['key']);
       $config->set($destination['value'], $data);
       $config->save();

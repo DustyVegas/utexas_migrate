@@ -505,6 +505,16 @@ class Layouts extends ProcessPluginBase {
         'utexas_border_with_background' => 'utexas_border_with_background',
       ],
     ];
+    $three_col = [
+      'layout_builder_styles_style' => [
+        'utexas_threecol' => 'utexas_threecol',
+      ],
+    ];
+    $four_col = [
+      'layout_builder_styles_style' => [
+        'utexas_fourcol' => 'utexas_fourcol',
+      ],
+    ];
     $field = $field_data['field_name'];
     switch ($template) {
       case 'Featured Highlight':
@@ -667,9 +677,7 @@ class Layouts extends ProcessPluginBase {
           case 'content_top_three_pillars':
             if (in_array($field, ['flex_content_area_a', 'flex_content_area_b'])) {
               // Special case: FCA in content_top_three_pillars is 3-columns.
-              // @todo: adjust when 1-4 item per row behavior changes:
-              // https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1184
-              $view_mode = 'utexas_flex_content_area_3';
+              $layout_builder_styles = $three_col;
             }
             $delta = 1;
             $region = 'main';
@@ -678,9 +686,7 @@ class Layouts extends ProcessPluginBase {
           case 'content_top_four_pillars':
             if (in_array($field, ['flex_content_area_a', 'flex_content_area_b'])) {
               // Special case: FCA in content_top_four_pillars 4-columns.
-              // @todo: adjust when 1-4 item per row behavior changes:
-              // https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1184
-              $view_mode = 'utexas_flex_content_area_4';
+              $layout_builder_styles = $four_col;
             }
             $delta = 1;
             $region = 'main';
@@ -694,9 +700,7 @@ class Layouts extends ProcessPluginBase {
           case 'quick_links':
             $delta = 2;
             $region = 'main';
-            $view_mode = 'utexas_quick_links_4';
-            // @todo: adjust when 1-4 item per row behavior changes:
-            // https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1184
+            $layout_builder_styles = $four_col;
             break;
 
           case 'content_bottom':
@@ -717,7 +721,13 @@ class Layouts extends ProcessPluginBase {
     // Above, *sections* have had a chance to set *block*-level Layout Builder
     // Styles (to preserve v2 Layout theming).
     // Next, check if *blocks* specify any Layout Builder Styles & add it.
-    if ($field_data['data']['additional']['layout_builder_styles_style']) {
+    if (in_array($field, ['flex_content_area_a', 'flex_content_area_b']) && in_array($template, ['Landing Page Template 2', 'Landing Page Template 3'])) {
+      // Do not allow field defaults to override the layout behavior.
+    }
+    if (in_array($field, ['quick_links']) && in_array($region, ['content_top_four_pillars'])) {
+      // Do not allow field defaults to override the layout behavior.
+    }
+    elseif ($field_data['data']['additional']['layout_builder_styles_style']) {
       // Append field-specific styles (e.g., Promo Unit Limit to 1 item per row)
       // into those specified by the v2 section design (e.g., in v2,
       // all items placed in Standard Page sidebar second received a border

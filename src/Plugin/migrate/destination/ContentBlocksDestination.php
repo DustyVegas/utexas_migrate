@@ -42,10 +42,10 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
         $config = \Drupal::config('system.theme');
         $placed_block = Block::create([
           'id' => $block->id(),
-          'weight' => 0,
+          'weight' => $row->getSourceProperty('weight'),
           'theme' => $config->get('default'),
           'status' => TRUE,
-          'region' => 'footer_left',
+          'region' => $region,
           'plugin' => 'block_content:' . $block->uuid(),
           'settings' => [],
         ]);

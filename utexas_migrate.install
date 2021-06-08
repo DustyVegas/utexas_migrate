@@ -37,7 +37,7 @@ function utexas_migrate_uninstall() {
   // Find all config that has 'migrate_plus' in the name.
   $query = \Drupal::database()->select('config', 'c')
     ->fields('c', ['name'])
-    ->condition('name', db_like('migrate_plus') . '%', 'LIKE')
+    ->condition('name', \Drupal::database()->escapeLike('migrate_plus'))
     ->execute();
 
   $config_names = $query->fetchAll();

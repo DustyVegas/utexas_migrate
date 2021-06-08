@@ -2,8 +2,8 @@
 
 namespace Drupal\utexas_migrate\CustomWidgets;
 
-use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\ProfileMigrateHelper;
+use Drupal\utexas_migrate\MigrateHelper;
 
 /**
  * Convert D7 Views block to D8 Inline blocks.
@@ -42,8 +42,8 @@ class ViewsBlock {
         $data['thumbnails'] = TRUE;
         $data['dates'] = TRUE;
         $data['summaries'] = FALSE;
-        $data['count'] = self::getVariable('utexas_news_number_items_thumbnails') ?? 4;
-        $data['title'] = self::getVariable('utexas_news_thumbnails_view_title') ?? 'Latest News';
+        $data['count'] = MigrateHelper::getVariable('utexas_news_number_items_thumbnails') ?? 4;
+        $data['title'] = MigrateHelper::getVariable('utexas_news_thumbnails_view_title') ?? 'Latest News';
         $data['block_type'] = 'utnews_article_listing';
         break;
 
@@ -51,8 +51,8 @@ class ViewsBlock {
         $data['thumbnails'] = FALSE;
         $data['dates'] = TRUE;
         $data['summaries'] = FALSE;
-        $data['count'] = self::getVariable('utexas_news_number_items_titles') ?? 4;
-        $data['title'] = self::getVariable('utexas_news_titles_view_title') ?? 'Latest News';
+        $data['count'] = MigrateHelper::getVariable('utexas_news_number_items_titles') ?? 4;
+        $data['title'] = MigrateHelper::getVariable('utexas_news_titles_view_title') ?? 'Latest News';
         $data['block_type'] = 'utnews_article_listing';
         break;
 
@@ -63,8 +63,8 @@ class ViewsBlock {
         $data['summaries'] = TRUE;
         $data['featured'] = 'all';
         $data['cta'] = TRUE;
-        $data['count'] = self::getVariable('utexas_events_upcoming_block_count') ?? 5;
-        $data['title'] = self::getVariable('utexas_events_upcoming_block_title') ?? 'Upcoming Events';
+        $data['count'] = MigrateHelper::getVariable('utexas_events_upcoming_block_count') ?? 5;
+        $data['title'] = MigrateHelper::getVariable('utexas_events_upcoming_block_title') ?? 'Upcoming Events';
         break;
 
       case 'views-events-block_2':
@@ -73,8 +73,8 @@ class ViewsBlock {
         $data['summaries'] = FALSE;
         $data['featured'] = 'all';
         $data['cta'] = TRUE;
-        $data['count'] = self::getVariable('utexas_events_upcoming_block_count') ?? 5;
-        $data['title'] = self::getVariable('utexas_events_upcoming_block_title') ?? 'Upcoming Events';
+        $data['count'] = MigrateHelper::getVariable('utexas_events_upcoming_block_count') ?? 5;
+        $data['title'] = MigrateHelper::getVariable('utexas_events_upcoming_block_title') ?? 'Upcoming Events';
         $data['block_type'] = 'utevent_event_listing';
         break;
 
@@ -84,8 +84,8 @@ class ViewsBlock {
         $data['summaries'] = FALSE;
         $data['featured'] = 'featured';
         $data['cta'] = FALSE;
-        $data['count'] = self::getVariable('utexas_events_featured_block_count') ?? 5;
-        $data['title'] = self::getVariable('utexas_events_featured_block_title') ?? 'Featured Events';
+        $data['count'] = MigrateHelper::getVariable('utexas_events_featured_block_count') ?? 5;
+        $data['title'] = MigrateHelper::getVariable('utexas_events_featured_block_title') ?? 'Featured Events';
         $data['block_type'] = 'utevent_event_listing';
         break;
 
@@ -95,8 +95,8 @@ class ViewsBlock {
         $data['summaries'] = TRUE;
         $data['featured'] = 'featured';
         $data['cta'] = FALSE;
-        $data['count'] = self::getVariable('utexas_events_featured_block_count') ?? 5;
-        $data['title'] = self::getVariable('utexas_events_featured_block_title') ?? 'Featured Events';
+        $data['count'] = MigrateHelper::getVariable('utexas_events_featured_block_count') ?? 5;
+        $data['title'] = MigrateHelper::getVariable('utexas_events_featured_block_title') ?? 'Featured Events';
         $data['block_type'] = 'utevent_event_listing';
         break;
 
@@ -107,22 +107,6 @@ class ViewsBlock {
 
     }
     return $data;
-  }
-
-  /**
-   * Helper function for DB queries.
-   *
-   * @return array
-   *   The unserialized value.
-   */
-  public static function getVariable($name) {
-    Database::setActiveConnection('utexas_migrate');
-    $query = Database::getConnection()->select('variable', 'v')
-      ->fields('v', ['value'])
-      ->condition('name', $name, '=')
-      ->execute()
-      ->fetch();
-    return unserialize($query->value);
   }
 
   /**

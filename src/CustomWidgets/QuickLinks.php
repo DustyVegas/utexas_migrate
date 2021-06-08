@@ -113,9 +113,13 @@ class QuickLinks {
       }
     }
     // Quick Links should always display with border w/o background.
+    // Per https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1302,
+    // Quick links should migrate as limited to 1 item per row.
+    // One exception to this rule is in Layout Page Template 2. See Layouts.php.
     $instances['additional'] = [
       'layout_builder_styles_style' => [
         'utexas_border_without_background' => 'utexas_border_without_background',
+        'utexas_onecol' => 'utexas_onecol',
       ],
     ];
     return $instances;

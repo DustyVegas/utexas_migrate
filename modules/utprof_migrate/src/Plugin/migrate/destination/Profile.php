@@ -64,14 +64,20 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
     ];
     $row->setDestinationProperty('field_utprof_add_basic_info', $basic_info);
 
-    // Retrieve contact info entity value from source; place values into fields.
+    // Retrieve contact info entity value from source; place values into
+    // node-type fields where possible.
     $contact_info_source = $row->getDestinationProperty('field_utprof_add_contact_info');
     if (!empty($contact_info_source[0]['target_id'])) {
       $contact_info = $this->getContactInfoData($contact_info_source[0]['target_id']);
       $row->setDestinationProperty('field_utprof_website_link', $contact_info[0]->field_url);
       $row->setDestinationProperty('field_utprof_fax_number', $contact_info[0]->field_fax);
       $row->setDestinationProperty('field_utprof_phone_number', $contact_info[0]->field_phone);
+      // First try to populate the email address from the contact info field,
+      // but set the display of the email on listings to false.
       $row->setDestinationProperty('field_utprof_email_address', $contact_info[0]->field_email);
+      if (!empty($contact_info[0]->field_email)) {
+        $row->setDestinationProperty('field_utprof_display_email', 0);
+      }
       $addresses = '';
       $l1 = '';
       if (!empty($contact_info[0]->field_location_1)) {
@@ -121,6 +127,14 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
         'value' => $addresses,
         'format' => 'flex_html'
       ]);
+      // Subsequent to migrating an email address from the Contact Info block,
+      // if a dedicated email address is present in the source, migrate that
+      // and set the display to show on profile listings.
+      $email = $row->getSourceProperty('field_utexas_member_info');
+      if (!empty($email[0]['value'])) {
+        $row->setDestinationProperty('field_utprof_email_address', $email[0]['value']);
+        $row->setDestinationProperty('field_utprof_display_email', 1);
+      }
     }
 
     return parent::import($row, $old_destination_id_values);

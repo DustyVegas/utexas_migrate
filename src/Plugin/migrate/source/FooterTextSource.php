@@ -56,10 +56,11 @@ class FooterTextSource extends SqlBase {
         $row->setSourceProperty('info', 'Footer Text Area');
         // @todo: attempt to preprocess any relational references like internal links or FIDs?
         $row->setSourceProperty('body', $settings['footer_text_area']);
-        // The allowed format in D7 was restricted.
-        // This will not prevent D8 users from switching format after migration.
-        $row->setSourceProperty('format', 'restricted_html');
+        // The allowed format in v2 was restricted, but flex_html
+        // most closely matches it.
+        $row->setSourceProperty('format', 'flex_html');
         $row->setSourceProperty('region', 'footer_left');
+        $row->setSourceProperty('weight', '10');
       }
       else {
         // If there is no footer text data, abandon the import.

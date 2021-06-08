@@ -118,6 +118,13 @@ class FlexContentArea {
         }
       }
     }
+    // Per https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1311,
+    // Flex Content Areas migrated from v2 should be limited to 2 items per row.
+    $destination['additional'] = [
+      'layout_builder_styles_style' => [
+        'utexas_twocol' => 'utexas_twocol',
+      ],
+    ];
     return $destination;
   }
 

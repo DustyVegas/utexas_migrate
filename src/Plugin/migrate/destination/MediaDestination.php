@@ -11,6 +11,7 @@ use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Row;
 use Drupal\Core\Site\Settings;
+use Drupal\file\Entity\File;
 
 /**
  * Provides a 'utexas_media_destination' destination plugin.
@@ -45,41 +46,10 @@ abstract class MediaDestination extends DestinationBase implements MigrateDestin
    * form of Media entity is needed.
    */
   public function import(Row $row, array $old_destination_id_values = []) {
-    // The managed file needs to be saved, first,
-    // before the media entity can be created.
     $file_uri = $row->getSourceProperty('uri');
-    $filepath = str_replace(['public://', 'private://'], ['', ''], $file_uri);
-    $filepath = str_replace("%2F", "/", urlencode($filepath));
-    $filepath = str_replace("+", "%20", $filepath);
-
-    if (strpos($file_uri, 'public://') !== FALSE) {
-      $location_path = $this->migrationSourcePublicFilePath . $filepath;
-      // Public files.
-      $path_to_file = $this->migrationSourceBaseUrl . $location_path;
-    }
-    else {
-      // Private files.
-      $location_path = $this->migrationSourcePrivateFilePath . $filepath;
-      $path_to_file = $this->migrationSourceBasePath . $location_path;
-    }
+    $path = $this->getPathToFile($file_uri);
     try {
-      // This saves a new Managed File.
-      $public = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://");
-      $dirname = dirname($file_uri);
-      // Prepare subdirectories of the filesystem.
-      $existing = $public . '/' . $filepath;
-      if (!in_array($dirname, ['public:', 'private:'])) {
-        \Drupal::service('file_system')->prepareDirectory($dirname, FileSystemInterface::CREATE_DIRECTORY);
-        $existing = $public . '/' . $dirname . '/' . $filepath;
-      }
-      if (file_exists($existing)) {
-        // If the destination file exists (e.g., previous migration), use that.
-        $file_data = file_get_contents($existing);
-      }
-      else {
-        $file_data = file_get_contents($path_to_file);
-      }
-      $this->importedFile = file_save_data($file_data, $file_uri, FileSystemInterface::EXISTS_REPLACE);
+      $this->saveManagedFile($path, $file_uri);
       if ($this->importedFile) {
         $this->mediaElements['name'] = $this->importedFile->getFilename();
         $this->mediaElements['uid'] = $row->getDestinationProperty('uid');
@@ -98,6 +68,54 @@ abstract class MediaDestination extends DestinationBase implements MigrateDestin
         ':code' => $e->getCode(),
       ]);
     }
+  }
+
+  /**
+   * Helper function to save a new managed file.
+   */
+  public function saveManagedFile($path, $file_uri) {
+    $public = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://");
+    $dirname = dirname($file_uri);
+    // Prepare subdirectories of the filesystem.
+    $existing = $public . '/' . $path['relative'];
+    if (!in_array($dirname, ['public:', 'private:'])) {
+      \Drupal::service('file_system')->prepareDirectory($dirname, FileSystemInterface::CREATE_DIRECTORY);
+      $existing = $public . '/' . $dirname . '/' . $path['relative'];
+    }
+    if (file_exists($existing)) {
+      // If the destination file exists (e.g., previous migration), use that.
+      $file_data = file_get_contents($existing);
+    }
+    else {
+      $file_data = file_get_contents($path['absolute']);
+    }
+    $this->importedFile = file_save_data($file_data, $file_uri, FileSystemInterface::EXISTS_REPLACE);
+  }
+
+  /**
+   * Helper function to parse source filepath.
+   */
+  public function getPathToFile($file_uri) {
+    // The managed file needs to be saved, first,
+    // before the media entity can be created.
+    $filepath = str_replace(['public://', 'private://'], ['', ''], $file_uri);
+    $filepath = str_replace("%2F", "/", urlencode($filepath));
+    $filepath = str_replace("+", "%20", $filepath);
+
+    if (strpos($file_uri, 'public://') !== FALSE) {
+      $location_path = $this->migrationSourcePublicFilePath . $filepath;
+      // Public files.
+      $path_to_file = $this->migrationSourceBaseUrl . $location_path;
+    }
+    else {
+      // Private files.
+      $location_path = $this->migrationSourcePrivateFilePath . $filepath;
+      $path_to_file = $this->migrationSourceBasePath . $location_path;
+    }
+    return [
+      'relative' => $filepath,
+      'absolute' => $path_to_file,
+    ];
   }
 
   /**
@@ -167,7 +185,8 @@ abstract class MediaDestination extends DestinationBase implements MigrateDestin
     $result = array_keys($query->execute()->fetchAllAssoc('fid'));
     if (!empty($result)) {
       foreach ($result as $fid) {
-        file_delete($fid);
+        $file = File::load($fid);
+        $file->delete();
       }
     }
   }

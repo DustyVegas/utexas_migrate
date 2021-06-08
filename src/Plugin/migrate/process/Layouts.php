@@ -15,6 +15,7 @@ use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
+use Drupal\utexas_migrate\CustomWidgets\MenuBlock;
 use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
@@ -127,6 +128,10 @@ class Layouts extends ProcessPluginBase {
         // Sets field name like `views-news-news_with_thumbnails`.
         $found = TRUE;
       }
+      elseif ($field_name = MigrateHelper::isMenuBlock($id)) {
+        // Sets field to `menu_block`.
+        $found = TRUE;
+      }
       elseif ($settings['region'] == 'social_links') {
         // The above eliminates fieldblocks not yet converted to UUIDs.
         // @todo: look up standard blocks' block UUIDs in FlexPageLayoutsSource.php
@@ -237,6 +242,13 @@ class Layouts extends ProcessPluginBase {
         $block_type = $source['block_type'];
         break;
     }
+    // Menu block IDs are incremental, so we handle them outside the
+    // main switch statement.
+    if (MigrateHelper::isMenuBlock($field_name)) {
+      $block_type = 'menu_block';
+      $source = MenuBlock::getBlockData($field_name);
+    }
+
     return [
       'field_name' => $field_name,
       'block_type' => $block_type,
@@ -493,6 +505,16 @@ class Layouts extends ProcessPluginBase {
         'utexas_border_with_background' => 'utexas_border_with_background',
       ],
     ];
+    $three_col = [
+      'layout_builder_styles_style' => [
+        'utexas_threecol' => 'utexas_threecol',
+      ],
+    ];
+    $four_col = [
+      'layout_builder_styles_style' => [
+        'utexas_fourcol' => 'utexas_fourcol',
+      ],
+    ];
     $field = $field_data['field_name'];
     switch ($template) {
       case 'Featured Highlight':
@@ -526,7 +548,7 @@ class Layouts extends ProcessPluginBase {
             $delta = 2;
             $region = 'second';
             // Add border with background to all fields except those listed.
-            if (!in_array($field, ['social_links'])) {
+            if (MigrateHelper::shouldReceiveBorderWithBackground($field)) {
               $layout_builder_styles = $border_with_background;
             }
             break;
@@ -545,7 +567,7 @@ class Layouts extends ProcessPluginBase {
             $delta = 0;
             $region = 'second';
             // Add border with background to all fields except those listed.
-            if (!in_array($field, ['social_links'])) {
+            if (MigrateHelper::shouldReceiveBorderWithBackground($field)) {
               $layout_builder_styles = $border_with_background;
             }
             break;
@@ -579,7 +601,7 @@ class Layouts extends ProcessPluginBase {
             $delta = 1;
             $region = 'second';
             // Add border with background to all fields except those listed.
-            if (!in_array($field, ['social_links'])) {
+            if (MigrateHelper::shouldReceiveBorderWithBackground($field)) {
               $layout_builder_styles = $border_with_background;
             }
             break;
@@ -655,9 +677,7 @@ class Layouts extends ProcessPluginBase {
           case 'content_top_three_pillars':
             if (in_array($field, ['flex_content_area_a', 'flex_content_area_b'])) {
               // Special case: FCA in content_top_three_pillars is 3-columns.
-              // @todo: adjust when 1-4 item per row behavior changes:
-              // https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1184
-              $view_mode = 'utexas_flex_content_area_3';
+              $layout_builder_styles = $three_col;
             }
             $delta = 1;
             $region = 'main';
@@ -666,9 +686,7 @@ class Layouts extends ProcessPluginBase {
           case 'content_top_four_pillars':
             if (in_array($field, ['flex_content_area_a', 'flex_content_area_b'])) {
               // Special case: FCA in content_top_four_pillars 4-columns.
-              // @todo: adjust when 1-4 item per row behavior changes:
-              // https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1184
-              $view_mode = 'utexas_flex_content_area_4';
+              $layout_builder_styles = $four_col;
             }
             $delta = 1;
             $region = 'main';
@@ -682,9 +700,12 @@ class Layouts extends ProcessPluginBase {
           case 'quick_links':
             $delta = 2;
             $region = 'main';
-            $view_mode = 'utexas_quick_links_4';
-            // @todo: adjust when 1-4 item per row behavior changes:
-            // https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1184
+            $layout_builder_styles = [
+              'layout_builder_styles_style' => [
+                'utexas_border_without_background' => 'utexas_border_without_background',
+                'utexas_fourcol' => 'utexas_fourcol',
+              ]
+            ];
             break;
 
           case 'content_bottom':
@@ -705,7 +726,13 @@ class Layouts extends ProcessPluginBase {
     // Above, *sections* have had a chance to set *block*-level Layout Builder
     // Styles (to preserve v2 Layout theming).
     // Next, check if *blocks* specify any Layout Builder Styles & add it.
-    if ($field_data['data']['additional']['layout_builder_styles_style']) {
+    if (in_array($field, ['flex_content_area_a', 'flex_content_area_b']) && in_array($template, ['Landing Page Template 2', 'Landing Page Template 3'])) {
+      // Do not allow field defaults to override the layout behavior.
+    }
+    if (in_array($field, ['quick_links']) && in_array($settings['region'], ['content_top_four_pillars'])) {
+      // Do not allow field defaults to override the layout behavior.
+    }
+    elseif ($field_data['data']['additional']['layout_builder_styles_style']) {
       // Append field-specific styles (e.g., Promo Unit Limit to 1 item per row)
       // into those specified by the v2 section design (e.g., in v2,
       // all items placed in Standard Page sidebar second received a border
@@ -758,7 +785,7 @@ class Layouts extends ProcessPluginBase {
     // Switch creation between inline & reusable block components.
     switch ($component_data['block_type']) {
       case 'twitter_widget':
-        // @todo: add Contact info, Menu Blocks, & standard Blocks.
+        // @todo: add Contact info & standard Blocks.
         $block_uuid = EntityReference::getDestinationUuid($component_data);
         $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
           'id' => 'block_content:' . $block_uuid,
@@ -767,6 +794,25 @@ class Layouts extends ProcessPluginBase {
           'label_display' => 0,
           'status' => TRUE,
           'view_mode' => $component_data['view_mode'] ?? $component_view_mode,
+        ]);
+        break;
+
+      case 'menu_block':
+        $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
+          'id' => $component_data['block_data']['menu_block_id'],
+          'label' => $component_data['block_data']['admin_title'],
+          'provider' => 'menu_block',
+          'label_display' => $component_data['block_data']['display_title'],
+          'follow' => $component_data['block_data']['follow'],
+          'follow_parent' => '',
+          'child' => '',
+          'label_type' => $component_data['block_data']['label_type'],
+          'label_link' => $component_data['block_data']['label_link'],
+          'level' => $component_data['block_data']['level'],
+          'depth' => $component_data['block_data']['depth'],
+          'expand_all_items' => $component_data['block_data']['expanded'],
+          'parent' => $component_data['block_data']['parent'],
+          'status' => TRUE,
         ]);
         break;
 

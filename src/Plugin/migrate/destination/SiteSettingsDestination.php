@@ -3,7 +3,6 @@
 namespace Drupal\utexas_migrate\Plugin\migrate\destination;
 
 use Drupal\Core\Entity\EntityStorageException;
-use Drupal\migrate\Plugin\migrate\destination\DestinationBase;
 use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
@@ -18,12 +17,13 @@ use Drupal\utexas_migrate\MigrateHelper;
  *   id = "utexas_site_settings_destination"
  * )
  */
-class SiteSettingsDestination extends DestinationBase implements MigrateDestinationInterface {
+class SiteSettingsDestination extends MediaDestination implements MigrateDestinationInterface {
 
   /**
    * Import function that runs on each row.
    */
   public function import(Row $row, array $old_destination_id_values = []) {
+    // One-to-one migrateable settings.
     // Additional site settings may be added here as needed.
     $settings = [
       'default_breadcrumb_display' => [
@@ -49,6 +49,18 @@ class SiteSettingsDestination extends DestinationBase implements MigrateDestinat
       'site_slogan' => [
         'key' => 'system.site',
         'value' => 'slogan',
+      ],
+      'parent_link_title' => [
+        'key' => 'forty_acres.settings',
+        'value' => 'parent_link_title',
+      ],
+      'parent_link' => [
+        'key' => 'forty_acres.settings',
+        'value' => 'parent_link',
+      ],
+      'logo_height' => [
+        'key' => 'forty_acres.settings',
+        'value' => 'logo_height',
       ],
     ];
     foreach ($settings as $source => $destination) {
@@ -97,6 +109,23 @@ class SiteSettingsDestination extends DestinationBase implements MigrateDestinat
       // Save container.
       $container->save();
     }
+    // Theme settings.
+    // See https://github.austin.utexas.edu/eis1-wcs/utexas_migrate/wiki/Sample-Dataset-from-Source-site#theme-settings
+    if (!$row->getSourceProperty('default_logo')) {
+      if ($logo_uri = $row->getSourceProperty('logo_path')) {
+        // Save logo to filesystem.
+        $path = $this->getPathToFile($logo_uri);
+        $this->saveManagedFile($path, $logo_uri);
+        // Store logo in configuration.
+        $config = \Drupal::configFactory()->getEditable('forty_acres.settings');
+        $config->set('logo', [
+          'use_default' => FALSE,
+          'path' => $logo_uri,
+        ]);
+        $config->save();
+      }
+    }
+
     // As an array of 1 item, this will indicate that the migration operation
     // completed its one task (composed of multiple settings).
     return ['site_settings'];

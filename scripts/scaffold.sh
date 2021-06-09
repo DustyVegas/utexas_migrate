@@ -1,5 +1,12 @@
 #!/bin/sh
 
+if [ -z "$1" ];
+then
+  echo "Assumedly running full migration"
+else
+  SOURCE_SITE="$1"
+fi
+
 fin db create utexas_migrate
 terminus env:wake $SOURCE_SITE.live
 terminus drush $SOURCE_SITE.live cc all

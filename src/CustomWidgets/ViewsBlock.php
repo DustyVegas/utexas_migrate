@@ -36,7 +36,12 @@ class ViewsBlock {
   public static function getSourceData($views_block_id) {
     $data = [];
     // All views blocks in D7 displayed their label.
-    $data['label'] = TRUE;
+    $data['label'] = 'visible';
+    $data['additional'] = [
+      'layout_builder_styles_style' => [
+        'utexas_fourcol' => 'utexas_fourcol',
+      ],
+    ];
     switch ($views_block_id) {
       case 'views-news-news_with_thumbnails':
         $data['thumbnails'] = TRUE;

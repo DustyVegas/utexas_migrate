@@ -480,7 +480,6 @@ class Layouts extends ProcessPluginBase {
         }
         break;
     }
-
     return $sections;
   }
 
@@ -835,7 +834,7 @@ class Layouts extends ProcessPluginBase {
             'id' => 'inline_block:' . $i['block_type'],
             'label' => $i['title'] ?? $i['field_identifier'],
             'provider' => 'layout_builder',
-            'label_display' => TRUE,
+            'label_display' => 'visible',
             'block_revision_id' => $block->id(),
           ]);
           if ($component) {

@@ -1,3 +1,7 @@
+fin drush migrate-import --group=utexas
+fin drush migrate-import --group=utprof
+fin drush migrate-import --group=utnews
+fin drush migrate-import --group=utevent
 fin drush mim utexas_footer_text
 fin drush mim utexas_menus
 fin drush mim utexas_site_settings

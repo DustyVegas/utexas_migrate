@@ -9,6 +9,7 @@ use Drupal\migrate\Plugin\migrate\destination\EntityContentBase;
 use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Row;
 use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\utexas_migrate\WysiwygHelper;
 
 /**
  * Provides the 'utprof:node' destination plugin.
@@ -27,7 +28,7 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
     $body = $row->getDestinationProperty('field_utprof_content');
     $row->setDestinationProperty('field_utprof_content', [
       'header' => '',
-      'body_value' => $body[0]['value'],
+      'body_value' => WysiwygHelper::process($body[0]['value']),
       'body_format' => MigrateHelper::getDestinationTextFormat($body[0]['format']),
     ]);
 
@@ -46,7 +47,7 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
       $basic_info_string .= '<h3>' . $add_basic_info[0]['headline'] . '</h3>';
     }
     if (!empty($add_basic_info[0]['copy_value'])) {
-      $basic_info_string .= '<p>' . $add_basic_info[0]['copy_value'] . '</p>';
+      $basic_info_string .= '<p>' . WysiwygHelper::process($add_basic_info[0]['copy_value']) . '</p>';
     }
     if (!empty($add_basic_info[0]['links'])) {
       $links = unserialize($add_basic_info[0]['links']);

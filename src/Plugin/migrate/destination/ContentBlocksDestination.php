@@ -9,6 +9,7 @@ use Drupal\migrate\Plugin\migrate\destination\Entity;
 use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Row;
+use Drupal\utexas_migrate\WysiwygHelper;
 
 /**
  * Provides a 'utexas_content_blocks_destination' destination plugin.
@@ -29,7 +30,7 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
         'type' => 'basic',
         'info' => $row->getSourceProperty('info'),
         'body' => [
-          'value' => $row->getSourceProperty('body'),
+          'value' => WysiwygHelper::process($row->getSourceProperty('body')),
           'format' => isset($migrated_format) ? $migrated_format : 'flex_html',
           // @todo: replace with format that allows <iframe> & <script>
           // @todo: add minimal text_format mapping for blocks that may be set

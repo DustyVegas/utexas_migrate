@@ -46,6 +46,7 @@ class FlexPageLayoutsSource extends NodeSource {
    */
   public function prepareRow(Row $row) {
     $source_nid = $row->getSourceProperty('nid');
+    print_r($source_nid);
     $layout = $this->select('context', 'c')
       ->fields('c', ['reactions'])
       ->condition('name', 'context_field-node-' . $source_nid)

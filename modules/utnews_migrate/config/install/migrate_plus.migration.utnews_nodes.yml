@@ -28,11 +28,15 @@ process:
     plugin: sub_process
     source: body
     process:
-      value: value
+      value:
+        plugin: utexas_wysiwygs
+        source: value
       format:
-        plugin: default_value
-        default_value: 'flex_html'
-      summary: summary
+        plugin: utexas_text_formats
+        source: format
+      summary:
+        plugin: utexas_wysiwygs
+        source: summary
   field_utnews_external_link:
     plugin: sub_process
     source: field_news_external_link

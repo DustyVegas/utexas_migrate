@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\Plugin\migrate\source;
 
 use Drupal\migrate\Row;
 use Drupal\migrate\Plugin\migrate\source\SqlBase;
+use Drupal\utexas_migrate\WysiwygHelper;
 
 /**
  * Provides a 'utexas_social_links_sitewide_source' migrate source.
@@ -54,8 +55,7 @@ class FooterTextSource extends SqlBase {
       $settings = unserialize($theme_data['values']->value);
       if (!empty($settings['footer_text_area'])) {
         $row->setSourceProperty('info', 'Footer Text Area');
-        // @todo: attempt to preprocess any relational references like internal links or FIDs?
-        $row->setSourceProperty('body', $settings['footer_text_area']);
+        $row->setSourceProperty('body', WysiwygHelper::process($settings['footer_text_area']));
         // The allowed format in v2 was restricted, but flex_html
         // most closely matches it.
         $row->setSourceProperty('format', 'flex_html');

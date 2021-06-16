@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\utexas_migrate\WysiwygHelper;
 
 /**
  * Convert D7 custom compound field to D8.
@@ -71,6 +72,7 @@ class FeaturedHighlight {
         'date' => $item->field_utexas_featured_highlight_date,
         'headline' => $item->field_utexas_featured_highlight_headline,
         'copy' => $item->field_utexas_featured_highlight_copy_value,
+        'format' => $item->field_utexas_featured_highlight_copy_format,
         'link_href' => $item->field_utexas_featured_highlight_link,
         'link_title' => $item->field_utexas_featured_highlight_cta,
         'style' => $item->field_utexas_featured_highlight_highlight_style,
@@ -102,8 +104,8 @@ class FeaturedHighlight {
         $destination[$delta]['link_text'] = $instance['link_title'];
       }
       if (!empty($instance['copy'])) {
-        $destination[$delta]['copy_value'] = $instance['copy'];
-        $destination[$delta]['copy_format'] = 'flex_html';
+        $destination[$delta]['copy_value'] = WysiwygHelper::process($instance['copy']);
+        $destination[$delta]['copy_format'] = MigrateHelper::prepareTextFormat($instance['copy_format']);
       }
       if (!empty($instance['headline'])) {
         $destination[$delta]['headline'] = $instance['headline'];

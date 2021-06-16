@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\utexas_migrate\WysiwygHelper;
 
 /**
  * Convert D7 custom compound field to D8.
@@ -68,6 +69,7 @@ class PhotoContentArea {
         'headline' => $item->{'field_utexas_photo_content_area_headline'},
         'image_fid' => $item->{'field_utexas_photo_content_area_image_fid'},
         'copy' => $item->{'field_utexas_photo_content_area_copy_value'},
+        'copy_format' => $item->{'field_utexas_photo_content_area_copy_format'},
         'links' => $item->{'field_utexas_photo_content_area_links'},
         'credit' => $item->{'field_utexas_photo_content_area_credit'},
       ];
@@ -95,8 +97,8 @@ class PhotoContentArea {
         $destination[$delta]['photo_credit'] = $instance['credit'];
       }
       if (!empty($instance['copy'])) {
-        $destination[$delta]['copy_value'] = $instance['copy'];
-        $destination[$delta]['copy_format'] = 'flex_html';
+        $destination[$delta]['copy_value'] = WysiwygHelper::process($instance['copy']);
+        $destination[$delta]['copy_format'] = MigrateHelper::prepareTextFormat($instance['copy_format']);
       }
       $links = unserialize($instance['links']);
       if (!empty($links)) {

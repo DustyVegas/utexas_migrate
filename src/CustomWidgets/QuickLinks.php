@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\utexas_migrate\WysiwygHelper;
 
 /**
  * Convert D7 custom compound field to D8 paragraph.
@@ -68,6 +69,7 @@ class QuickLinks {
       $prepared[$delta] = [
         'headline' => $item->{'field_utexas_quick_links_headline'},
         'copy' => $item->{'field_utexas_quick_links_copy_value'},
+        'copy_format' => $item->{'field_utexas_quick_links_copy_format'},
         'links' => $item->{'field_utexas_quick_links_links'},
       ];
     }
@@ -98,8 +100,8 @@ class QuickLinks {
       // Migrate the headline field into the block title (see above).
       $instances['field'][$delta]['headline'] = '';
 
-      $instances['field'][$delta]['copy_value'] = $instance['copy'];
-      $instances['field'][$delta]['copy_format'] = 'restricted_html';
+      $instances['field'][$delta]['copy_value'] = WysiwygHelper::process($instance['copy']);
+      $instances['field'][$delta]['copy_format'] = MigrateHelper::prepareTextFormat($instance['copy_format']);
 
       $links = unserialize($instance['links']);
       if (!empty($links)) {

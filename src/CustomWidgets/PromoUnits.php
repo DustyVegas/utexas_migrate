@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\utexas_migrate\WysiwygHelper;
 
 /**
  * Convert D7 custom compound field to D8 field type.
@@ -70,6 +71,7 @@ class PromoUnits {
         'headline' => $item->{'field_utexas_promo_units_headline'},
         'image_fid' => $item->{'field_utexas_promo_units_image_fid'},
         'copy' => $item->{'field_utexas_promo_units_copy_value'},
+        'copy_format' => $item->{'field_utexas_promo_units_copy_format'},
         'cta_title' => $item->{'field_utexas_promo_units_cta'},
         'cta_uri' => $item->{'field_utexas_promo_units_link'},
         'size_option' => $item->{'field_utexas_promo_units_size_option'},
@@ -99,8 +101,8 @@ class PromoUnits {
       }
       $items[$delta]['item']['image'] = $instance['image_fid'] != 0 ? MigrateHelper::getDestinationMid($instance['image_fid']) : 0;
       if (isset($instance['copy'])) {
-        $items[$delta]['item']['copy']['value'] = $instance['copy'];
-        $items[$delta]['item']['copy']['format'] = 'flex_html';
+        $items[$delta]['item']['copy']['value'] = WysiwygHelper::process($instance['copy']);
+        $items[$delta]['item']['copy']['format'] = MigrateHelper::prepareTextFormat($instance['copy_format']);
       }
       $items[$delta]['item']['link']['uri'] = MigrateHelper::prepareLink($instance['cta_uri']);
       $items[$delta]['item']['link']['title'] = $instance['cta_title'] != "" ? $instance['cta_title'] : 'Read story';

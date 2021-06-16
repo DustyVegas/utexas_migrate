@@ -20,9 +20,15 @@ process:
     migration: utexas_media_image
     source: image_fid
     no_stub: true
-  field_utevent_body/value: detail_text
-  field_utevent_body/summary: summary_text
-  field_utevent_body/format: detail_format
+  field_utevent_body/value:
+    plugin: utexas_wysiwygs
+    source: detail_text
+  field_utevent_body/summary:
+    plugin: utexas_wysiwygs
+    source: summary_text
+  field_utevent_body/format:
+    plugin: utexas_text_formats
+    source: detail_format
   field_utevent_tags:
     plugin: migration_lookup
     migration: utevent_terms_tags

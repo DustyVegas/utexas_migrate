@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\utexas_migrate\WysiwygHelper;
 
 /**
  * Convert D7 custom compound field to D8 paragraph.
@@ -72,6 +73,7 @@ class FlexContentArea {
         'headline' => $item->{'field_utexas_' . $instance . '_headline'},
         'image_fid' => $item->{'field_utexas_' . $instance . '_image_fid'},
         'copy' => $item->{'field_utexas_' . $instance . '_copy_value'},
+        'copy_format' => $item->{'field_utexas_' . $instance . '_copy_format'},
         'links' => $item->{'field_utexas_' . $instance . '_links'},
         'cta_title' => $item->{'field_utexas_' . $instance . '_cta_title'},
         'cta_uri' => $item->{'field_utexas_' . $instance . '_cta_link'},
@@ -97,8 +99,8 @@ class FlexContentArea {
         $destination[$delta]['headline'] = $instance['headline'];
       }
       if (!empty($instance['copy'])) {
-        $destination[$delta]['copy_value'] = $instance['copy'];
-        $destination[$delta]['copy_format'] = 'flex_html';
+        $destination[$delta]['copy_value'] = WysiwygHelper::process($instance['copy']);
+        $destination[$delta]['copy_format'] = MigrateHelper::prepareTextFormat($instance['copy_format']);
       }
       if (!empty($instance['cta_uri'])) {
         $destination[$delta]['link_uri'] = MigrateHelper::prepareLink($instance['cta_uri']);

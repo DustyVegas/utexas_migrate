@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\utexas_migrate\WysiwygHelper;
 
 /**
  * Convert D7 custom compound field to D8 Inline blocks.
@@ -24,7 +25,7 @@ class BasicBlock {
       'type' => $data['block_type'],
       'info' => $data['field_identifier'],
       'body' => [
-        'value' => $data['block_data'][0]['value'],
+        'value' => WysiwygHelper::process($data['block_data'][0]['value']),
         'format' => $data['block_data'][0]['format'],
       ],
       'reusable' => FALSE,

@@ -113,14 +113,14 @@ class ProfileMigrateHelper {
   }
 
   private static function getVocabularyData() {
-    Database::setActiveConnection('utexas_migrate');
+    $source_db = Database::getConnection('default', 'utexas_migrate');
     // Map source/destination Taxonomy IDs for Profile groups.
-    $vid = Database::getConnection()->select('taxonomy_vocabulary', 'v')
+    $vid = $source_db->select('taxonomy_vocabulary', 'v')
       ->fields('v')
       ->condition('machine_name', 'team_member_group')
       ->execute()
       ->fetchField();
-    $source_tids = Database::getConnection()->select('taxonomy_term_data', 't')
+    $source_tids = $source_db->select('taxonomy_term_data', 't')
       ->fields('t')
       ->condition('vid', $vid)
       ->execute()
@@ -130,7 +130,7 @@ class ProfileMigrateHelper {
       return $item1->weight > $item2->weight;
     });
     // Add vocabulary display setting, creating a source TID-keyed array.
-    $display = Database::getConnection()->select('field_data_field_utexas_team_member_display', 'd')
+    $display = $source_db->select('field_data_field_utexas_team_member_display', 'd')
       ->fields('d')
       ->execute()
       ->fetchAllAssoc('entity_id');
@@ -141,8 +141,8 @@ class ProfileMigrateHelper {
       ];
     }
     // Map source/destination IDs.
-    Database::setActiveConnection('default');
-    $destination_tids = Database::getConnection()->select('taxonomy_term_field_data', 't')
+    $destination_db = Database::getConnection('default', 'default');
+    $destination_tids = $destination_db->select('taxonomy_term_field_data', 't')
       ->fields('t')
       ->condition('vid', 'utprof_groups')
       ->execute()
@@ -157,7 +157,7 @@ class ProfileMigrateHelper {
       }
     }
     // Get nodes that have been assigned Profile group vocabularies.
-    $destination_nids = Database::getConnection()->select('node__field_utprof_profile_groups', 'n')
+    $destination_nids = $destination_db->select('node__field_utprof_profile_groups', 'n')
       ->fields('n')
       ->execute()
       ->fetchAllAssoc('entity_id');

@@ -54,15 +54,24 @@ class MigrateHelper {
    *   Returns the matching media entity ID or FALSE.
    */
   public static function getDestinationMid($fid) {
-    $mid = \Drupal::database()->select('migrate_map_utexas_media_image')
+    $destination_db = Database::getConnection('default', 'default');
+    $mid = $destination_db->select('migrate_map_utexas_media_image')
       ->fields('migrate_map_utexas_media_image', ['destid1'])
       ->condition('sourceid1', $fid, '=')
       ->execute()
       ->fetchField();
     // Try the video map.
     if (!$mid) {
-      $mid = \Drupal::database()->select('migrate_map_utexas_media_video')
+      $mid = $destination_db->select('migrate_map_utexas_media_video')
         ->fields('migrate_map_utexas_media_video', ['destid1'])
+        ->condition('sourceid1', $fid, '=')
+        ->execute()
+        ->fetchField();
+    }
+    // Try the document map.
+    if (!$mid) {
+      $mid = $destination_db->select('migrate_map_utexas_document')
+        ->fields('migrate_map_utexas_document', ['destid1'])
         ->condition('sourceid1', $fid, '=')
         ->execute()
         ->fetchField();
@@ -80,8 +89,9 @@ class MigrateHelper {
    *   Returns the matching media entity ID or FALSE.
    */
   public static function getDestinationUid($uid) {
+    $destination_db = Database::getConnection('default', 'default');
     $table = 'migrate_map_utexas_users';
-    $destination_id = \Drupal::database()->select($table)
+    $destination_id = $destination_db->select($table)
       ->fields($table, ['destid1'])
       ->condition('sourceid1', $uid, '=')
       ->execute()
@@ -110,10 +120,10 @@ class MigrateHelper {
       'migrate_map_utprof_nodes',
       'migrate_map_utnews_nodes',
     ];
-    $connection = \Drupal::database();
+    $destination_db = Database::getConnection('default', 'default');
     foreach ($tables_to_query as $table) {
-      if ($connection->schema()->tableExists($table)) {
-        $destination_nid = \Drupal::database()->select($table, 'n')
+      if ($destination_db->schema()->tableExists($table)) {
+        $destination_nid = $destination_db->select($table, 'n')
           ->fields('n', ['destid1'])
           ->condition('n.sourceid1', $source_nid)
           ->execute()
@@ -274,10 +284,10 @@ class MigrateHelper {
   public static function prepareTextFormat($d7_format) {
     switch ($d7_format) {
       case 'filtered_html':
-      case 'filtered_html_for_blocks':
         $d8_format = 'flex_html';
         break;
 
+      case 'filtered_html_for_blocks':
       case 'full_html':
         $d8_format = 'full_html';
         break;

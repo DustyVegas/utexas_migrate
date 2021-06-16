@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\utexas_migrate\WysiwygHelper;
 
 /**
  * Convert D7 custom compound field to D8 field type.
@@ -119,10 +120,10 @@ class PromoLists {
             $destination[$container_delta]['promo_list_items'][$item_delta]['item']['link'] = MigrateHelper::prepareLink($item->field_utexas_promo_list_item_link);
           }
           if (isset($item->field_utexas_promo_list_item_copy_value)) {
-            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['copy']['value'] = $item->field_utexas_promo_list_item_copy_value;
+            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['copy']['value'] = WysiwygHelper::process($item->field_utexas_promo_list_item_copy_value);
           }
-          if (isset($item->field_utexas_promo_list_item_copy_value)) {
-            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['copy']['format'] = 'restricted_html';
+          if (isset($item->field_utexas_promo_list_item_copy_format)) {
+            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['copy']['format'] = MigrateHelper::prepareTextFormat($item->field_utexas_promo_list_item_copy_format);
           }
         }
       }

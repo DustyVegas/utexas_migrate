@@ -29,10 +29,12 @@ process:
     plugin: sub_process
     source: body
     process:
-      value: value
+      value:
+        plugin: utexas_wysiwygs
+        source: value
       format:
-        plugin: default_value
-        default_value: 'flex_html'
+        plugin: utexas_text_formats
+        source: format
       summary: summary
   field_tags:
     plugin: migration_lookup

@@ -20,6 +20,35 @@ class WysiwygHelper {
    */
   public static function process($text) {
     $text = self::transformMediaLibrary($text);
+    $text = self::transformVideoFilter($text);
+    return $text;
+  }
+
+  /**
+   * Find v2 video_filter markup & render it as v3 url_embed.
+   *
+   * @param string $text
+   *   The entire text of a WYSIWYG field.
+   *
+   * @return string
+   *   The processed text
+   */
+  public static function transformVideoFilter($text) {
+    // Source: [video:https://www.youtube.com/watch?v=U-0YB6pRArA width:300]
+    $destination_token = '<drupal-url data-embed-button="url" data-embed-url="URL_TOKEN" data-entity-label="URL"></drupal-url>';
+    $pattern = '/\[video:(.*)\]/';
+    preg_match_all($pattern, $text, $matches, PREG_SET_ORDER);
+    if (isset($matches)) {
+      foreach ($matches as $match) {
+        // Strip out metadata like width/height that is not used in
+        // v3. $parts[0] should be a plain URL.
+        $parts = explode(' ', $match[1]);
+        if ($parts[0]) {
+          $replace = str_replace('URL_TOKEN', $parts[0], $destination_token);
+          $text = str_replace($match[0], $replace, $text);
+        }
+      }
+    }
     return $text;
   }
 

@@ -21,6 +21,50 @@ class WysiwygHelper {
   public static function process($text) {
     $text = self::transformMediaLibrary($text);
     $text = self::transformVideoFilter($text);
+    $text = self::transformInnerRail($text);
+    return $text;
+  }
+
+  /**
+   * Find v2 [inner_rail] content & transform it to HTML.
+   *
+   * @param string $text
+   *   The entire text of a WYSIWYG field.
+   *
+   * @return string
+   *   The processed text.
+   */
+  public static function transformInnerRail($text) {
+    // Source: [inner_rail title:"Inner rail title" float:"right"]Lorem ipsum[/inner_rail]
+    $destination_token = '<aside class="inner-railFLOAT_TOKEN">TITLE_TOKENCONTENT_TOKEN</aside>';
+    $pattern = '/\[inner_rail(.*)\](.*)\[\/inner_rail\]/';
+    preg_match_all($pattern, $text, $matches, PREG_SET_ORDER);
+    // Expected result:
+    // [0] => [inner_rail title:"Inner rail title" float:"right"]Lorem ipsum[/inner_rail]
+    // [1] => title:"Inner rail title" float:"right"
+    // [2] => Lorem ipsum
+    if (isset($matches)) {
+      foreach ($matches as $match) {
+        // Strip out metadata like width/height that is not used in
+        // v3. $parts[0] should be a plain URL.
+        preg_match('/title:"([^"]*)"/', $match[1], $title_match);
+        preg_match('/float:"([^"]*)"/', $match[1], $float_match);
+        $title = '';
+        $float = '';
+        if (isset($title_match[1])) {
+          $title = '<h3>' . $title_match[1] . '</h3>';
+        }
+        if (isset($float_match[1])) {
+          $float = ' ' . $float_match[1];
+        }
+        if ($match[2]) {
+          $replace = str_replace('CONTENT_TOKEN', $match[2], $destination_token);
+          $replace = str_replace('TITLE_TOKEN', $title, $replace);
+          $replace = str_replace('FLOAT_TOKEN', $float, $replace);
+          $text = str_replace($match[0], $replace, $text);
+        }
+      }
+    }
     return $text;
   }
 

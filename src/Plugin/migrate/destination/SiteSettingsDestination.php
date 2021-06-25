@@ -124,6 +124,36 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
         ]);
         $config->save();
       }
+      // Optional theme libraries (migrate from Foundation to Bootstrap).
+      $library_map = [
+        'dropdown' => 'dropdown',
+        'reveal' => 'modal',
+        'tab' => 'tab',
+        'accordion' => 'collapse',
+        'alert' => 'alert',
+        'tooltip' => 'tooltip',
+      ];
+      foreach (array_values($library_map) as $initial) {
+        $bootstrap_libraries[$initial] = 0;
+      }
+      if ($foundation_settings = $row->getSourceProperty('foundation_files')) {
+        $source_settings = array_values($foundation_settings);
+        foreach (array_values($source_settings) as $value) {
+          if (is_string($value) && in_array($value, array_keys($library_map))) {
+            $bootstrap = $library_map[$value];
+            $bootstrap_libraries[$bootstrap] = $bootstrap;
+          }
+        }
+        // If utprof is enabled., ensure the Tab library is on, even
+        // if it wasn't enabled in the source site.
+        $moduleHandler = \Drupal::service('module_handler');
+        if ($moduleHandler->moduleExists('utprof')) {
+          $bootstrap_libraries['tab'] = 'tab';
+        }
+        $config = \Drupal::configFactory()->getEditable('forty_acres.settings');
+        $config->set('bootstrap_components', $bootstrap_libraries);
+        $config->save();
+      }
     }
 
     // As an array of 1 item, this will indicate that the migration operation

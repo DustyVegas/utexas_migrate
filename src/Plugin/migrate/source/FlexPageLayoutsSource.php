@@ -26,6 +26,7 @@ class FlexPageLayoutsSource extends NodeSource {
 
     // We limit this to D7 node types which have these fields.
     $query->condition('type', ['landing_page', 'standard_page'], 'IN');
+    $query->condition('title', 'Contact Info');
     return $query;
   }
 
@@ -46,7 +47,6 @@ class FlexPageLayoutsSource extends NodeSource {
    */
   public function prepareRow(Row $row) {
     $source_nid = $row->getSourceProperty('nid');
-    print_r($source_nid);
     $layout = $this->select('context', 'c')
       ->fields('c', ['reactions'])
       ->condition('name', 'context_field-node-' . $source_nid)

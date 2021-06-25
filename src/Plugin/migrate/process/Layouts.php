@@ -2,12 +2,12 @@
 
 namespace Drupal\utexas_migrate\Plugin\migrate\process;
 
+use Drupal\block_content\Entity\BlockContent;
 use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\Row;
 use Drupal\layout_builder\Section;
 use Drupal\layout_builder\SectionComponent;
-use Drupal\node\Entity\Node;
 use Drupal\utexas_migrate\CustomWidgets\BackgroundAccent;
 use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
 use Drupal\utexas_migrate\CustomWidgets\EntityReference;
@@ -99,7 +99,6 @@ class Layouts extends ProcessPluginBase {
     if (!$blocks) {
       return [];
     }
-
     // Look up presence of "locked" fields & add them programmatically
     // as blocks, potentially adjusting weight of other blocks.
     $blocks = self::addLockedFieldsAsBlocks($blocks, $template, $nid, $row);
@@ -121,7 +120,7 @@ class Layouts extends ProcessPluginBase {
       }
       elseif (in_array($id, array_keys(MigrateHelper::$includedReusableBlocks))) {
         $field_name = MigrateHelper::$includedReusableBlocks[$id];
-        // This will provide for example, `twitter_widget`.
+        // This will provide for example, `twitter_widget` or `contact_info`.
         $found = TRUE;
       }
       elseif ($field_name = MigrateHelper::isSupportedViewsBlock($id)) {
@@ -140,7 +139,6 @@ class Layouts extends ProcessPluginBase {
         $field_name = 'social_links';
         $found = TRUE;
       }
-
       if ($found) {
         // Now that we know we have a field, check for a D7 display setting,
         // and if so, pass an equivalent view_mode to the D8 field formatter.
@@ -231,6 +229,11 @@ class Layouts extends ProcessPluginBase {
         $source = EntityReference::getFromNid('utexas_' . $field_name, $nid);
         break;
 
+      case 'contact_info':
+        $block_type = $field_name;
+        $source = EntityReference::getFromNid('utexas_' . $field_name, $nid);
+        break;
+
       case 'views-news-news_with_thumbnails':
       case 'views-news-news_titles_only':
       case 'views-events-block_1':
@@ -270,8 +273,6 @@ class Layouts extends ProcessPluginBase {
    *   Other entity source data related to this specific entity migration.
    */
   protected static function addLockedFieldsAsBlocks(array $blocks, $template, $nid, Row $row) {
-    $node = Node::load($nid);
-
     // Check if a social link exists on the source node.
     if ($social_link = SocialLinks::getRawSourceData($row->getSourceProperty('nid'))) {
       // Make a fake D7 block ID that can be identified later on.
@@ -784,13 +785,20 @@ class Layouts extends ProcessPluginBase {
     // Switch creation between inline & reusable block components.
     switch ($component_data['block_type']) {
       case 'twitter_widget':
-        // @todo: add Contact info & standard Blocks.
-        $block_uuid = EntityReference::getDestinationUuid($component_data);
+      case 'contact_info':
+        // @todo: Add standard Blocks.
+        $bid = EntityReference::getDestinationBlockId($component_data);
+        $uuid = EntityReference::getDestinationUuid($bid);
+        $block = BlockContent::load($bid);
+        $label = $component_data['field_identifier'];
+        if ($block) {
+          $label = $block->label();
+        }
         $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
-          'id' => 'block_content:' . $block_uuid,
-          'label' => $component_data['field_identifier'],
+          'id' => 'block_content:' . $uuid,
+          'label' => $label,
           'provider' => 'layout_builder',
-          'label_display' => 0,
+          'label_display' => $component_data['block_data']['display_title'],
           'status' => TRUE,
           'view_mode' => $component_data['view_mode'] ?? $component_view_mode,
         ]);

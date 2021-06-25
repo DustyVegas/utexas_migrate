@@ -306,8 +306,6 @@ class MigrateHelper {
    * @var array
    */
   public static $excludedFieldblocks = [
-    'fieldblock-d83c2a95384186e375ab37cbf1430bf5' => 'Landing Page Contact Info',
-    'fieldblock-38205d43426b33bd0fe595ff8ca61ffd' => 'Standard Page Contact Info',
     'fieldblock-d41b4a03ee9d7b1084986f74b617921c' => 'Landing Page UT Newsreel',
     'fieldblock-8e85c2c89f0ccf26e9e4d0378250bf17' => 'Standard Page UT Newsreel',
   ];
@@ -320,6 +318,8 @@ class MigrateHelper {
   public static $includedReusableBlocks = [
     'fieldblock-bb03b0e9fbf84510ab65cbb066d872fc' => 'twitter_widget',
     'fieldblock-5e45b57e2023b0d28f5a9dc785ea12fa' => 'twitter_widget',
+    'fieldblock-38205d43426b33bd0fe595ff8ca61ffd' => 'contact_info',
+    'fieldblock-d83c2a95384186e375ab37cbf1430bf5' => 'contact_info',
   ];
 
   /**

@@ -3,7 +3,7 @@
 namespace Drupal\utexas_migrate\CustomWidgets;
 
 use Drupal\Core\Database\Database;
-
+use Drupal\block_content\Entity\BlockContent;
 /**
  * Get information about a D7 field that is an entity reference.
  */
@@ -51,39 +51,61 @@ class EntityReference {
         'target_id' => $field->{'field_' . $instance . '_target_id'},
       ];
     }
+    if ($instance === 'utexas_contact_info') {
+      $prepared['display_title'] = 'visible';
+    }
     return $prepared;
+  }
+
+  /**
+   * Find the destination id from the source target_id.
+   *
+   * @param array $component_data
+   *   Information about the source data being migrated.
+   *
+   * @return string
+   *   Returns the destination ID.
+   */
+  public static function getDestinationBlockId(array $component_data) {
+    $destination_db = Database::getConnection('default', 'default');
+    $map = [
+      'twitter_widget' => 'migrate_map_twitter_widgets',
+      'contact_info' => 'migrate_map_contact_info',
+    ];
+    $type = $component_data['block_type'];
+    $mapping = $destination_db->select($map[$type], 'm')
+      ->fields('m')
+      ->condition('sourceid1', $component_data['block_data'][0]['target_id'])
+      ->execute()
+      ->fetchAll();
+    if ($mapping[0]->destid1) {
+      return $mapping[0]->destid1;
+    }
+    return FALSE;
   }
 
   /**
    * Find the destination Uuid from the source target_id.
    *
-   * @param array $component_data.
-   *   Information about the block.
+   * @param string $bid
+   *   ID of the block.
    *
    * @return string
    *   Returns the destination Uuid.
    */
-  public static function getDestinationUuid($component_data) {
-    Database::setActiveConnection('default');
-    $db = Database::getConnection();
-    $map = [
-      'twitter_widget' => 'migrate_map_twitter_widgets',
-    ];
-    $type = $component_data['block_type'];
-    $mapping = $db->select($map[$type], 'm')
-      ->fields('m')
-      ->condition('sourceid1', $component_data['block_data'][0]['target_id'])
-      ->execute()
-      ->fetchAll();
-    $destination = $db->select('block_content', 'b')
+  public static function getDestinationUuid($bid) {
+    $destination_db = Database::getConnection('default', 'default');
+    $destination = $destination_db->select('block_content', 'b')
       ->fields('b')
-      ->condition('id', $mapping[0]->destid1)
+      ->condition('id', $bid)
       ->execute()
       ->fetchAll();
-    Database::setActiveConnection('utexas_migrate');
-    // Since these reusable blocks were creating during a previous migration
-    // task, there will only be 1 revision, so we can safely use the 0th.
-    return $destination[0]->uuid;
+    if ($destination[0]->uuid) {
+      // Since these reusable blocks were creating during a previous migration
+      // task, there will only be 1 revision, so we can safely use the 0th.
+      return $destination[0]->uuid;
+    }
+    return FALSE;
   }
 
   /**

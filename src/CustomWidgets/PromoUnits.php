@@ -104,8 +104,10 @@ class PromoUnits {
         $items[$delta]['item']['copy']['value'] = WysiwygHelper::process($instance['copy']);
         $items[$delta]['item']['copy']['format'] = MigrateHelper::prepareTextFormat($instance['copy_format']);
       }
-      $items[$delta]['item']['link']['uri'] = MigrateHelper::prepareLink($instance['cta_uri']);
-      $items[$delta]['item']['link']['title'] = $instance['cta_title'] != "" ? $instance['cta_title'] : 'Read story';
+      if (!empty($instance['cta_uri']) {
+        $items[$delta]['item']['link']['uri'] = MigrateHelper::prepareLink($instance['cta_uri']);
+        $items[$delta]['item']['link']['title'] = $instance['cta_title'] != "" ? $instance['cta_title'] : 'Read story';
+      }
     }
     if (!empty($items)) {
       $destination['promo_unit_items'] = serialize($items);

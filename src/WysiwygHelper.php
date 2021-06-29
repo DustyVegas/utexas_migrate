@@ -107,14 +107,20 @@ class WysiwygHelper {
    */
   public static function transformMediaLibrary($text) {
     // Source: [[{"fid":"1","view_mode":"preview","fields":{"format":"preview","alignment":"","field_file_image_alt_text[und][0][value]":"placeholder image","field_file_image_title_text[und][0][value]":"placeholder image","external_url":""},"type":"media","field_deltas":{"1":{"format":"preview","alignment":"","field_file_image_alt_text[und][0][value]":"placeholder image","field_file_image_title_text[und][0][value]":"placeholder image","external_url":""}},"attributes":{"alt":"placeholder image","title":"placeholder image","class":"media-element file-preview","data-delta":"1"}}]]
-    $destination_token = '<drupal-media data-align="center" data-entity-type="media" data-entity-uuid="UUID_TOKEN"></drupal-media>';
+    $destination_token = '<drupal-media data-align="ALIGN_TOKEN" data-entity-type="media" data-entity-uuid="UUID_TOKEN" data-view-mode="VIEWMODE_TOKEN"></drupal-media>';
     $pattern = '/\[\[{(.*)"fid":"(\d*)",(.*)}\]\]/';
+    //$pattern = '/\[\[{(.*)"fid":"(\d*)"(.*)"view_mode":"([^\"]*)"(.*)"alignment":"([^\"]*)"(.*)\]\]/';
     preg_match_all($pattern, $text, $matches, PREG_SET_ORDER);
     if (isset($matches)) {
       foreach ($matches as $match) {
-        $uuid = self::getMediaUuid($match[2]);
+        $json = json_decode($match[0]);
+        $uuid = self::getMediaUuid($json[0][0]->fid);
+        $view_mode = self::getViewMode($json[0][0]->view_mode);
+        $alignment = self::getAlignment($json[0][0]->fields->alignment);
         if ($uuid) {
           $replace = str_replace('UUID_TOKEN', $uuid, $destination_token);
+          $replace = str_replace('ALIGN_TOKEN', $alignment, $replace);
+          $replace = str_replace('VIEWMODE_TOKEN', $view_mode, $replace);
           $text = str_replace($match[0], $replace, $text);
         }
       }
@@ -145,6 +151,42 @@ class WysiwygHelper {
       }
     }
     return FALSE;
+  }
+
+  /**
+   * Get a v3 view mode based on v2 value.
+   *
+   * @param string $source_view_mode
+   *   The view mode of the source site media item.
+   *
+   * @return string
+   *   The v2 view mode
+   */
+  public static function getViewMode($source_view_mode) {
+    $view_mode_map = [
+      'teaser' => 'utexas_medium',
+      'preview' => 'utexas_thumbnail',
+    ];
+    if (in_array($source_view_mode, array_keys($view_mode_map))) {
+      return $view_mode_map[$source_view_mode];
+    }
+    return 'default';
+  }
+
+  /**
+   * Get a v3 view mode based on v2 value.
+   *
+   * @param string $source_alignment
+   *   The alignment of the source site media item.
+   *
+   * @return string
+   *   The v2 alignment
+   */
+  public static function getAlignment($source_alignment) {
+    if (in_array($source_alignment, ['left', 'center', 'right'])) {
+      return $source_alignment;
+    }
+    return '';
   }
 
 }

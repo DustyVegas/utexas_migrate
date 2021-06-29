@@ -31,13 +31,12 @@ class MigrateHelper {
    *   The unserialized value.
    */
   public static function getVariable($name) {
-    Database::setActiveConnection('utexas_migrate');
-    $query = Database::getConnection()->select('variable', 'v')
+    $source_db = Database::getConnection('default', 'utexas_migrate');
+    $query = $source_db->select('variable', 'v')
       ->fields('v', ['value'])
       ->condition('name', $name, '=')
       ->execute()
       ->fetch();
-    Database::setActiveConnection('default');
     if (empty($query->value)) {
       return NULL;
     }

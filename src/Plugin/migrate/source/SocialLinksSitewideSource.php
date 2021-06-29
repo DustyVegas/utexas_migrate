@@ -42,14 +42,28 @@ class SocialLinksSitewideSource extends SqlBase {
       ->fetchAll();
     if (!empty($all_social_accounts)) {
       $prepared_links = [];
-      $inc = 0;
+      $allowed_providers = [
+        'facebook',
+        'flickr',
+        'instagram',
+        'linkedin',
+        'pinterest',
+        'reddit',
+        'snapchat',
+        'tumblr',
+        'twitter',
+        'vimeo',
+        'youtube',
+      ];
       foreach ($all_social_accounts as $account) {
-        $prepared_links[] = [
-          'social_account_url' => MigrateHelper::prepareLink(unserialize($account->value)),
-          'social_account_name' => str_ireplace('utexas_social_accounts_', '', $account->name),
-          'delta' => $inc,
-        ];
-        $inc++;
+        $provider = str_ireplace('utexas_social_accounts_', '', $account->name);
+        $url = unserialize($account->value);
+        if ($url != '' && in_array(strtolower($provider), $allowed_providers)) {
+          $prepared_links[] = [
+            'social_account_url' => MigrateHelper::prepareLink($url),
+            'social_account_name' => $provider,
+          ];
+        }
       }
       $row->setSourceProperty('links', $prepared_links);
     }

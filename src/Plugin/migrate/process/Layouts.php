@@ -16,6 +16,7 @@ use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
 use Drupal\utexas_migrate\CustomWidgets\MenuBlock;
+use Drupal\utexas_migrate\CustomWidgets\Newsreel;
 use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
@@ -109,12 +110,7 @@ class Layouts extends ProcessPluginBase {
     // Loop through all known blocks, building the D8 section components.
     foreach ($blocks as $id => $settings) {
       $found = FALSE;
-      if (in_array($id, array_keys(MigrateHelper::$excludedFieldblocks))) {
-        // Skip "excluded" fieldblocks, like Contact Info,
-        // since UTDK8 doesn't currently have a location for these.
-        continue;
-      }
-      elseif (in_array($id, array_keys(MigrateHelper::$includedFieldBlocks))) {
+      if (in_array($id, array_keys(MigrateHelper::$includedFieldBlocks))) {
         $field_name = MigrateHelper::$includedFieldBlocks[$id];
         $found = TRUE;
       }
@@ -133,7 +129,7 @@ class Layouts extends ProcessPluginBase {
       }
       elseif ($settings['region'] == 'social_links') {
         // The above eliminates fieldblocks not yet converted to UUIDs.
-        // @todo: look up standard blocks' block UUIDs in FlexPageLayoutsSource.php
+        // @todo look up standard blocks' block UUIDs in FlexPageLayoutsSource.php
         // This code may need to be refactored to further disambiguate.
         // This is not a fieldblock (e.g., Social Links). Use the block ID.
         $field_name = 'social_links';
@@ -186,6 +182,11 @@ class Layouts extends ProcessPluginBase {
       case 'image_link_b':
         $block_type = 'utexas_image_link';
         $source = ImageLink::getFromNid($field_name, $nid);
+        break;
+
+      case 'newsreel':
+        $source = Newsreel::getFromNid($nid);
+        $block_type = 'feed_block';
         break;
 
       case 'photo_content_area':
@@ -704,7 +705,7 @@ class Layouts extends ProcessPluginBase {
               'layout_builder_styles_style' => [
                 'utexas_border_without_background' => 'utexas_border_without_background',
                 'utexas_fourcol' => 'utexas_fourcol',
-              ]
+              ],
             ];
             break;
 
@@ -749,7 +750,7 @@ class Layouts extends ProcessPluginBase {
       'region' => $region,
       'additional' => $layout_builder_styles,
       'weight' => $settings['weight'],
-      'view_mode' => $view_mode,
+      'view_mode' => '',
     ];
     return $sections;
   }
@@ -786,7 +787,7 @@ class Layouts extends ProcessPluginBase {
     switch ($component_data['block_type']) {
       case 'twitter_widget':
       case 'contact_info':
-        // @todo: Add standard Blocks.
+        // @todo Add standard Blocks.
         $bid = EntityReference::getDestinationBlockId($component_data);
         $uuid = EntityReference::getDestinationUuid($bid);
         $block = BlockContent::load($bid);

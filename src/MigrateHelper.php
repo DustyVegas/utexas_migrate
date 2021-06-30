@@ -10,6 +10,7 @@ use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
 use Drupal\utexas_migrate\CustomWidgets\Hero;
 use Drupal\utexas_migrate\CustomWidgets\ImageLink;
+use Drupal\utexas_migrate\CustomWidgets\Newsreel;
 use Drupal\utexas_migrate\CustomWidgets\PhotoContentArea;
 use Drupal\utexas_migrate\CustomWidgets\PromoLists;
 use Drupal\utexas_migrate\CustomWidgets\PromoUnits;
@@ -300,16 +301,6 @@ class MigrateHelper {
   }
 
   /**
-   * Map of fieldblock IDs that should NOT be migrated right now.
-   *
-   * @var array
-   */
-  public static $excludedFieldblocks = [
-    'fieldblock-d41b4a03ee9d7b1084986f74b617921c' => 'Landing Page UT Newsreel',
-    'fieldblock-8e85c2c89f0ccf26e9e4d0378250bf17' => 'Standard Page UT Newsreel',
-  ];
-
-  /**
    * Map of fieldblock IDs that should be migrated to reusable blocks.
    *
    * @var array
@@ -429,6 +420,8 @@ class MigrateHelper {
     'fieldblock-205723da13bdadd816a716421b436a92' => 'featured_highlight',
     'fieldblock-f28dec811f29578f018fae1a8458c9b4' => 'photo_content_area',
     'fieldblock-75a75df6422c87166c75aa079ca98c3c' => 'resource',
+    'fieldblock-d41b4a03ee9d7b1084986f74b617921c' => 'newsreel',
+    'fieldblock-8e85c2c89f0ccf26e9e4d0378250bf17' => 'newsreel',
   ];
 
   /**
@@ -453,6 +446,10 @@ class MigrateHelper {
       case 'image_link_a':
       case 'image_link_b':
         $block_definition = ImageLink::createBlockDefinition($component_data);
+        break;
+
+      case 'newsreel':
+        $block_definition = Newsreel::createBlockDefinition($component_data);
         break;
 
       case 'promo_list':

@@ -104,7 +104,7 @@ class PromoUnits {
         $items[$delta]['item']['copy']['value'] = WysiwygHelper::process($instance['copy']);
         $items[$delta]['item']['copy']['format'] = MigrateHelper::prepareTextFormat($instance['copy_format']);
       }
-      if (!empty($instance['cta_uri']) {
+      if (!empty($instance['cta_uri'])) {
         $items[$delta]['item']['link']['uri'] = MigrateHelper::prepareLink($instance['cta_uri']);
         $items[$delta]['item']['link']['title'] = $instance['cta_title'] != "" ? $instance['cta_title'] : 'Read story';
       }

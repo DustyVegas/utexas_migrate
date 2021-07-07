@@ -149,6 +149,8 @@ class MigrateHelper {
     // Some default Drupal menu names changed between Drupal 7 and 8. For those, we map them to the new name. For others,
     // we leave them as-is.
     $menu_map = [
+      'menu-footer' => 'footer',
+      'menu-header' => 'header',
       'main-menu' => 'main',
       'management' => 'admin',
       'navigation' => 'tools',

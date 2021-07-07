@@ -742,6 +742,11 @@ class Layouts extends ProcessPluginBase {
         $layout_builder_styles['layout_builder_styles_style'][$key] = $value;
       }
     }
+    // Get possible view mode specifications from field info (only Promo List)
+    if (isset($field_data['data']['view_mode'])) {
+      $view_mode = $field_data['data']['view_mode'];
+      unset($field_data['data']['view_mode']);
+    }
     $sections[$delta]['components'][$field] = [
       'field_identifier' => $field,
       'block_data' => $field_data['data'],
@@ -750,7 +755,7 @@ class Layouts extends ProcessPluginBase {
       'region' => $region,
       'additional' => $layout_builder_styles,
       'weight' => $settings['weight'],
-      'view_mode' => '',
+      'view_mode' => $view_mode,
     ];
     return $sections;
   }

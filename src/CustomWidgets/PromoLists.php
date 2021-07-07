@@ -139,7 +139,7 @@ class PromoLists {
     if (!empty($source[0]['style'])) {
       // In Drupal 8 all instances will receive the same promo list style.
       $style = $source[0]['style'];
-      $destination[0]['view_mode'] = $style_map[$style];
+      $destination['view_mode'] = $style_map[$style];
     }
     // Finally, return all the Promo List Containers to the node.
     return $destination;

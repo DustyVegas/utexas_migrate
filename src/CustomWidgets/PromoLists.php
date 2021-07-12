@@ -117,7 +117,7 @@ class PromoLists {
             $destination[$container_delta]['promo_list_items'][$item_delta]['item']['image'] = 0;
           }
           if (isset($item->field_utexas_promo_list_item_link)) {
-            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['link'] = MigrateHelper::prepareLink($item->field_utexas_promo_list_item_link);
+            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['link']['uri'] = MigrateHelper::prepareLink($item->field_utexas_promo_list_item_link);
           }
           if (isset($item->field_utexas_promo_list_item_copy_value)) {
             $destination[$container_delta]['promo_list_items'][$item_delta]['item']['copy']['value'] = WysiwygHelper::process($item->field_utexas_promo_list_item_copy_value);

@@ -24,7 +24,83 @@ class WysiwygHelper {
     $text = self::transformVideoFilter($text);
     $text = self::transformInnerRail($text);
     $text = self::transformLinks($text);
+    $text = self::transformButtons($text);
+    $text = self::transformFlexVideo($text);
     return $text;
+  }
+
+  /**
+   * Find v2 Foundation 'flex-video' markup and update as necessary.
+   *
+   * @param string $text
+   *   The entire text of a WYSIWYG field.
+   *
+   * @return string
+   *   The processed text.
+   */
+  public static function transformFlexVideo($text) {
+    $original = $text;
+    // LibXML requires that the html is wrapped in a root node.
+    $text = '<root>' . $text . '</root>';
+    $dom = new \DOMDocument();
+    libxml_use_internal_errors(TRUE);
+    $dom->loadHTML(mb_convert_encoding($text, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $divs = $dom->getElementsByTagName('div');
+    // Find all buttons in text.
+    if ($divs->length !== 0) {
+      foreach ($divs as $div) {
+        // Find existing class attributes, if any.
+        $classes = $div->getAttribute('class');
+        if (strpos($classes, 'flex-video') !== FALSE) {
+          $div->setAttribute('class', str_replace('flex-video', 'embed-responsive embed-responsive-16by9', $classes));
+        }
+      }
+      // Get innerHTML of root node.
+      $html = "";
+      foreach ($dom->getElementsByTagName('root')->item(0)->childNodes as $child) {
+        // Re-serialize the HTML.
+        $html .= $dom->saveHTML($child);
+      }
+      return $html;
+    }
+    return $original;
+  }
+
+  /**
+   * Find v2 Foundation button markup and update as necessary.
+   *
+   * @param string $text
+   *   The entire text of a WYSIWYG field.
+   *
+   * @return string
+   *   The processed text.
+   */
+  public static function transformButtons($text) {
+    $original = $text;
+    // LibXML requires that the html is wrapped in a root node.
+    $text = '<root>' . $text . '</root>';
+    $dom = new \DOMDocument();
+    libxml_use_internal_errors(TRUE);
+    $dom->loadHTML(mb_convert_encoding($text, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $buttons = $dom->getElementsByTagName('button');
+    // Find all buttons in text.
+    if ($buttons->length !== 0) {
+      foreach ($buttons as $button) {
+        // Find existing class attributes, if any.
+        $classes = $button->getAttribute('class');
+        if (strpos($classes, 'button') !== FALSE) {
+          $button->setAttribute('class', $classes . ' ut-btn');
+        }
+      }
+      // Get innerHTML of root node.
+      $html = "";
+      foreach ($dom->getElementsByTagName('root')->item(0)->childNodes as $child) {
+        // Re-serialize the HTML.
+        $html .= $dom->saveHTML($child);
+      }
+      return $html;
+    }
+    return $original;
   }
 
   /**

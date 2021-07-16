@@ -817,7 +817,7 @@ class Layouts extends ProcessPluginBase {
           'provider' => 'menu_block',
           'label_display' => $component_data['block_data']['display_title'],
           'follow' => $component_data['block_data']['follow'],
-          'follow_parent' => '',
+          'follow_parent' => $component_data['block_data']['follow_parent'],
           'child' => '',
           'label_type' => $component_data['block_data']['label_type'],
           'label_link' => $component_data['block_data']['label_link'],

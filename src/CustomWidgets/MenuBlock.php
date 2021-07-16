@@ -36,7 +36,7 @@ class MenuBlock {
   public static function getSourceData($menu_block_id) {
     $data = [];
     // Start by assuming that the title display has been suppressed.
-    $data['display_title'] = FALSE;
+    $data['display_title'] = '';
     $variables = [
       'parent',
       'title_link',
@@ -60,6 +60,10 @@ class MenuBlock {
     else {
       $data['parent'] = self::getMenuLink($parent_parts[0], $parent_parts[1]);
     }
+    // In v3, the `follow` value is 1 or 0,
+    // and `follow_parent` is 'active' or 'child'.
+    $data['follow_parent'] = $data['follow'];
+    $data['follow'] = $data['follow'] === 0 ? 0 : 1;
     $data['admin_title'] = self::getMenuBlockTitle($block_id);
     if (!empty($data['admin_title'])) {
       $data['display_title'] = 'visible';

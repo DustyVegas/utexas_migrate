@@ -3,6 +3,7 @@
 namespace Drupal\utexas_migrate;
 
 use Drupal\Core\Database\Database;
+use Drupal\utexas_migrate\MigrateHelper;
 
 /**
  * Helper functions for migrating elements within WYSIWYG fields.
@@ -22,7 +23,45 @@ class WysiwygHelper {
     $text = self::transformMediaLibrary($text);
     $text = self::transformVideoFilter($text);
     $text = self::transformInnerRail($text);
+    $text = self::transformLinks($text);
     return $text;
+  }
+
+  /**
+   * Find v2 <a> tags and update href as necessary.
+   *
+   * @param string $text
+   *   The entire text of a WYSIWYG field.
+   *
+   * @return string
+   *   The processed text.
+   */
+  public static function transformLinks($text) {
+    $original = $text;
+    // LibXML requires that the html is wrapped in a root node.
+    $text = '<root>' . $text . '</root>';
+    $dom = new \DOMDocument();
+    libxml_use_internal_errors(TRUE);
+    $dom->loadHTML(mb_convert_encoding($text, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $links = $dom->getElementsByTagName('a');
+    // Find all links in text.
+    if ($links->length !== 0) {
+      foreach ($links as $link) {
+        // Find existing class attributes, if any, and append tablesaw class.
+        $href = $link->getAttribute('href');
+        // Debugging suggestion:
+        // print_r(MigrateHelper::prepareLink($href, 'wysiwyg'));
+        $link->setAttribute('href', MigrateHelper::prepareLink($href, 'wysiwyg'));
+      }
+      // Get innerHTML of root node.
+      $html = "";
+      foreach ($dom->getElementsByTagName('root')->item(0)->childNodes as $child) {
+        // Re-serialize the HTML.
+        $html .= $dom->saveHTML($child);
+      }
+      return $html;
+    }
+    return $original;
   }
 
   /**

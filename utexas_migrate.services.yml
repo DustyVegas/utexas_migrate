@@ -1,0 +1,5 @@
+services:
+  utexas_migrate.subscriber.pre_import:
+    class: Drupal\utexas_migrate\Event\MediaEventSubscriber
+    tags:
+      - { name: event_subscriber }

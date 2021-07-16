@@ -237,6 +237,9 @@ class MigrateHelper {
    *   The appropriate link for D8.
    */
   public static function prepareLink($value, $source_path = '') {
+    if ($value === '') {
+      return $value;
+    }
     // This processing is modeled on the Drupal core link_uri process plugin,
     // but is provided as a helper method so that its processing can be used in
     // contexts such as links in custom components and in WYSIWYG areas.
@@ -245,6 +248,10 @@ class MigrateHelper {
       // Attempt to find entity mapping from source.
       $path = self::getDestinationFromSource($path);
 
+      if ($source_path === 'wysiwyg') {
+        // Do not insert Drupal internal route prefixes in WYSIWYG contexts.
+        return $path;
+      }
       if ($path == '<front>') {
         $path = '';
       }

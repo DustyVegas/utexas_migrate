@@ -122,6 +122,32 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
         $search_block->save();
       }
     }
+    // Newsletter.
+    $display_newsletter = $row->getSourceProperty('newsletter_exists');
+    if ($display_newsletter === '1') {
+      $newsletter_url = $row->getSourceProperty('newsletter_url');
+      $newsletter_block = BlockContent::create([
+        'type' => 'call_to_action',
+        'info' => 'Site Newsletter',
+        'field_utexas_call_to_action_link' => [
+          'uri' => $newsletter_url,
+          'title' => 'Subscribe to our newsletter',
+        ],
+      ]);
+      $newsletter_block->save();
+      $blockEntityManager = \Drupal::entityTypeManager()->getStorage('block');
+      $theme = \Drupal::config('system.theme')->get('default');
+      $block = $blockEntityManager->create([
+        'id' => 'sitewide_newsletter',
+        'plugin' => 'block_content:' . $newsletter_block->uuid(),
+        'theme' => $theme,
+      ]);
+      $block->setRegion('footer_right');
+      $block->setWeight(-100);
+      $block->enable();
+      $block->save();
+    }
+
     switch ($row->getSourceProperty('secondary_menu')) {
       case 'social_accounts':
         $destination_db = Database::getConnection('default', 'default');

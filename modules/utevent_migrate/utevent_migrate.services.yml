@@ -1,0 +1,5 @@
+services:
+  utevent_migrate.subscriber.import:
+    class: Drupal\utevent_migrate\Event\MigrateEventSubscriber
+    tags:
+      - { name: event_subscriber }

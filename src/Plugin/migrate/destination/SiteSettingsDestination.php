@@ -139,10 +139,11 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
           'label_display' => '0',
         ];
         $blockEntityManager = \Drupal::entityTypeManager()->getStorage('block');
+        $theme = \Drupal::config('system.theme')->get('default');
         $block = $blockEntityManager->create([
           'id' => 'sitewide_social_links',
           'plugin' => 'block_content:' . $sitewide_block->uuid(),
-          'theme' => 'forty_acres',
+          'theme' => $theme,
         ]);
         $block->setRegion('header_secondary');
         $block->enable();

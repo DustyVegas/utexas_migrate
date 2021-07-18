@@ -2,7 +2,10 @@
 
 namespace Drupal\utexas_migrate\Plugin\migrate\destination;
 
+use Drupal\block\Entity\Block;
+use Drupal\block_content\Entity\BlockContent;
 use Drupal\Core\Entity\EntityStorageException;
+use Drupal\Core\Database\Database;
 use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
@@ -72,6 +75,7 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
 
     // Front page & 403 & 404 pages.
     $config = \Drupal::configFactory()->getEditable('system.site');
+    // @todo: evaluate whether to add prepareLink() wrapper?
     $front = MigrateHelper::getDestinationFromSource($row->getSourceProperty('site_frontpage'));
     $site403 = MigrateHelper::getDestinationFromSource($row->getSourceProperty('site_403'));
     $site404 = MigrateHelper::getDestinationFromSource($row->getSourceProperty('site_404'));
@@ -111,6 +115,56 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
     }
     // Theme settings.
     // See https://github.austin.utexas.edu/eis1-wcs/utexas_migrate/wiki/Sample-Dataset-from-Source-site#theme-settings
+    $search_display = $row->getSourceProperty('utexas_searchbar_theme_settings');
+    if ($search_display === 'no') {
+      if ($search_block = Block::load('search_form')) {
+        $search_block->disable();
+        $search_block->save();
+      }
+    }
+    switch ($row->getSourceProperty('secondary_menu')) {
+      case 'social_accounts':
+        $destination_db = Database::getConnection('default', 'default');
+        $table = 'migrate_map_utexas_social_links_sitewide';
+        if (!$destination_db->schema()->tableExists($table)) {
+          return;
+        }
+        $destination_bid = $destination_db->select($table, 'n')
+          ->fields('n', ['destid1'])
+          ->execute()
+          ->fetchField();
+        $sitewide_block = BlockContent::load($destination_bid);
+        $config = [
+          'label' => 'Sitewide social media links',
+          'label_display' => '0',
+        ];
+        $blockEntityManager = \Drupal::entityTypeManager()->getStorage('block');
+        $block = $blockEntityManager->create([
+          'id' => 'sitewide_social_links',
+          'plugin' => 'block_content:' . $sitewide_block->uuid(),
+          'theme' => 'forty_acres',
+        ]);
+        $block->setRegion('header_secondary');
+        $block->enable();
+        $block->save();
+        if ($header = Block::load('header')) {
+          $header->disable();
+          $header->save();
+        }
+        break;
+
+      case 'header_menu':
+
+        break;
+
+      default:
+        // Disable header menu, if it exists.
+        if ($header = Block::load('header')) {
+          $header->disable();
+          $header->save();
+        }
+        break;
+    }
     if (!$row->getSourceProperty('default_logo')) {
       if ($logo_uri = $row->getSourceProperty('logo_path')) {
         // Save logo to filesystem.

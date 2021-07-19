@@ -124,7 +124,7 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
     }
     // Newsletter.
     $display_newsletter = $row->getSourceProperty('newsletter_exists');
-    if ($display_newsletter === '1') {
+    if ($display_newsletter == 1) {
       $newsletter_url = $row->getSourceProperty('newsletter_url');
       $newsletter_block = BlockContent::create([
         'type' => 'call_to_action',

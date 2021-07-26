@@ -90,7 +90,6 @@ class SocialLinks {
     $allowed_providers = [
       'facebook',
       'flickr',
-      'googleplus',
       'instagram',
       'linkedin',
       'pinterest',

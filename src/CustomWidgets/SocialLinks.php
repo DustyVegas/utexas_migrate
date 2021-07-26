@@ -27,6 +27,7 @@ class SocialLinks {
       'info' => $data['field_identifier'],
       'field_utexas_sl_social_links' => [
         'headline' => $data['block_data'][0]['headline'],
+        'icon_size' => 'ut-social-links--medium',
         'social_account_links' => serialize($data['block_data'][0]['links']),
       ],
       'reusable' => FALSE,

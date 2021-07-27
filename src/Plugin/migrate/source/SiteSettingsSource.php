@@ -104,7 +104,7 @@ class SiteSettingsSource extends SqlBase {
     foreach ($platforms as $source => $value) {
       $key = $this->getVariable($source);
       if (isset($key)) {
-        $social_sharing .= $value . PHP_EOL;
+        $social_sharing .= $value . '\r\n';
       }
     }
     if (!empty($social_sharing)) {

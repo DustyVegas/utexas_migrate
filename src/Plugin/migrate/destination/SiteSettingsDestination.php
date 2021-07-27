@@ -113,6 +113,15 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
       // Save container.
       $container->save();
     }
+
+    // AddToAny settings.
+    $social_sharing = $row->getSourceProperty('social_sharing');
+    if ($social_sharing) {
+      $social_sharing_config = \Drupal::service('config.factory')->getEditable('addtoany.settings');
+      $social_sharing_config->set('additional_html', $social_sharing);
+      $social_sharing_config->save();
+    }
+
     // Theme settings.
     // See https://github.austin.utexas.edu/eis1-wcs/utexas_migrate/wiki/Sample-Dataset-from-Source-site#theme-settings
     $search_display = $row->getSourceProperty('utexas_searchbar_theme_settings');

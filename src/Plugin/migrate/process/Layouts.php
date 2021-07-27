@@ -127,11 +127,11 @@ class Layouts extends ProcessPluginBase {
         // Sets field to `menu_block`.
         $found = TRUE;
       }
+      elseif ($field_name = MigrateHelper::isBasicBlock($id)) {
+        // Sets field to `basic_block-<id>`.
+        $found = TRUE;
+      }
       elseif ($settings['region'] == 'social_links') {
-        // The above eliminates fieldblocks not yet converted to UUIDs.
-        // @todo look up standard blocks' block UUIDs in FlexPageLayoutsSource.php
-        // This code may need to be refactored to further disambiguate.
-        // This is not a fieldblock (e.g., Social Links). Use the block ID.
         $field_name = 'social_links';
         $found = TRUE;
       }
@@ -256,6 +256,12 @@ class Layouts extends ProcessPluginBase {
     if (MigrateHelper::isMenuBlock($field_name)) {
       $block_type = 'menu_block';
       $source = MenuBlock::getBlockData($field_name);
+    }
+    // Basic block IDs are incremental, so we handle them outside the
+    // main switch statement.
+    if (MigrateHelper::isBasicBlock($field_name)) {
+      $block_type = 'basic_reusable';
+      $source = BasicBlock::getFromBid($field_name);
     }
 
     return [
@@ -808,7 +814,7 @@ class Layouts extends ProcessPluginBase {
 
       case 'twitter_widget':
       case 'contact_info':
-        // @todo Add standard Blocks.
+      case 'basic_reusable':
         $bid = EntityReference::getDestinationBlockId($component_data);
         $uuid = EntityReference::getDestinationUuid($bid);
         $block = BlockContent::load($bid);

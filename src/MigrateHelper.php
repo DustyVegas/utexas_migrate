@@ -339,6 +339,22 @@ class MigrateHelper {
   }
 
   /**
+   * Check if the ID identifies this as a basic block.
+   *
+   * @param string $d7_display_id
+   *   The source block ID.
+   *
+   * @return mixed
+   *   The basic block identifier or FALSE.
+   */
+  public static function isBasicBlock($d7_display_id) {
+    if (strpos($d7_display_id, 'block-') === 0) {
+      return $d7_display_id;
+    }
+    return FALSE;
+  }
+
+  /**
    * Check if the field should receive a border.
    *
    * @param string $field

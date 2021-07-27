@@ -102,14 +102,13 @@ class MenuBlock {
    *   The title string.
    */
   public static function getMenuBlockTitle($id) {
-    Database::setActiveConnection('utexas_migrate');
-    $query = Database::getConnection()->select('block', 'b')
+    $source_db = Database::getConnection('default', 'utexas_migrate');
+    $query = $source_db->select('block', 'b')
       ->fields('b', ['title'])
       ->condition('delta', $id, '=')
       ->condition('module', 'menu_block', '=')
       ->execute()
       ->fetch();
-    Database::setActiveConnection('default');
     if (empty($query->title)) {
       return NULL;
     }

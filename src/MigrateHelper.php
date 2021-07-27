@@ -319,6 +319,7 @@ class MigrateHelper {
     'fieldblock-5e45b57e2023b0d28f5a9dc785ea12fa' => 'twitter_widget',
     'fieldblock-38205d43426b33bd0fe595ff8ca61ffd' => 'contact_info',
     'fieldblock-d83c2a95384186e375ab37cbf1430bf5' => 'contact_info',
+    'utexas_social_sharing-utexas_social_sharing_block' => 'social_sharing',
   ];
 
   /**
@@ -351,6 +352,9 @@ class MigrateHelper {
       return FALSE;
     }
     if ($field === 'social_links') {
+      return FALSE;
+    }
+    if ($field === 'social_sharing') {
       return FALSE;
     }
     return TRUE;

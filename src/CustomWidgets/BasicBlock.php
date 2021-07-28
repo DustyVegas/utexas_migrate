@@ -36,6 +36,24 @@ class BasicBlock {
   /**
    * Convert D7 data to D8 structure.
    *
+   * @param string $field_name.
+   *  A string of the format `block-<source_bid>`
+   *
+   * @return array
+   *   Returns destination settings for basic block.
+   */
+  public static function getFromBid($field_name) {
+    $prepared = [];
+    $block_id = str_replace('block-', '', $field_name);
+    $prepared[0] = ['target_id' => $block_id];
+    $prepared['field_name'] = self::getBlockTitle($block_id);
+    $prepared['display_title'] = 'visible';
+    return $prepared;
+  }
+
+  /**
+   * Convert D7 data to D8 structure.
+   *
    * @param string $instance
    *   Whether this is image_link_ 'a' or 'b'.
    * @param int $source_nid
@@ -93,6 +111,29 @@ class BasicBlock {
       $source[$delta]['format'] = MigrateHelper::prepareTextFormat($instance['format']);
     }
     return $source;
+  }
+
+  /**
+   * Retrieve the block title from the source & process according
+   * to MenuBlock logic.
+   *
+   * @return string
+   *   The title string.
+   */
+  public static function getBlockTitle($id) {
+    $source_db = Database::getConnection('default', 'utexas_migrate');
+    $query = $source_db->select('block_custom', 'b')
+      ->fields('b', ['info'])
+      ->condition('bid', $id, '=')
+      ->execute()
+      ->fetch();
+    if (empty($query->title)) {
+      return NULL;
+    }
+    if ($query->title === '<none>') {
+      return '';
+    }
+    return $query->title;
   }
 
 }

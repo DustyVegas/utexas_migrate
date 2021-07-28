@@ -71,7 +71,12 @@ class EntityReference {
     $map = [
       'twitter_widget' => 'migrate_map_twitter_widgets',
       'contact_info' => 'migrate_map_contact_info',
+      'basic_reusable' => 'migrate_map_utexas_content_blocks',
     ];
+    if (!in_array($component_data['block_type'], array_keys($map))) {
+      print_r('Could not find a mapping from "getDestinationBlockId"');
+      return FALSE;
+    }
     $type = $component_data['block_type'];
     $mapping = $destination_db->select($map[$type], 'm')
       ->fields('m')

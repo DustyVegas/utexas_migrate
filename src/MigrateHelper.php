@@ -187,6 +187,10 @@ class MigrateHelper {
     if (in_array($text_format, $destination_text_formats)) {
       return $text_format;
     }
+    if ($text_format === 'filtered_html_for_blocks') {
+      // See https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1388.
+      return 'full_html';
+    }
     return 'flex_html';
   }
 
@@ -333,6 +337,22 @@ class MigrateHelper {
    */
   public static function isMenuBlock($d7_display_id) {
     if (strpos($d7_display_id, 'menu_block-') === 0) {
+      return $d7_display_id;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Check if the ID identifies this as a basic block.
+   *
+   * @param string $d7_display_id
+   *   The source block ID.
+   *
+   * @return mixed
+   *   The basic block identifier or FALSE.
+   */
+  public static function isBasicBlock($d7_display_id) {
+    if (strpos($d7_display_id, 'block-') === 0) {
       return $d7_display_id;
     }
     return FALSE;

@@ -9,6 +9,7 @@ use Drupal\migrate\Plugin\migrate\destination\Entity;
 use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Row;
+use Drupal\utexas_migrate\MigrateHelper;
 use Drupal\utexas_migrate\WysiwygHelper;
 
 /**
@@ -25,7 +26,7 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
    */
   public function import(Row $row, array $old_destination_id_values = []) {
     try {
-      $migrated_format = $row->getSourceProperty('format');
+      $migrated_format = MigrateHelper::getDestinationTextFormat($row->getSourceProperty('format'));
       $block = BlockContent::create([
         'type' => 'basic',
         'info' => $row->getSourceProperty('info'),

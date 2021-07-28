@@ -34,6 +34,7 @@ class ContentBlocksSource extends SqlBase {
       'bid' => $this->t('Block ID'),
       'body' => $this->t('Body'),
       'info' => $this->t('Title'),
+      'format' => $this->t('Text format'),
     ];
     return $fields;
   }

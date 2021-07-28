@@ -187,6 +187,10 @@ class MigrateHelper {
     if (in_array($text_format, $destination_text_formats)) {
       return $text_format;
     }
+    if ($text_format === 'filtered_html_for_blocks') {
+      // See https://github.austin.utexas.edu/eis1-wcs/utdk_profile/issues/1388.
+      return 'full_html';
+    }
     return 'flex_html';
   }
 

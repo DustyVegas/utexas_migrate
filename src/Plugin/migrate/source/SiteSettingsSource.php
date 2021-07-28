@@ -36,6 +36,7 @@ class SiteSettingsSource extends SqlBase {
     $this->getTwitterCredentials($row);
     $this->getGtmSettings($row);
     $this->getSiteInformation($row);
+    $this->getSocialSharing($row);
   }
 
   /**
@@ -85,6 +86,32 @@ class SiteSettingsSource extends SqlBase {
       $row->setSourceProperty('utexas_twitter_widget_secret', $secret);
     }
   }
+
+  /**
+   * Custom callback to source social sharing settings.
+   */
+  public function getSocialSharing(&$row) {
+    $platforms = [
+      'utexas_social_sharing_em' => '<a class="a2a_button_email"></a>',
+      'utexas_social_sharing_fb' => '<a class="a2a_button_facebook"></a>',
+      'utexas_social_sharing_tw' => '<a class="a2a_button_twitter"></a>',
+      'utexas_social_sharing_li' => '<a class="a2a_button_linkedin"></a>',
+      'utexas_social_sharing_pi' => '<a class="a2a_button_pinterest"></a>',
+      'utexas_social_sharing_tu' => '<a class="a2a_button_tumblr"></a>',
+      'utexas_social_sharing_re' => '<a class="a2a_button_reddit"></a>',
+    ];
+    $social_sharing = '';
+    foreach ($platforms as $source => $value) {
+      $key = $this->getVariable($source);
+      if (isset($key)) {
+        $social_sharing .= $value . PHP_EOL;
+      }
+    }
+    if (!empty($social_sharing)) {
+      $row->setSourceProperty('social_sharing', $social_sharing);
+    }
+  }
+
 
   /**
    * Custom callback to site info variables.

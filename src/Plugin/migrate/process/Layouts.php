@@ -116,7 +116,7 @@ class Layouts extends ProcessPluginBase {
       }
       elseif (in_array($id, array_keys(MigrateHelper::$includedReusableBlocks))) {
         $field_name = MigrateHelper::$includedReusableBlocks[$id];
-        // This will provide for example, `twitter_widget` or `contact_info`.
+        // This will provide `twitter_widget` or `contact_info` or `social_sharing`.
         $found = TRUE;
       }
       elseif ($field_name = MigrateHelper::isSupportedViewsBlock($id)) {
@@ -217,6 +217,11 @@ class Layouts extends ProcessPluginBase {
       case 'social_links':
         $source = SocialLinks::getFromNid($nid);
         $block_type = 'social_links';
+        break;
+
+      case 'social_sharing':
+        $source = [];
+        $block_type = 'addtoany_block';
         break;
 
       case 'wysiwyg_a':
@@ -790,6 +795,17 @@ class Layouts extends ProcessPluginBase {
     $component_view_mode = $component_data['block_data'][0]['view_mode'] ?? 'full';
     // Switch creation between inline & reusable block components.
     switch ($component_data['block_type']) {
+      case 'addtoany_block':
+        $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
+          'id' => 'addtoany_block',
+          'label' => 'Share this content',
+          'provider' => 'addtoany',
+          'label_display' => 'visible',
+          'status' => TRUE,
+          'view_mode' => '',
+        ]);
+        break;
+
       case 'twitter_widget':
       case 'contact_info':
         // @todo Add standard Blocks.

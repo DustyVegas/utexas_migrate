@@ -9,6 +9,7 @@ use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Row;
 use Drupal\node\Entity\Node;
 use Drupal\pathauto\PathautoState;
+use Drupal\redirect\Entity\Redirect;
 
 /**
  * Update any nodes which have pathauto unchecked.
@@ -39,11 +40,20 @@ class PathAliasDestination extends Entity implements MigrateDestinationInterface
         // So, in this case, we are changing the value to "SKIP" from the
         // Flex Page default of "USE" *only* if that's specified in the
         // Drupal 7 node.
+        $alias = $row->getSourceProperty('alias');
         if ($row->getSourceProperty('pathauto') === '0') {
-          $alias = $row->getSourceProperty('alias');
           $node->set("path", ["alias" => $alias, "pathauto" => PathautoState::SKIP]);
           // Save the node with the pathauto & pathalias settings.
           $node->save();
+        }
+        elseif ($node->getType() === 'utprof_profile') {
+          // Default path aliases changed for Profile nodes between v2 and v3.
+          // Create a redirect for the "legacy" path.
+          Redirect::create([
+            'redirect_source' => trim($alias, '/'),
+            'redirect_redirect' => 'internal:/node/' . $destination,
+            'status_code' => 301,
+          ])->save();
         }
         // Else, leave the pathauto setting alone & report this as processed.
         return [$node->id()];

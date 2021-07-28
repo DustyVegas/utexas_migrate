@@ -33,6 +33,9 @@ class DestinationsMap extends ProcessPluginBase {
     if ($destination === FALSE) {
       $migrate_executable->saveMessage('Unable to find applicable mapping for ' . $value, MigrationInterface::MESSAGE_WARNING);
     }
+    // Redirects should not include a preceding slash for manipulation; this is
+    // supplied by the core d7_redirect_source_query.
+    $destination = trim($destination, "/");
     return $destination;
   }
 

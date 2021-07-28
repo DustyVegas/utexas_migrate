@@ -38,6 +38,7 @@ class SocialLinksSitewideDestination extends Entity implements MigrateDestinatio
           'info' => 'Sitewide Social Links',
           'field_utexas_sl_social_links' => [
             'headline' => $row->getSourceProperty('field_utexas_social_links_headline'),
+            'icon_size' => 'ut-social-links--small',
             'social_account_links' => serialize($links),
           ],
         ]);

@@ -35,7 +35,7 @@ process:
         plugin: utexas_text_formats
         source: format
       summary:
-        plugin: utexas_wysiwygs
+        plugin: utexas_wysiwygs_plaintext
         source: summary
   field_utnews_external_link:
     plugin: sub_process

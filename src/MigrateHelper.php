@@ -248,6 +248,17 @@ class MigrateHelper {
     // but is provided as a helper method so that its processing can be used in
     // contexts such as links in custom components and in WYSIWYG areas.
     $path = ltrim($value, '/');
+
+    // Prevent double-encoding.
+    $path = rawurldecode($path);
+
+    // Convert %pantheonsite.io URLs into relative links.
+    if (strpos($path, 'pantheonsite') !== FALSE) {
+      $re = '/(.*).pantheonsite.io(.*)/m';
+      $subst = '$2';
+      $path = preg_replace($re, $subst, $path);
+    }
+
     if (parse_url($path, PHP_URL_SCHEME) === NULL) {
       // Attempt to find entity mapping from source.
       $path = self::getDestinationFromSource($path);

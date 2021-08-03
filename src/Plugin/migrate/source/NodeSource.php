@@ -49,6 +49,7 @@ class NodeSource extends SqlBase {
       'sticky' => $this->t('Sticky'),
       'promote' => $this->t('Promote'),
       'show_breadcrumb' => $this->t('Show breadcrumb'),
+      'show_date' => $this->t('Show last updated date'),
     ];
     return $fields;
   }

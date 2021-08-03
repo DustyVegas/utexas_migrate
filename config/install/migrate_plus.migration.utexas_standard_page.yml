@@ -21,7 +21,8 @@ process:
   sticky: sticky
   promote: promote
   display_breadcrumbs: show_breadcrumb
-  # Find the destination UID; accessible via 
+  display_updated: show_date
+  # Find the destination UID; accessible via
   # $row->getDestinationProperty('uid');
   uid:
     plugin: migration_lookup

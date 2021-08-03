@@ -20,6 +20,7 @@ process:
   status: status
   sticky: sticky
   promote: promote
+  display_updated: show_date
   uid:
     plugin: migration_lookup
     source: node_uid

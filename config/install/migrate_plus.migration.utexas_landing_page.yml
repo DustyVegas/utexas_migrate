@@ -21,10 +21,11 @@ process:
   sticky: sticky
   promote: promote
   display_breadcrumbs: show_breadcrumb
+  display_updated: show_date
   display_page_title:
     plugin: default_value
     default_value: 0
-  # Find the destination UID; accessible via 
+  # Find the destination UID; accessible via
   # $row->getDestinationProperty('uid');
   uid:
     plugin: migration_lookup

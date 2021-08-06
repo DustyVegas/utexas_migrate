@@ -84,6 +84,16 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
     $config->set('page.404', $site404);
     $config->save();
 
+    // Google CSE.
+    $cse_id = $row->getSourceProperty('utexas_google_cse_id');
+    if ($cse_id) {
+      $google_cse = \Drupal::configFactory()->getEditable('search.page.google_cse_search');
+      $cse_config = $google_cse->get('configuration');
+      $cse_config['cx'] = $cse_id;
+      $google_cse->set('configuration', $cse_config);
+      $google_cse->save();
+    }
+
     // Validate if there is a google tag to migrate.
     if ($row->getSourceProperty('utexas_google_tag_manager_gtm_code') !== NULL) {
       // Create container with GTM source settings.

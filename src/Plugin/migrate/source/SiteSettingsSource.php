@@ -35,6 +35,7 @@ class SiteSettingsSource extends SqlBase {
     $this->getActiveThemeSettings($row);
     $this->getTwitterCredentials($row);
     $this->getGtmSettings($row);
+    $this->getCseSettings($row);
     $this->getSiteInformation($row);
     $this->getSocialSharing($row);
   }
@@ -145,6 +146,16 @@ class SiteSettingsSource extends SqlBase {
     $exclude_paths = $this->getVariable('utexas_google_tag_manager_gtm_exclude_paths');
     if (isset($exclude_paths)) {
       $row->setSourceProperty('utexas_google_tag_manager_gtm_exclude_paths', $exclude_paths);
+    }
+  }
+
+  /**
+   * Custom callback to source Google CSE settings, if present.
+   */
+  public function getCseSettings(&$row) {
+    $cse_code = $this->getVariable('utexas_google_cse_id');
+    if (isset($cse_code)) {
+      $row->setSourceProperty('utexas_google_cse_id', $cse_code);
     }
   }
 

@@ -141,6 +141,12 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
         $search_block->save();
       }
     }
+    // Footer social media icons.
+    $display_footer_icons = $row->getSourceProperty('display_social_icons');
+    if ($display_footer_icons == 1) {
+      self::placeSocialMediaBlock('footer_left');
+    }
+
     // Newsletter.
     $display_newsletter = $row->getSourceProperty('newsletter_exists');
     if ($display_newsletter == 1) {
@@ -169,30 +175,7 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
 
     switch ($row->getSourceProperty('secondary_menu')) {
       case 'social_accounts':
-        $destination_db = Database::getConnection('default', 'default');
-        $table = 'migrate_map_utexas_social_links_sitewide';
-        if (!$destination_db->schema()->tableExists($table)) {
-          return;
-        }
-        $destination_bid = $destination_db->select($table, 'n')
-          ->fields('n', ['destid1'])
-          ->execute()
-          ->fetchField();
-        $sitewide_block = BlockContent::load($destination_bid);
-        $config = [
-          'label' => 'Sitewide social media links',
-          'label_display' => '0',
-        ];
-        $blockEntityManager = \Drupal::entityTypeManager()->getStorage('block');
-        $theme = \Drupal::config('system.theme')->get('default');
-        $block = $blockEntityManager->create([
-          'id' => 'sitewide_social_links',
-          'plugin' => 'block_content:' . $sitewide_block->uuid(),
-          'theme' => $theme,
-        ]);
-        $block->setRegion('header_secondary');
-        $block->enable();
-        $block->save();
+        self::placeSocialMediaBlock('header_secondary');
         if ($header = Block::load('header')) {
           $header->disable();
           $header->save();
@@ -259,6 +242,36 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
     // As an array of 1 item, this will indicate that the migration operation
     // completed its one task (composed of multiple settings).
     return ['site_settings'];
+  }
+
+  /**
+   * Place an instance of the sitewide social media block in a region.
+   *
+   * @param string $region
+   *   The theme region to place the block in.
+   */
+  private static function placeSocialMediaBlock($region) {
+    $destination_db = Database::getConnection('default', 'default');
+    $table = 'migrate_map_utexas_social_links_sitewide';
+    if (!$destination_db->schema()->tableExists($table)) {
+      return;
+    }
+    $destination_bid = $destination_db->select($table, 'n')
+      ->fields('n', ['destid1'])
+      ->execute()
+      ->fetchField();
+    $sitewide_block = BlockContent::load($destination_bid);
+    $blockEntityManager = \Drupal::entityTypeManager()->getStorage('block');
+    $theme = \Drupal::config('system.theme')->get('default');
+    $block = $blockEntityManager->create([
+      'id' => 'sitewide_social_links_' . $region,
+      'plugin' => 'block_content:' . $sitewide_block->uuid(),
+      'theme' => $theme,
+    ]);
+    $block->setRegion($region);
+    $block->setWeight(100);
+    $block->enable();
+    $block->save();
   }
 
   /**

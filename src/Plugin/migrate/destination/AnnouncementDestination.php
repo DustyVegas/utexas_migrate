@@ -35,10 +35,10 @@ class AnnouncementDestination extends Entity implements MigrateDestinationInterf
     }
     $config['label_display'] = "0";
     if ($source['utexas_announcement_active'] == 1) {
-      $config['active'] = 'homepage';
+      $config['state'] = 'homepage';
     }
     else {
-      $config['active'] = 'all';
+      $config['state'] = 'all';
     }
     if (isset($source['utexas_announcement_title'])) {
       $config['title'] = $source['utexas_announcement_title'];

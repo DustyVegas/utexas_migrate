@@ -32,10 +32,7 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
         'info' => $row->getSourceProperty('info'),
         'body' => [
           'value' => WysiwygHelper::process($row->getSourceProperty('body')),
-          'format' => isset($migrated_format) ? $migrated_format : 'flex_html',
-          // @todo: replace with format that allows <iframe> & <script>
-          // @todo: add minimal text_format mapping for blocks that may be set
-          // to other text formats?
+          'format' => $migrated_format,
         ],
       ]);
       $block->save();

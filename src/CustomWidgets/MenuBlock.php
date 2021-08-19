@@ -105,7 +105,7 @@ class MenuBlock {
     $source_db = Database::getConnection('default', 'utexas_migrate');
     $query = $source_db->select('block', 'b')
       ->fields('b', ['title'])
-      ->condition('delta', $id, '=')
+      ->condition('bid', $id, '=')
       ->condition('module', 'menu_block', '=')
       ->execute()
       ->fetch();

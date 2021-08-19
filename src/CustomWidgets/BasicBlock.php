@@ -122,8 +122,8 @@ class BasicBlock {
    */
   public static function getBlockTitle($id) {
     $source_db = Database::getConnection('default', 'utexas_migrate');
-    $query = $source_db->select('block_custom', 'b')
-      ->fields('b', ['info'])
+    $query = $source_db->select('block', 'b')
+      ->fields('b', ['title'])
       ->condition('bid', $id, '=')
       ->execute()
       ->fetch();

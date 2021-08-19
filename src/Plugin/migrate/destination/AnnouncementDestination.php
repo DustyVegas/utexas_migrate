@@ -10,6 +10,7 @@ use Drupal\migrate\Plugin\MigrateDestinationInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Row;
 use Drupal\utexas_migrate\Plugin\migrate\source\AnnouncementSource;
+use Drupal\utexas_migrate\MigrateHelper;
 
 /**
  * Provides the destination plugin for the sitewide announcement.
@@ -51,7 +52,7 @@ class AnnouncementDestination extends Entity implements MigrateDestinationInterf
     }
     if (isset($source['utexas_announcement_destination_url'])) {
       $config['cta'] = [
-        'uri' => MigrationHelper::prepareLink($source['utexas_announcement_destination_url']),
+        'uri' => MigrateHelper::prepareLink($source['utexas_announcement_destination_url']),
         'title' => $source['utexas_announcement_cta'],
       ];
     }

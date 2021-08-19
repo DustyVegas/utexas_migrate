@@ -687,21 +687,25 @@ class Layouts extends ProcessPluginBase {
             break;
 
           case 'content_top_three_pillars':
-            if (in_array($field, ['flex_content_area_a', 'flex_content_area_b'])) {
-              // Special case: FCA in content_top_three_pillars is 3-columns.
-              $layout_builder_styles = $three_col;
+            if ($template === 'Landing Page Template 2') {
+              if (in_array($field, ['flex_content_area_a', 'flex_content_area_b'])) {
+                // Special case: FCA in content_top_three_pillars is 3-columns.
+                $layout_builder_styles = $three_col;
+              }
+              $delta = 1;
+              $region = 'main';
             }
-            $delta = 1;
-            $region = 'main';
             break;
 
           case 'content_top_four_pillars':
-            if (in_array($field, ['flex_content_area_a', 'flex_content_area_b'])) {
-              // Special case: FCA in content_top_four_pillars 4-columns.
-              $layout_builder_styles = $four_col;
+            if ($template === 'Landing Page Template 3') {
+              if (in_array($field, ['flex_content_area_a', 'flex_content_area_b'])) {
+                // Special case: FCA in content_top_four_pillars 4-columns.
+                $layout_builder_styles = $four_col;
+              }
+              $delta = 1;
+              $region = 'main';
             }
-            $delta = 1;
-            $region = 'main';
             break;
 
           case 'featured_highlight':
@@ -758,16 +762,18 @@ class Layouts extends ProcessPluginBase {
       $view_mode = $field_data['data']['view_mode'];
       unset($field_data['data']['view_mode']);
     }
-    $sections[$delta]['components'][$field] = [
-      'field_identifier' => $field,
-      'block_data' => $field_data['data'],
-      'block_type' => $field_data['block_type'],
-      'block_format' => $field_data['format'],
-      'region' => $region,
-      'additional' => $layout_builder_styles,
-      'weight' => $settings['weight'],
-      'view_mode' => $view_mode,
-    ];
+    if ($region) {
+      $sections[$delta]['components'][$field] = [
+        'field_identifier' => $field,
+        'block_data' => $field_data['data'],
+        'block_type' => $field_data['block_type'],
+        'block_format' => $field_data['format'],
+        'region' => $region,
+        'additional' => $layout_builder_styles,
+        'weight' => $settings['weight'],
+        'view_mode' => $view_mode,
+      ];
+    }
     return $sections;
   }
 

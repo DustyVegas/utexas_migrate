@@ -26,6 +26,8 @@ class WysiwygHelper {
     $text = self::transformLinks($text);
     $text = self::transformButtons($text);
     $text = self::transformFlexVideo($text);
+    // Transform legacy Foundation centering
+    $text = str_replace('rtecenter', 'text-center', $text);
     // "Fix" content that is not wrapped in <p> tags using core method.
     $text = _filter_autop($text);
     return $text;

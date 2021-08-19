@@ -124,7 +124,8 @@ class BasicBlock {
     $source_db = Database::getConnection('default', 'utexas_migrate');
     $query = $source_db->select('block', 'b')
       ->fields('b', ['title'])
-      ->condition('bid', $id, '=')
+      ->condition('delta', $id, '=')
+      ->condition('module', 'block', '=')
       ->execute()
       ->fetch();
     if (empty($query->title)) {

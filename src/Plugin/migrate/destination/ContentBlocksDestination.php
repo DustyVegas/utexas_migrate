@@ -11,6 +11,7 @@ use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Row;
 use Drupal\utexas_migrate\MigrateHelper;
 use Drupal\utexas_migrate\WysiwygHelper;
+use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
 
 /**
  * Provides a 'utexas_content_blocks_destination' destination plugin.
@@ -29,7 +30,7 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
       $migrated_format = MigrateHelper::getDestinationTextFormat($row->getSourceProperty('format'));
       $block = BlockContent::create([
         'type' => 'basic',
-        'info' => $row->getSourceProperty('info'),
+        'info' => BasicBlock::getBlockTitle($row->getSourceProperty('bid')),
         'body' => [
           'value' => WysiwygHelper::process($row->getSourceProperty('body')),
           'format' => $migrated_format,

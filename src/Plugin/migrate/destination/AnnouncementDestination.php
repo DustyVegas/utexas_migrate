@@ -51,7 +51,7 @@ class AnnouncementDestination extends Entity implements MigrateDestinationInterf
     }
     if (isset($source['utexas_announcement_destination_url'])) {
       $config['cta'] = [
-        'uri' => $source['utexas_announcement_destination_url'],
+        'uri' => MigrationHelper::prepareLink($source['utexas_announcement_destination_url']),
         'title' => $source['utexas_announcement_cta'],
       ];
     }

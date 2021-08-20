@@ -22,9 +22,8 @@ process:
   promote: promote
   display_updated: show_date
   uid:
-    plugin: migration_lookup
+    plugin: utexas_user_lookup
     source: node_uid
-    migration: utexas_users
   field_utnews_body:
     plugin: sub_process
     source: body

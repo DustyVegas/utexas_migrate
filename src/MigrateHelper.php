@@ -98,6 +98,9 @@ class MigrateHelper {
       ->condition('sourceid1', $uid, '=')
       ->execute()
       ->fetchField();
+    if (!$destination_id) {
+      return 0;
+    }
     return $destination_id;
   }
 

@@ -25,13 +25,9 @@ process:
   display_page_title:
     plugin: default_value
     default_value: 0
-  # Find the destination UID; accessible via
-  # $row->getDestinationProperty('uid');
   uid:
-    plugin: migration_lookup
+    plugin: utexas_user_lookup
     source: uid
-    migration:
-      - utexas_users
 destination:
   plugin: entity:node
   default_bundle: utexas_flex_page

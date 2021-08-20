@@ -22,13 +22,9 @@ process:
   promote: promote
   display_breadcrumbs: show_breadcrumb
   display_updated: show_date
-  # Find the destination UID; accessible via
-  # $row->getDestinationProperty('uid');
   uid:
-    plugin: migration_lookup
+    plugin: utexas_user_lookup
     source: uid
-    migration:
-      - utexas_users
 destination:
   plugin: entity:node
   default_bundle: utexas_flex_page

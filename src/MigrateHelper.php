@@ -55,13 +55,15 @@ class MigrateHelper {
    */
   public static function getDestinationMid($fid) {
     $destination_db = Database::getConnection('default', 'default');
-    $mid = $destination_db->select('migrate_map_utexas_media_image')
-      ->fields('migrate_map_utexas_media_image', ['destid1'])
-      ->condition('sourceid1', $fid, '=')
-      ->execute()
-      ->fetchField();
+    if ($destination_db->schema()->tableExists('migrate_map_utexas_media_image')) {
+      $mid = $destination_db->select('migrate_map_utexas_media_image')
+        ->fields('migrate_map_utexas_media_image', ['destid1'])
+        ->condition('sourceid1', $fid, '=')
+        ->execute()
+        ->fetchField();
+    }
     // Try the video map.
-    if (!$mid) {
+    if (!$mid && $destination_db->schema()->tableExists('migrate_map_utexas_media_video')) {
       $mid = $destination_db->select('migrate_map_utexas_media_video')
         ->fields('migrate_map_utexas_media_video', ['destid1'])
         ->condition('sourceid1', $fid, '=')
@@ -69,7 +71,7 @@ class MigrateHelper {
         ->fetchField();
     }
     // Try the document map.
-    if (!$mid) {
+    if (!$mid && $destination_db->schema()->tableExists('migrate_map_utexas_document')) {
       $mid = $destination_db->select('migrate_map_utexas_document')
         ->fields('migrate_map_utexas_document', ['destid1'])
         ->condition('sourceid1', $fid, '=')

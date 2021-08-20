@@ -20,6 +20,7 @@ class TermSource extends Term {
   public function query() {
     $query = parent::query();
     if (isset($this->configuration['skip_bundle'])) {
+      $query->condition('td.name', [''], 'NOT IN');
       $query->condition('tv.machine_name', (array) $this->configuration['skip_bundle'], 'NOT IN');
     }
     return $query;

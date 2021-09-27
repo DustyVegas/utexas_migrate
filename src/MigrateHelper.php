@@ -129,6 +129,7 @@ class MigrateHelper {
     $destination_db = Database::getConnection('default', 'default');
     foreach ($tables_to_query as $table) {
       if ($destination_db->schema()->tableExists($table)) {
+        print_r($table);
         $destination_nid = $destination_db->select($table, 'n')
           ->fields('n', ['destid1'])
           ->condition('n.sourceid1', $source_nid)

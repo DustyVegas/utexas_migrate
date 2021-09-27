@@ -137,4 +137,77 @@ class BasicBlock {
     return $query->title;
   }
 
+  /**
+   * Retrieve the block.
+   *
+   * @return string
+   *   The title string.
+   */
+  public static function getBlockLayout($id) {
+    $theme = MigrateHelper::getVariable('theme_default');
+    $source_db = Database::getConnection('default', 'utexas_migrate');
+    $query = $source_db->select('block', 'b')
+      ->fields('b')
+      ->condition('delta', $id, '=')
+      ->condition('module', 'block', '=')
+      ->condition('theme', $theme, '=')
+      ->execute()
+      ->fetch();
+    return $query;
+  }
+
+  /**
+   * Retrieve the block.
+   *
+   * @return array
+   *   The new block visibility.
+   */
+  public static function getVisibility($old_visibility, $pages, $zroles) {
+    $visibility = [];
+    // print_r($old_visibility);
+    // If the block is assigned to specific roles, add the user_role condition.
+    if ($roles) {
+      $visibility['user_role'] = [
+        'id' => 'user_role',
+        'roles' => [],
+        'context_mapping' => [
+          'user' => '@user.current_user_context:current_user',
+        ],
+        'negate' => FALSE,
+      ];
+      foreach ($roles as $key => $role_id) {
+        // anonymous user
+        //  authenticated user
+        //  Site Builder
+        //  Landing Page Editor
+        //  Standard Page Editor
+        //  Team Member Editor
+        //  Site Manager
+        //  Events Editor
+        //  Announcement Editor
+        //  News Editor
+      }
+      $visibility['user_role']['roles'] = array_combine($roles, $roles);
+    }
+    if ($pages) {
+      // 2 == BLOCK_VISIBILITY_PHP in Drupal 6 and 7.
+      if ($old_visibility == 2) {
+        // If the PHP module is present, migrate the visibility code unaltered.
+        return $visibility;
+      }
+      else {
+        $paths = preg_split("(\r\n?|\n)", $pages);
+        foreach ($paths as $key => $path) {
+          $paths[$key] = $path === '<front>' ? $path : MigrateHelper::getDestinationFromSource($path);
+        }
+        $visibility['request_path'] = [
+          'id' => 'request_path',
+          'negate' => !$old_visibility,
+          'pages' => implode("\n", $paths),
+        ];
+      }
+    }
+    return $visibility;
+  }
+
 }

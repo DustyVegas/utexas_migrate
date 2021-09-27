@@ -19,3 +19,6 @@ migration_dependencies:
     - utexas_users
     - utexas_media_video
     - utexas_document
+    - utexas_landing_page
+    - utexas_standard_page
+    - utexas_article

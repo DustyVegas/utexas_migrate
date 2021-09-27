@@ -36,4 +36,4 @@ migration_dependencies:
     - utexas_users
     - utexas_media_image
     - utexas_media_video
-    - utexas_content_blocks
+    - utexas_document

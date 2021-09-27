@@ -27,6 +27,10 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
    */
   public function import(Row $row, array $old_destination_id_values = []) {
     try {
+      // Get block layout information where module = 'block' & 'delta' = $bid
+      $block_layout = (array) BasicBlock::getBlockLayout($row->getSourceProperty('bid'));
+      $visibility = BasicBlock::getVisibility($block_layout['visibility'], $block_layout['pages'], $block_layout['roles']);
+      // print_r($visibility);
       $migrated_format = MigrateHelper::getDestinationTextFormat($row->getSourceProperty('format'));
       $block = BlockContent::create([
         'type' => 'basic',
@@ -37,18 +41,23 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
         ],
       ]);
       $block->save();
-      $region = $row->getSourceProperty('region');
-      if ($region) {
+
+      // Place any active blocks in layout.
+      if ($block_layout['region']) {
         $config = \Drupal::config('system.theme');
         $placed_block = Block::create([
           'id' => $block->id(),
           'weight' => $row->getSourceProperty('weight'),
           'theme' => $config->get('default'),
           'status' => TRUE,
-          'region' => $region,
+          'region' => MigrateHelper::getMappedRegion($block_layout['region']),
           'plugin' => 'block_content:' . $block->uuid(),
           'settings' => [],
         ]);
+        // Set the block visibility.
+        if (isset($visibility['request_path'])) {
+          $placed_block->setVisibilityConfig("request_path", $visibility['request_path']);
+        }
         $placed_block->save();
       }
       return [$block->id()];

@@ -142,6 +142,38 @@ class MigrateHelper {
   }
 
   /**
+   * Given a source region, return the destination region.
+   *
+   * @param string $region
+   *   The source region (e.g., 'sidebar_left')
+   *
+   * @return string
+   *   The destination region (e.g., 'sidebar_second')
+   */
+  public static function getMappedRegion($region) {
+    $map = [
+      'header' => 'header_secondary',
+      'content_top' => 'content',
+      'content_top_three_pillars' => 'content',
+      'content_top_four_pillars' => 'content',
+      'content_top_left' => 'content',
+      'content_top_right' => 'content',
+      'main_content_top_left' => 'content',
+      'main_content_top_right' => 'content',
+      'content_top_middle' => 'content',
+      'content_highlighted' => 'content',
+      'content_bottom' => 'content',
+      'footer_firstcolumn' => 'footer_left',
+      'footer_secondcolumn' => 'footer_middle',
+      'footer_connect' => 'footer_right',
+    ];
+    if (in_array($region, array_keys($map))) {
+      return $map[$region];
+    }
+    return $region;
+  }
+
+  /**
    * Given an source menu, return the destination menu.
    *
    * @param string $menu

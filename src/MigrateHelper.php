@@ -318,6 +318,14 @@ class MigrateHelper {
       return $value;
     }
 
+    // This processing is modeled on the Drupal core link_uri process plugin,
+    // but is provided as a helper method so that its processing can be used in
+    // contexts such as links in custom components and in WYSIWYG areas.
+    $path = ltrim($value, '/');
+
+    // Prevent double-encoding.
+    $path = rawurldecode($path);
+
     $domain = Settings::get('migration_domain');
     if ($domain) {
       $clean_domain = trim($domain, '/') . '/';
@@ -326,14 +334,6 @@ class MigrateHelper {
         $path = str_replace($clean_domain, '/', $path);
       }
     }
-
-    // This processing is modeled on the Drupal core link_uri process plugin,
-    // but is provided as a helper method so that its processing can be used in
-    // contexts such as links in custom components and in WYSIWYG areas.
-    $path = ltrim($value, '/');
-
-    // Prevent double-encoding.
-    $path = rawurldecode($path);
 
     // Convert %pantheonsite.io URLs into relative links.
     if (strpos($path, 'pantheonsite') !== FALSE) {

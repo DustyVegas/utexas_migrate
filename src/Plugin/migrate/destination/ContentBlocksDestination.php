@@ -28,9 +28,10 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
   public function import(Row $row, array $old_destination_id_values = []) {
     try {
       // Get block layout information where module = 'block' & 'delta' = $bid
-      $block_layout = (array) BasicBlock::getBlockLayout($row->getSourceProperty('bid'));
-      $visibility = BasicBlock::getVisibility($block_layout['visibility'], $block_layout['pages'], $block_layout['roles']);
-      // print_r($visibility);
+      $block_layout = BasicBlock::getBlockLayout($row->getSourceProperty('bid'));
+      $block_roles = BasicBlock::getBlockRoles($row->getSourceProperty('bid'));
+      $visibility = BasicBlock::getVisibility($block_layout['visibility'], $block_layout['pages'], $block_roles);
+      print_r($visibility);
       $migrated_format = MigrateHelper::getDestinationTextFormat($row->getSourceProperty('format'));
       $block = BlockContent::create([
         'type' => 'basic',
@@ -55,6 +56,9 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
           'settings' => [],
         ]);
         // Set the block visibility.
+        if (isset($visibility['user_role'])) {
+          $placed_block->setVisibilityConfig("user_role", $visibility['user_role']);
+        }
         if (isset($visibility['request_path'])) {
           $placed_block->setVisibilityConfig("request_path", $visibility['request_path']);
         }

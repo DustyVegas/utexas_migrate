@@ -140,8 +140,8 @@ class BasicBlock {
   /**
    * Retrieve the block.
    *
-   * @return string
-   *   The title string.
+   * @return array
+   *   The layout associated with the block.
    */
   public static function getBlockLayout($id) {
     $theme = MigrateHelper::getVariable('theme_default');
@@ -153,7 +153,24 @@ class BasicBlock {
       ->condition('theme', $theme, '=')
       ->execute()
       ->fetch();
-    return $query;
+    return (array) $query;
+  }
+
+  /**
+   * Retrieve the block roles for layout.
+   *
+   * @return array
+   *   The roles associated with the block.
+   */
+  public static function getBlockRoles($id) {
+    $source_db = Database::getConnection('default', 'utexas_migrate');
+    $query = $source_db->select('block_role', 'b')
+      ->fields('b')
+      ->condition('delta', $id, '=')
+      ->condition('module', 'block', '=')
+      ->execute()
+      ->fetchAll();
+    return (array) $query;
   }
 
   /**
@@ -162,9 +179,10 @@ class BasicBlock {
    * @return array
    *   The new block visibility.
    */
-  public static function getVisibility($old_visibility, $pages, $zroles) {
+  public static function getVisibility($old_visibility, $pages, $roles) {
     $visibility = [];
-    // print_r($old_visibility);
+    print_r($old_visibility);
+    print_r($roles);
     // If the block is assigned to specific roles, add the user_role condition.
     if ($roles) {
       $visibility['user_role'] = [
@@ -175,19 +193,10 @@ class BasicBlock {
         ],
         'negate' => FALSE,
       ];
-      foreach ($roles as $key => $role_id) {
-        // anonymous user
-        //  authenticated user
-        //  Site Builder
-        //  Landing Page Editor
-        //  Standard Page Editor
-        //  Team Member Editor
-        //  Site Manager
-        //  Events Editor
-        //  Announcement Editor
-        //  News Editor
+      foreach ($roles as $r) {
+        $destination_roles[] = MigrateHelper::getMappedRole($r->rid);
       }
-      $visibility['user_role']['roles'] = array_combine($roles, $roles);
+      $visibility['user_role']['roles'] = array_unique($destination_roles);
     }
     if ($pages) {
       // 2 == BLOCK_VISIBILITY_PHP in Drupal 6 and 7.

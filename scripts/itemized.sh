@@ -5,8 +5,8 @@ fin drush mim utexas_media_image
 fin drush mim utexas_vocabularies
 fin drush mim utexas_terms
 fin drush mim utexas_media_video
+fin drush mim utexas_document
 fin drush mim utexas_article
 fin drush mim utexas_basic_page
-fin drush mim utexas_document
 fin drush mim utexas_landing_page
 fin drush mim utexas_standard_page

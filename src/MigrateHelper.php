@@ -174,6 +174,41 @@ class MigrateHelper {
   }
 
   /**
+   * Given a source role, return the destination role.
+   *
+   * @param string $rid
+   *   The source region (e.g., '7')
+   *
+   * @return string
+   *   The destination role (e.g., 'utexas_site_manager')
+   */
+  public static function getMappedRole($rid) {
+    $source_db = Database::getConnection('default', 'utexas_migrate');
+    $query = $source_db->select('role', 'r')
+      ->fields('r', ['name'])
+      ->condition('rid', $rid, '=')
+      ->execute()
+      ->fetchCol('name');
+    $rolename = $query[0];
+    $map = [
+      'anonymous user' => 'anonymous',
+      'authenticated user' => 'authenticated',
+      'Announcement Editor' => 'utexas_content_editor',
+      'Events Editor' => 'utexas_content_editor',
+      'Landing Page Editor' => 'utexas_content_editor',
+      'News Editor' => 'utexas_content_editor',
+      'Site Builder' => 'utexas_content_editor',
+      'Site Manager' => 'utexas_site_manager',
+      'Standard Page Editor' => 'utexas_content_editor',
+      'Team Member Editor' => 'utexas_content_editor',
+    ];
+    if (in_array($rolename, array_keys($map))) {
+      return $map[$rolename];
+    }
+    return '';
+  }
+
+  /**
    * Given an source menu, return the destination menu.
    *
    * @param string $menu

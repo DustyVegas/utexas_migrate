@@ -138,6 +138,25 @@ class BasicBlock {
   }
 
   /**
+   * Retrieve the block info from the source & process.
+   *
+   * @return string
+   *   The title string.
+   */
+  public static function getBlockInfo($id) {
+    $source_db = Database::getConnection('default', 'utexas_migrate');
+    $query = $source_db->select('block_custom', 'b')
+      ->fields('b', ['info'])
+      ->condition('bid', $id, '=')
+      ->execute()
+      ->fetch();
+    if (empty($query->info)) {
+      return NULL;
+    }
+    return $query->info;
+  }
+
+  /**
    * Retrieve the block.
    *
    * @return array

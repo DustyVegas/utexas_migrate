@@ -26,7 +26,7 @@ class ContactInfo extends Entity implements MigrateDestinationInterface {
     try {
       $block = BlockContent::create([
         'type' => 'utexas_flex_list',
-        'info' => $row->getSourceProperty('name'),
+        'info' => 'Contact Info: ' . $row->getSourceProperty('label'),
         'field_utexas_flex_list_items' => $row->getSourceProperty('fields'),
       ]);
       $block->save();

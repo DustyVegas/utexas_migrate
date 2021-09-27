@@ -828,6 +828,13 @@ class Layouts extends ProcessPluginBase {
         if ($block) {
           $label = $block->label();
         }
+        if ($component_data['block_type'] === 'contact_info') {
+          $label = EntityReference::getContactInfoName($component_data['block_data'][0]['target_id']) ?? $label;
+        }
+        if ($component_data['block_type'] === 'basic_reusable') {
+          $label = BasicBlock::getBlockTitle($component_data['block_data'][0]['target_id']) ?? $label;
+        }
+        print_r($component_data['block_type'] . ": " . $label);
         $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
           'id' => 'block_content:' . $uuid,
           'label' => $label,

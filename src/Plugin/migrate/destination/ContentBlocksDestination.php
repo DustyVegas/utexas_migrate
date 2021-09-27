@@ -31,11 +31,11 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
       $block_layout = BasicBlock::getBlockLayout($row->getSourceProperty('bid'));
       $block_roles = BasicBlock::getBlockRoles($row->getSourceProperty('bid'));
       $visibility = BasicBlock::getVisibility($block_layout['visibility'], $block_layout['pages'], $block_roles);
-      print_r($visibility);
+      // print_r($visibility);
       $migrated_format = MigrateHelper::getDestinationTextFormat($row->getSourceProperty('format'));
       $block = BlockContent::create([
         'type' => 'basic',
-        'info' => BasicBlock::getBlockTitle($row->getSourceProperty('bid')),
+        'info' => BasicBlock::getBlockInfo($row->getSourceProperty('bid')),
         'body' => [
           'value' => WysiwygHelper::process($row->getSourceProperty('body')),
           'format' => $migrated_format,

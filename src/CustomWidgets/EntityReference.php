@@ -90,6 +90,28 @@ class EntityReference {
   }
 
   /**
+   * Find the destination id from the source target_id.
+   *
+   * @param string $source_id
+   *   Information about the source data being migrated.
+   *
+   * @return string
+   *   Returns the destination ID.
+   */
+  public static function getContactInfoName($source_id) {
+    $source_db = Database::getConnection('default', 'utexas_migrate');
+    $query = $source_db->select('utexas_contact_info', 'c')
+      ->fields('c', ['name'])
+      ->condition('id', $source_id, '=')
+      ->execute()
+      ->fetchCol('name');
+    if (isset($query[0])) {
+      return $query[0];
+    }
+    return NULL;
+  }
+
+  /**
    * Find the destination Uuid from the source target_id.
    *
    * @param string $bid

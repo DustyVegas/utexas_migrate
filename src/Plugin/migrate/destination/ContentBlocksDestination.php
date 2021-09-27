@@ -53,7 +53,9 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
           'status' => TRUE,
           'region' => MigrateHelper::getMappedRegion($block_layout['region']),
           'plugin' => 'block_content:' . $block->uuid(),
-          'settings' => [],
+          'settings' => [
+            'label_display' => FALSE,
+          ],
         ]);
         // Set the block visibility.
         if (isset($visibility['user_role'])) {

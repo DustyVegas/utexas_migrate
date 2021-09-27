@@ -200,8 +200,6 @@ class BasicBlock {
    */
   public static function getVisibility($old_visibility, $pages, $roles) {
     $visibility = [];
-    print_r($old_visibility);
-    print_r($roles);
     // If the block is assigned to specific roles, add the user_role condition.
     if ($roles) {
       $visibility['user_role'] = [
@@ -226,7 +224,13 @@ class BasicBlock {
       else {
         $paths = preg_split("(\r\n?|\n)", $pages);
         foreach ($paths as $key => $path) {
-          $paths[$key] = $path === '<front>' ? $path : MigrateHelper::getDestinationFromSource($path);
+          if ($path !== '<front>') {
+            $path = MigrateHelper::getDestinationFromSource($path);
+            if (strpos($path, '/') !== 0) {
+              $path = '/' . $path;
+            }
+          }
+          $paths[$key] = $path;
         }
         $visibility['request_path'] = [
           'id' => 'request_path',

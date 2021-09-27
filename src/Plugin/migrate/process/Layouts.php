@@ -64,8 +64,10 @@ class Layouts extends ProcessPluginBase {
       if (!empty($section['components'])) {
         foreach ($section['components'] as $component) {
           $d8_component = self::createD8SectionComponent($component);
-          foreach ($d8_component as $c) {
-            $d8_components[] = $c;
+          if (is_array($d8_component)) {
+            foreach ($d8_component as $c) {
+              $d8_components[] = $c;
+            }
           }
         }
         if (!empty($d8_components) && !empty($section['layout'])) {
@@ -823,6 +825,9 @@ class Layouts extends ProcessPluginBase {
       case 'basic_reusable':
         $bid = EntityReference::getDestinationBlockId($component_data);
         $uuid = EntityReference::getDestinationUuid($bid);
+        if (!$uuid) {
+          return FALSE;
+        }
         $block = BlockContent::load($bid);
         $label = $component_data['field_identifier'];
         if ($block) {
@@ -834,7 +839,6 @@ class Layouts extends ProcessPluginBase {
         if ($component_data['block_type'] === 'basic_reusable') {
           $label = BasicBlock::getBlockTitle($component_data['block_data'][0]['target_id']) ?? $label;
         }
-        print_r($component_data['block_type'] . ": " . $label);
         $component = new SectionComponent(md5($component_data['field_identifier']), $component_data['region'], [
           'id' => 'block_content:' . $uuid,
           'label' => $label,

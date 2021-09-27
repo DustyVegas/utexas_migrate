@@ -10,6 +10,9 @@ read SOURCE_SITE
 echo "Enter the Pantheon machine name of the destination site (utdk-migration-tester):"
 read DESTINATION_SITE
 
+echo "Enter the domain of the site (e.g., https://zoom.its.utexas.edu)"
+read DOMAIN
+
 echo "Cloning the destination site & building the codebase..."
 PANTHEON_SITE_GIT_URL="$(terminus connection:info $DESTINATION_SITE.dev --field=git_url)"
 git clone "$PANTHEON_SITE_GIT_URL" $DESTINATION_SITE
@@ -59,7 +62,7 @@ echo "*************************"
 echo "Running migration..."
 composer require utexas/utexas_migrate:dev-develop
 fin drush en utexas_migrate -y
-sh web/modules/custom/utexas_migrate/scripts/migrate.sh $SOURCE_SITE
+sh web/modules/custom/utexas_migrate/scripts/migrate.sh $SOURCE_SITE $DOMAIN
 
 echo "Peforming cleanup tasks..."
 fin drush pmu utprof_migrate utevent_migrate utnews_migrate utexas_migrate migrate_tools migrate_plus migrate -y

@@ -5,6 +5,8 @@ namespace Drupal\utexas_migrate;
 use Drupal\block_content\Entity\BlockContent;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityStorageException;
+use Drupal\Core\Site\Settings;
+use Drupal\Core\Url;
 use Drupal\utexas_migrate\CustomWidgets\BasicBlock;
 use Drupal\utexas_migrate\CustomWidgets\FlexContentArea;
 use Drupal\utexas_migrate\CustomWidgets\FeaturedHighlight;
@@ -18,7 +20,6 @@ use Drupal\utexas_migrate\CustomWidgets\QuickLinks;
 use Drupal\utexas_migrate\CustomWidgets\Resource;
 use Drupal\utexas_migrate\CustomWidgets\SocialLinks;
 use Drupal\utexas_migrate\CustomWidgets\ViewsBlock;
-use Drupal\Core\Url;
 
 /**
  * Helper functions for migration.
@@ -316,6 +317,16 @@ class MigrateHelper {
     if ($value === '') {
       return $value;
     }
+
+    $domain = Settings::get('migration_domain');
+    if ($domain) {
+      $clean_domain = trim($domain, '/') . '/';
+      // Convert domain URLs into relative links.
+      if (strpos($path, $clean_domain) === 0) {
+        $path = str_replace($clean_domain, '/', $path);
+      }
+    }
+
     // This processing is modeled on the Drupal core link_uri process plugin,
     // but is provided as a helper method so that its processing can be used in
     // contexts such as links in custom components and in WYSIWYG areas.

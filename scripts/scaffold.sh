@@ -19,3 +19,6 @@ rm db.sql db.sql.gz
 cat web/modules/custom/utexas_migrate/scripts/migrate-settings.php >> web/sites/default/settings.local.php
 echo "\$settings['migration_source_base_url'] = 'https://live-$SOURCE_SITE.pantheonsite.io/';" >> web/sites/default/settings.local.php
 
+if [ ! -z "$DOMAIN"]; then
+  echo "\$settings['migration_domain'] = '$DOMAIN';" >> web/sites/default/settings.local.php
+fi

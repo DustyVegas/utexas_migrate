@@ -261,17 +261,19 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
       ->execute()
       ->fetchField();
     $sitewide_block = BlockContent::load($destination_bid);
-    $blockEntityManager = \Drupal::entityTypeManager()->getStorage('block');
-    $theme = \Drupal::config('system.theme')->get('default');
-    $block = $blockEntityManager->create([
-      'id' => 'sitewide_social_links_' . $region,
-      'plugin' => 'block_content:' . $sitewide_block->uuid(),
-      'theme' => $theme,
-    ]);
-    $block->setRegion($region);
-    $block->setWeight(100);
-    $block->enable();
-    $block->save();
+    if ($sitewide_block) {
+      $blockEntityManager = \Drupal::entityTypeManager()->getStorage('block');
+      $theme = \Drupal::config('system.theme')->get('default');
+      $block = $blockEntityManager->create([
+        'id' => 'sitewide_social_links_' . $region,
+        'plugin' => 'block_content:' . $sitewide_block->uuid(),
+        'theme' => $theme,
+      ]);
+      $block->setRegion($region);
+      $block->setWeight(100);
+      $block->enable();
+      $block->save();
+    }
   }
 
   /**

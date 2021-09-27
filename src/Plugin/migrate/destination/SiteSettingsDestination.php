@@ -260,6 +260,9 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
       ->fields('n', ['destid1'])
       ->execute()
       ->fetchField();
+    if (!$destination_bid) {
+      return;
+    }
     $sitewide_block = BlockContent::load($destination_bid);
     if ($sitewide_block) {
       $blockEntityManager = \Drupal::entityTypeManager()->getStorage('block');

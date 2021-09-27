@@ -12,7 +12,7 @@ DOMAIN="$2"
 (
   export SOURCE_SITE
   export DOMAIN
-  web/modules/custom/utexas_migrate/scripts/scaffold.sh
+  web/modules/custom/utexas_migrate/scripts/scaffold.sh $SOURCE_SITE $DOMAIN
   web/modules/custom/utexas_migrate/scripts/all-tasks.sh
 )
 

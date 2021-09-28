@@ -12,6 +12,7 @@ use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Drupal\migrate\Row;
 use Drupal\google_tag\Entity\Container;
 use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\twitter_profile_widget\Authorization;
 
 /**
  * Provides a 'utexas_site_settings_destination' destination plugin.
@@ -71,6 +72,11 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
       $config = \Drupal::configFactory()->getEditable($destination['key']);
       $config->set($destination['value'], $data);
       $config->save();
+    }
+
+    // Establish initial Twitter token.
+    if ($row->getSourceProperty('utexas_twitter_widget_secret')) {
+      Authorization::getToken($row->getSourceProperty('utexas_twitter_widget_key'), $row->getSourceProperty('utexas_twitter_widget_secret'));
     }
 
     // Front page & 403 & 404 pages.

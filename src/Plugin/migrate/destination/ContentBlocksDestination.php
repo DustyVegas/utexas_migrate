@@ -33,9 +33,13 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
       $visibility = BasicBlock::getVisibility($block_layout['visibility'], $block_layout['pages'], $block_roles);
       // print_r($visibility);
       $migrated_format = MigrateHelper::getDestinationTextFormat($row->getSourceProperty('format'));
+      $info = BasicBlock::getBlockInfo($row->getSourceProperty('bid'));
+      if ($row->getSourceProperty('plugin') === 'utexas_footer_text_source') {
+        $info = 'Footer text area';
+      }
       $block = BlockContent::create([
         'type' => 'basic',
-        'info' => BasicBlock::getBlockInfo($row->getSourceProperty('bid')),
+        'info' => $info,
         'body' => [
           'value' => WysiwygHelper::process($row->getSourceProperty('body')),
           'format' => $migrated_format,

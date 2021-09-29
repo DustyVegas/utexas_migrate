@@ -28,6 +28,7 @@ class WysiwygHelper {
     $text = self::transformFlexVideo($text);
     // Transform legacy Foundation centering
     $text = str_replace('rtecenter', 'text-center', $text);
+    $text = str_replace('rteright', 'text-align-right', $text);
     // Convert unsupported at-symbol HTML entity.
     $text = str_replace('&commat;', '&#64;', $text);
     // "Fix" content that is not wrapped in <p> tags using core method.

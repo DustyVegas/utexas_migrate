@@ -157,7 +157,6 @@ class WysiwygHelper {
    *   The processed text.
    */
   public static function transformImageLinks($text) {
-    print_r('here');
     $original = $text;
     // LibXML requires that the html is wrapped in a root node.
     $text = '<root>' . $text . '</root>';

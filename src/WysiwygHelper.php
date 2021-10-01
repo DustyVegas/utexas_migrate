@@ -24,6 +24,7 @@ class WysiwygHelper {
     $text = self::transformVideoFilter($text);
     $text = self::transformInnerRail($text);
     $text = self::transformLinks($text);
+    $text = self::transformImageLinks($text);
     $text = self::transformButtons($text);
     $text = self::transformFlexVideo($text);
     // Transform legacy Foundation centering
@@ -130,11 +131,46 @@ class WysiwygHelper {
     // Find all links in text.
     if ($links->length !== 0) {
       foreach ($links as $link) {
-        // Find existing class attributes, if any, and append tablesaw class.
         $href = $link->getAttribute('href');
         // Debugging suggestion:
         // print_r(MigrateHelper::prepareLink($href, 'wysiwyg'));
         $link->setAttribute('href', MigrateHelper::prepareLink($href, 'wysiwyg'));
+      }
+      // Get innerHTML of root node.
+      $html = "";
+      foreach ($dom->getElementsByTagName('root')->item(0)->childNodes as $child) {
+        // Re-serialize the HTML.
+        $html .= $dom->saveHTML($child);
+      }
+      return $html;
+    }
+    return $original;
+  }
+
+  /**
+   * Find v2 <img> tags and update src as necessary.
+   *
+   * @param string $text
+   *   The entire text of a WYSIWYG field.
+   *
+   * @return string
+   *   The processed text.
+   */
+  public static function transformImageLinks($text) {
+    print_r('here');
+    $original = $text;
+    // LibXML requires that the html is wrapped in a root node.
+    $text = '<root>' . $text . '</root>';
+    $dom = new \DOMDocument();
+    libxml_use_internal_errors(TRUE);
+    $dom->loadHTML(mb_convert_encoding($text, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $links = $dom->getElementsByTagName('img');
+    // Find all links in text.
+    if ($links->length !== 0) {
+      foreach ($links as $link) {
+        $src = $link->getAttribute('src');
+        $after = MigrateHelper::prepareLink($src, 'wysiwyg');
+        $link->setAttribute('src', MigrateHelper::prepareLink($src, 'wysiwyg'));
       }
       // Get innerHTML of root node.
       $html = "";

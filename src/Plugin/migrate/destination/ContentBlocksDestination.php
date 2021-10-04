@@ -33,9 +33,13 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
       $visibility = BasicBlock::getVisibility($block_layout['visibility'], $block_layout['pages'], $block_roles);
       // print_r($visibility);
       $migrated_format = MigrateHelper::getDestinationTextFormat($row->getSourceProperty('format'));
+      $info = BasicBlock::getBlockInfo($row->getSourceProperty('bid'));
+      if ($row->getSourceProperty('plugin') === 'utexas_footer_text_source') {
+        $info = 'Footer text area';
+      }
       $block = BlockContent::create([
         'type' => 'basic',
-        'info' => BasicBlock::getBlockInfo($row->getSourceProperty('bid')),
+        'info' => $info,
         'body' => [
           'value' => WysiwygHelper::process($row->getSourceProperty('body')),
           'format' => $migrated_format,
@@ -43,9 +47,9 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
       ]);
       $block->save();
 
+      $config = \Drupal::config('system.theme');
       // Place any active blocks in layout.
       if ($block_layout['region']) {
-        $config = \Drupal::config('system.theme');
         $placed_block = Block::create([
           'id' => $block->id(),
           'weight' => $row->getSourceProperty('weight'),
@@ -64,6 +68,20 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
         if (isset($visibility['request_path'])) {
           $placed_block->setVisibilityConfig("request_path", $visibility['request_path']);
         }
+        $placed_block->save();
+      }
+      elseif ($row->getSourceProperty('plugin') === 'utexas_footer_text_source') {
+        $placed_block = Block::create([
+          'id' => $block->id(),
+          'weight' => $row->getSourceProperty('weight'),
+          'theme' => $config->get('default'),
+          'status' => TRUE,
+          'region' => $row->getSourceProperty('region'),
+          'plugin' => 'block_content:' . $block->uuid(),
+          'settings' => [
+            'label_display' => FALSE,
+          ],
+        ]);
         $placed_block->save();
       }
       return [$block->id()];

@@ -325,7 +325,15 @@ class MigrateHelper {
 
     // Prevent double-encoding.
     $path = rawurldecode($path);
-
+    $parts = parse_url($path);
+    $query = '';
+    $fragment = '';
+    if (isset($parts['query'])) {
+      $query = '?' . $parts['query'];
+    }
+    if (isset($parts['fragment'])) {
+      $fragment = '#' . $parts['fragment'];
+    }
     $domain = Settings::get('migration_domain');
     if ($domain) {
       $clean_domain = trim($domain, '/') . '/';
@@ -369,12 +377,12 @@ class MigrateHelper {
         $route_name = $url->getRouteName();
         foreach (array_keys(\Drupal::entityTypeManager()->getDefinitions()) as $entity_type_id) {
           if ($route_name == "entity.{$entity_type_id}.canonical" && isset($url->getRouteParameters()[$entity_type_id])) {
-            return "entity:{$entity_type_id}/" . $url->getRouteParameters()[$entity_type_id];
+            return "entity:{$entity_type_id}/" . $url->getRouteParameters()[$entity_type_id] . $fragment . $query;
           }
         }
       }
       else {
-        return $url->getUri();
+        return $url->getUri() . $fragment . $query;
       }
     }
     return $path;

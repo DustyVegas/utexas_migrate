@@ -670,7 +670,7 @@ class Layouts extends ProcessPluginBase {
 
           case 'content_bottom':
             $delta = 3;
-            $region = 'main';
+            $region = 'first';
             break;
 
           case 'sidebar_second':

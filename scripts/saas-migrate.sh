@@ -31,7 +31,7 @@ rm -rf .docksal/.git
 fin init
 fin config set HOSTING_SITE="$DESTINATION_SITE"
 # fin drush si utexas -y
-fin pull db -y
+fin drush si utexas utexas_installation_options.default_content=NULL -y
 chmod 755 web/sites/default
 
 echo "Rsyncing files from $SOURCE_SITE..."
@@ -42,22 +42,22 @@ fin drush cr
 echo "*************************"
 echo "Enabling SaaS elements..."
 echo "*************************"
-# fin drush en utexas_role_site_manager
+fin drush en utexas_role_site_manager
 
-# fin drush -y en utprof utprof_block_type_profile_listing utprof_content_type_profile utprof_view_profiles utprof_vocabulary_groups utprof_vocabulary_tags
-# fin drush utprof:grant --set=manager --role=utexas_site_manager
-# fin drush utprof:grant --set=editor --role=utexas_content_editor
+fin drush -y en utprof utprof_block_type_profile_listing utprof_content_type_profile utprof_view_profiles utprof_vocabulary_groups utprof_vocabulary_tags
+fin drush utprof:grant --set=manager --role=utexas_site_manager
+fin drush utprof:grant --set=editor --role=utexas_content_editor
 
-# fin drush -y en utnews utnews_block_type_news_listing utnews_content_type_news utnews_view_listing_page utnews_vocabulary_authors utnews_vocabulary_categories utnews_vocabulary_tags
-# fin drush utnews:grant --set=manager --role=utexas_site_manager
-# fin drush utnews:grant --set=editor --role=utexas_content_editor
+fin drush -y en utnews utnews_block_type_news_listing utnews_content_type_news utnews_view_listing_page utnews_vocabulary_authors utnews_vocabulary_categories utnews_vocabulary_tags
+fin drush utnews:grant --set=manager --role=utexas_site_manager
+fin drush utnews:grant --set=editor --role=utexas_content_editor
 
-# fin drush -y en utevent utevent_block_type_event_listing utevent_content_type_event utevent_view_listing_page utevent_vocabulary_location utevent_vocabulary_tags
-# fin drush utevent:grant --set=manager --role=utexas_site_manager
-# fin drush utevent:grant --set=editor --role=utexas_content_editor
+fin drush -y en utevent utevent_block_type_event_listing utevent_content_type_event utevent_view_listing_page utevent_vocabulary_location utevent_vocabulary_tags
+fin drush utevent:grant --set=manager --role=utexas_site_manager
+fin drush utevent:grant --set=editor --role=utexas_content_editor
 
-# fin drush en utexas_saml_auth_helper -y
-# fin drush config-set simplesamlphp_auth.settings activate 1 -y
+fin drush en utexas_saml_auth_helper -y
+fin drush config-set simplesamlphp_auth.settings activate 1 -y
 
 echo "Running migration..."
 composer require utexas/utexas_migrate:dev-develop

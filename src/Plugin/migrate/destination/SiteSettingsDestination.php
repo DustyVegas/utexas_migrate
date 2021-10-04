@@ -179,6 +179,15 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
       $block->save();
     }
 
+    // Set footer menu to depth of 1 to match expectations.
+    if ($footer = Block::load('footer')) {
+      $settings = $footer->get('settings');
+      // Explicitly set footer menu depth to 1.
+      $settings['depth'] = 1;
+      $footer->set('settings', $settings);
+      $footer->save();
+    }
+
     switch ($row->getSourceProperty('secondary_menu')) {
       case 'social_accounts':
         self::placeSocialMediaBlock('header_secondary');
@@ -189,10 +198,18 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
         break;
 
       case 'header_menu':
+        if ($header = Block::load('header')) {
+          $settings = $header->get('settings');
+          // Explicitly set header menu depth to 1.
+          $settings['depth'] = 1;
+          $header->set('settings', $settings);
+          $header->save();
+        }
 
         break;
 
       default:
+        // Empty means no block in the header secondary.
         // Disable header menu, if it exists.
         if ($header = Block::load('header')) {
           $header->disable();

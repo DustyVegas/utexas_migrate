@@ -277,6 +277,7 @@ class MigrateHelper {
    *   A corresponding destination path, such as `node/8` or `media/6` or FALSE.
    */
   public static function getDestinationFromSource($source) {
+    $source = trim($source, '/');
     // @todo: Add coverage for taxonomy ID mapping.
     if (strpos($source, 'node/') === 0) {
       $source_nid = substr($source, 5);

@@ -69,7 +69,7 @@ class AnnouncementDestination extends Entity implements MigrateDestinationInterf
         'yellow-background' => 'yellow_black',
         'orange-background' => 'orange_black',
         'green-background' => 'green_white',
-        'gray-background' => 'grey_white',
+        'grey-background' => 'grey_white',
       ];
       $config['scheme'] = $background_map[$source['utexas_announcement_background']];
     }

@@ -26,6 +26,9 @@ class UserDestination extends EntityUser {
     if ($row->getSourceProperty('uid') == 1) {
       $row->removeDestinationProperty('pass');
       $row->setDestinationProperty('uid', 1);
+      if ($row->getSourceProperty('mail') == 'quicksites-admins@utlists.utexas.edu') {
+        $row->setDestinationProperty('mail', 'drupal-kit-support@utlists.utexas.edu');
+      }
     }
     if ($row->getSourceProperty('uid') == 0) {
       $row->setDestinationProperty('uid', 0);

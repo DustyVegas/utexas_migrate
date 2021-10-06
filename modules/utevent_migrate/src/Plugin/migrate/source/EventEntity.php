@@ -62,7 +62,7 @@ class EventEntity extends SqlBase {
     $row->setDestinationProperty('field_utevent_datetime', [
       'value' => $start,
       'end_value' => $end,
-      'duration' => $end - $start,
+      'duration' => ($end - $start) / 60,
     ]);
   }
 

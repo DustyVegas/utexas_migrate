@@ -72,7 +72,7 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
       // Convert QuickSites email address.
       if ($source === 'site_mail') {
         if ($row->getSourceProperty($source) == 'quicksites-admins@utlists.utexas.edu') {
-          $data = 'drupal-kit-support@utlists.utexas.edu';
+          $data = 'wcs-drupal-site-admins@utlists.utexas.edu';
         }
       }
       $config = \Drupal::configFactory()->getEditable($destination['key']);

@@ -27,7 +27,7 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
     // Convert D7 textarea field structure to fit Horizontal tabs field.
     $body = $row->getDestinationProperty('field_utprof_content');
     $row->setDestinationProperty('field_utprof_content', [
-      'header' => '',
+      'header' => 'Introduction',
       'body_value' => WysiwygHelper::process($body[0]['value']),
       'body_format' => MigrateHelper::getDestinationTextFormat($body[0]['format']),
     ]);
@@ -37,12 +37,14 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
     $d8_link = $link_behavior[0]['value'] === 'linked' ? TRUE : FALSE;
     $row->setDestinationProperty('field_utprof_listing_link', $d8_link);
 
-
     // Convert 'Additional basic info' from Quick Links'. The header, copy &
     // links will populate the v3 WYSIWYG something like this:
-    // <h3>Lorem Ipsum</h3><p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p><p><a href="http://stanford.edu">JD Stanford</a></p><p><a href="http://wesleyan.edu">BA Wesleyan University</a></p>
-    $add_basic_info = $row->getDestinationProperty('field_utprof_add_basic_info');
+    // <h3>Lorem Ipsum</h3><p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p><p><a href="http://stanford.edu">JD Stanford</a></p><p><a href="http://wesleyan.edu">BA Wesleyan University</a></p>.
     $basic_info_string = '';
+    $add_basic_info = $row->getDestinationProperty('field_utprof_add_basic_info');
+    if (!empty($body[0]['summary'])) {
+      $basic_info_string = WysiwygHelper::process($body[0]['summary']);
+    }
     if (!empty($add_basic_info[0]['headline'])) {
       $basic_info_string .= '<h3>' . $add_basic_info[0]['headline'] . '</h3>';
     }
@@ -126,7 +128,7 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
       }
       $row->setDestinationProperty('field_utprof_add_contact_info', [
         'value' => $addresses,
-        'format' => 'flex_html'
+        'format' => 'flex_html',
       ]);
       // Subsequent to migrating an email address from the Contact Info block,
       // if a dedicated email address is present in the source, migrate that
@@ -161,4 +163,5 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
     Database::setActiveConnection('default');
     return $source_data;
   }
+
 }

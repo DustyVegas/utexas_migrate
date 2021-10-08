@@ -101,13 +101,13 @@ class PromoLists {
     $destination = [];
     foreach ($source as $container_delta => $container) {
       if (isset($container['headline'])) {
-        $destination[$container_delta]['headline'] = $container['headline'];
+        $destination[$container_delta]['headline'] = strip_tags($container['headline']);
       }
       if (isset($container['items'])) {
         $destination[$container_delta]['promo_list_items'] = [];
         foreach ($container['items'] as $item_delta => $item) {
           if (isset($item->field_utexas_promo_list_item_headline)) {
-            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['headline'] = $item->field_utexas_promo_list_item_headline;
+            $destination[$container_delta]['promo_list_items'][$item_delta]['item']['headline'] = strip_tags($item->field_utexas_promo_list_item_headline);
           }
           if (isset($item->field_utexas_promo_list_item_image_fid) && $item->field_utexas_promo_list_item_image_fid != 0) {
             $destination_mid = MigrateHelper::getDestinationMid($item->field_utexas_promo_list_item_image_fid);

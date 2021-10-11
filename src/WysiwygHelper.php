@@ -4,6 +4,7 @@ namespace Drupal\utexas_migrate;
 
 use Drupal\Core\Database\Database;
 use Drupal\utexas_migrate\MigrateHelper;
+use Drupal\utexas_migrate\AccordionHelper;
 
 /**
  * Helper functions for migrating elements within WYSIWYG fields.
@@ -27,6 +28,7 @@ class WysiwygHelper {
     $text = self::transformImageLinks($text);
     $text = self::transformButtons($text);
     $text = self::transformFlexVideo($text);
+    $text = AccordionHelper::convertFoundationAccordion($text);
     // Transform legacy Foundation centering
     $text = str_replace('rtecenter', 'text-center', $text);
     $text = str_replace('rteright', 'text-align-right', $text);

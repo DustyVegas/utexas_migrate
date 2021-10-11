@@ -3,14 +3,16 @@
 namespace Drupal\utexas_migrate;
 
 use Drupal\Core\Database\Database;
+use DomNode;
+use DomDocument;
 
 /**
  * Helper functions for migration.
  */
 class AccordionHelper {
 
-  public static function appendHTML(DOMNode $parent, $source) {
-      $tmpDoc = new DOMDocument();
+  public static function appendHTML(\DOMNode $parent, $source) {
+      $tmpDoc = new \DOMDocument();
       $tmpDoc->loadHTML($source);
       foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
           $node = $parent->ownerDocument->importNode($node, true);
@@ -18,7 +20,7 @@ class AccordionHelper {
       }
   }
 
-  public static function DOMinnerHTML(DOMNode $element) { 
+  public static function DOMinnerHTML(\DOMNode $element) { 
     $innerHTML = ""; 
     $children  = $element->childNodes;
     foreach ($children as $child) { 
@@ -65,10 +67,16 @@ class AccordionHelper {
         if (!isset($href)) {
           continue;
         }
+        $body_pre = '';
+        $body_post = '';
         $body = $dom->getElementById($href);
+        if ($body->nodeName !== 'div') {
+          $body_pre = '<' . $body->nodeName . '>';
+          $body_post = '</' . $body->nodeName . '>';
+        }
         if ($body && $titleObjects[$key][0]) {
           if (isset($body->nodeValue) && isset($titleObjects[$key][0]->nodeValue)) {
-            $content .= '<details><summary>' . $titleObjects[$key][0]->nodeValue . '</summary>' . self::DOMInnerHTML($body) . '</details>';
+            $content .= '<details><summary>' . $titleObjects[$key][0]->nodeValue . '</summary>' . $body_pre . self::DOMInnerHTML($body) . $body_post . '</details>';
           }
           else {
             $convert = FALSE;

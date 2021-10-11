@@ -78,7 +78,7 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
       $summary = WysiwygHelper::process($body[0]['summary']);
     }
     elseif (!empty($body[0]['value'])) {
-      $summary = text_summary($body[0]['value']);
+      $summary = text_summary(strip_tags(WysiwygHelper::process($body[0]['value']), 'plain_text'));
     }
     if (isset($summary)) {
       $basic_info = [

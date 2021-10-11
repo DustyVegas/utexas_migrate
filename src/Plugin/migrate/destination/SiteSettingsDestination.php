@@ -331,6 +331,12 @@ class SiteSettingsDestination extends MediaDestination implements MigrateDestina
       // Delete GTM container.
       $container = \Drupal::configFactory()->getEditable('google_tag.container.utexas_migrated_gtm');
       $container->delete();
+      if ($social = Block::load('sitewide_social_links_footer_left')) {
+        $social->delete();
+      }
+      if ($social = Block::load('sitewide_social_links_header_secondary')) {
+        $social->delete();
+      }
     }
     catch (EntityStorageException $e) {
       \Drupal::logger('utexas_migrate')->warning("Rollback of site_settings failed. :error - Code: :code", [

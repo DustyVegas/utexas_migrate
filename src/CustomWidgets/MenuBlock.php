@@ -68,7 +68,7 @@ class MenuBlock {
     if (!empty($data['admin_title'])) {
       $data['display_title'] = 'visible';
     }
-    if ($data['title_link']) {
+    if ($data['title_link'] && $data['parent'] !== 0) {
       $data['display_title'] = 'visible';
       $data['label_link'] = TRUE;
       // Drupal 8/9 provides more options for title-as-link. We map the single option from D7.

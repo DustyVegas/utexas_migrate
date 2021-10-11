@@ -30,6 +30,9 @@ class BasicBlock {
       ],
       'reusable' => FALSE,
     ];
+    if (empty($block_definition['body']['value'])) {
+      return FALSE;
+    }
     return $block_definition;
   }
 

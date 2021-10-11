@@ -76,10 +76,10 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
       $row->setDestinationProperty('field_utprof_fax_number', $contact_info[0]->field_fax);
       $row->setDestinationProperty('field_utprof_phone_number', $contact_info[0]->field_phone);
       // First try to populate the email address from the contact info field,
-      // but set the display of the email on listings to false.
+      // and set the display of the email on listings to true.
       $row->setDestinationProperty('field_utprof_email_address', $contact_info[0]->field_email);
       if (!empty($contact_info[0]->field_email)) {
-        $row->setDestinationProperty('field_utprof_display_email', 0);
+        $row->setDestinationProperty('field_utprof_display_email', 1);
       }
       $addresses = '';
       $l1 = '';

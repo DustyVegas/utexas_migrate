@@ -25,28 +25,23 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
    */
   public function import(Row $row, array $old_destination_id_values = []) {
     // Convert D7 textarea field structure to fit Horizontal tabs field.
+    $main = [];
     $body = $row->getDestinationProperty('field_utprof_content');
-    $row->setDestinationProperty('field_utprof_content', [
-      'header' => 'Introduction',
-      'body_value' => WysiwygHelper::process($body[0]['value']),
-      'body_format' => MigrateHelper::getDestinationTextFormat($body[0]['format']),
-    ]);
-
-    // Convert D7 link value to D8 true/false.
-    $link_behavior = $row->getDestinationProperty('field_utprof_listing_link');
-    $d8_link = $link_behavior[0]['value'] === 'linked' ? TRUE : FALSE;
-    $row->setDestinationProperty('field_utprof_listing_link', $d8_link);
-
+    if (!empty($body[0]['value'])) {
+      $main[] = [
+        'header' => 'Introduction',
+        'body_value' => WysiwygHelper::process($body[0]['value']),
+        'body_format' => MigrateHelper::getDestinationTextFormat($body[0]['format']),
+      ];
+    }
     // Convert 'Additional basic info' from Quick Links'. The header, copy &
     // links will populate the v3 WYSIWYG something like this:
     // <h3>Lorem Ipsum</h3><p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p><p><a href="http://stanford.edu">JD Stanford</a></p><p><a href="http://wesleyan.edu">BA Wesleyan University</a></p>.
     $basic_info_string = '';
+    $additional_header = 'Additional information';
     $add_basic_info = $row->getDestinationProperty('field_utprof_add_basic_info');
-    if (!empty($body[0]['summary'])) {
-      $basic_info_string = WysiwygHelper::process($body[0]['summary']);
-    }
     if (!empty($add_basic_info[0]['headline'])) {
-      $basic_info_string .= '<h3>' . $add_basic_info[0]['headline'] . '</h3>';
+      $additional_header = $add_basic_info[0]['headline'];
     }
     if (!empty($add_basic_info[0]['copy_value'])) {
       $basic_info_string .= '<p>' . WysiwygHelper::process($add_basic_info[0]['copy_value']) . '</p>';
@@ -61,11 +56,32 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
         }
       }
     }
-    $basic_info = [
-      'value' => $basic_info_string,
-      'format' => MigrateHelper::getDestinationTextFormat($add_basic_info[0]['copy_value']),
-    ];
-    $row->setDestinationProperty('field_utprof_add_basic_info', $basic_info);
+    if (!empty($basic_info_string)) {
+      $main[] = [
+        'header' => $additional_header,
+        'body_value' => $basic_info_string,
+        'body_format' => MigrateHelper::getDestinationTextFormat($add_basic_info[0]['copy_format']),
+      ];
+    }
+    if (!empty($main)) {
+      $row->setDestinationProperty('field_utprof_content', $main);
+    }
+
+    // Convert D7 link value to D8 true/false.
+    $link_behavior = $row->getDestinationProperty('field_utprof_listing_link');
+    $d8_link = $link_behavior[0]['value'] === 'linked' ? TRUE : FALSE;
+    $row->setDestinationProperty('field_utprof_listing_link', $d8_link);
+
+    if (!empty($body[0]['summary'])) {
+      // In cases where the summary is explicitly defined, populate that as
+      // the 'additional basic info'.
+      $summary = WysiwygHelper::process($body[0]['summary']);
+      $basic_info = [
+        'value' => $summary,
+        'format' => MigrateHelper::getDestinationTextFormat('flex_html'),
+      ];
+      $row->setDestinationProperty('field_utprof_add_basic_info', $basic_info);
+    }
 
     // Retrieve contact info entity value from source; place values into
     // node-type fields where possible.

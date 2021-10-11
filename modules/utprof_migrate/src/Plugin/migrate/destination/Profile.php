@@ -76,6 +76,11 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
       // In cases where the summary is explicitly defined, populate that as
       // the 'additional basic info'.
       $summary = WysiwygHelper::process($body[0]['summary']);
+    }
+    elseif (!empty($body[0]['value'])) {
+      $summary = text_summary($body[0]['value']);
+    }
+    if (isset($summary)) {
       $basic_info = [
         'value' => $summary,
         'format' => MigrateHelper::getDestinationTextFormat('flex_html'),

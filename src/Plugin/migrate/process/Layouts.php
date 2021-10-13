@@ -901,15 +901,17 @@ class Layouts extends ProcessPluginBase {
       default:
         // All other block types are migrated as inline blocks.
         $block = MigrateHelper::createInlineBlock($component_data);
-        // Important: the 'id' value must be "inline_block:" + valid block type.
-        $component = new SectionComponent(md5($component_data['field_identifier'] . $component_data['block_data']['title']), $component_data['region'], [
-          'id' => 'inline_block:' . $component_data['block_type'],
-          'label' => $component_data['block_data']['title'] ?? $component_data['field_identifier'],
-          'provider' => 'layout_builder',
-          'label_display' => $component_data['block_data']['label'] ?? 0,
-          'view_mode' => $component_data['view_mode'] ?? $component_view_mode,
-          'block_revision_id' => $block->id(),
-        ]);
+        if ($block) {
+          // Important: the 'id' value must be "inline_block:" + valid block type.
+          $component = new SectionComponent(md5($component_data['field_identifier'] . $component_data['block_data']['title']), $component_data['region'], [
+            'id' => 'inline_block:' . $component_data['block_type'],
+            'label' => $component_data['block_data']['title'] ?? $component_data['field_identifier'],
+            'provider' => 'layout_builder',
+            'label_display' => $component_data['block_data']['label'] ?? 0,
+            'view_mode' => $component_data['view_mode'] ?? $component_view_mode,
+            'block_revision_id' => $block->id(),
+          ]);
+        }
         break;
     }
 

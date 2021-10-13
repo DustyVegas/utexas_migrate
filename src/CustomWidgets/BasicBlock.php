@@ -30,9 +30,9 @@ class BasicBlock {
       ],
       'reusable' => FALSE,
     ];
-    // if (empty($block_definition['body']['value'])) {
-    //   return FALSE;
-    // }
+    if (empty($block_definition['body']['value'])) {
+      return FALSE;
+    }
     return $block_definition;
   }
 
@@ -50,7 +50,9 @@ class BasicBlock {
     $block_id = str_replace('block-', '', $field_name);
     $prepared[0] = ['target_id' => $block_id];
     $prepared['field_name'] = self::getBlockTitle($block_id);
-    $prepared['display_title'] = 'visible';
+    if (!empty($prepared['field_name'])) {
+      $prepared['display_title'] = 'visible';
+    }
     return $prepared;
   }
 

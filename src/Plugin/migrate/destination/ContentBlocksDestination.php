@@ -68,6 +68,13 @@ class ContentBlocksDestination extends Entity implements MigrateDestinationInter
         if (isset($visibility['request_path'])) {
           $placed_block->setVisibilityConfig("request_path", $visibility['request_path']);
         }
+        $placed_block->setVisibilityconfig("entity_bundle:node", [
+          'id' => 'entity_bundle:node',
+          'bundles' => [
+            'utexas_flex_page' => 'utexas_flex_page',
+          ],
+          'negate' => TRUE,
+        ]);
         $placed_block->save();
       }
       elseif ($row->getSourceProperty('plugin') === 'utexas_footer_text_source') {

@@ -627,7 +627,7 @@ class MigrateHelper {
         $block_definition = ViewsBlock::createBlockDefinition($component_data);
         break;
     }
-    if (!isset($block_definition)) {
+    if (!$block_definition) {
       return FALSE;
     }
     // For each block type to migrate, add a callback like the one above.

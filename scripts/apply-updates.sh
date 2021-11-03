@@ -15,12 +15,14 @@ run_updates_on_site() {
   # $terminus drush $1.dev updb -y
   # $terminus drush $1.dev cr
 
-  # Update 'dev'
+  # Update 'dev', 'test', and 'live'
   # $terminus env:wake $1.dev
   # $terminus env:clear-cache $1.dev
   # $terminus upstream:updates:apply --updatedb --accept-upstream -- $1.dev
   # $terminus drush $1.dev updb -y
   # $terminus drush $1.dev cr
+  # $terminus env:deploy "$1".test --sync-content --note='Apply upstream updates' --cc --updatedb
+  # $terminus env:deploy "$1".live --sync-content --note='Apply upstream updates' --cc --updatedb
 }
 
 if [ -z "$1" ];

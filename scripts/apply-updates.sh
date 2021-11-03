@@ -27,7 +27,7 @@ run_updates_on_site() {
 
 if [ -z "$1" ];
 then
-  echo 'You must supply a filename or site name as the first parameter (e.g. "quicksites-to-managed-sites.sh" or "utexas-whole-health")'
+  echo "You must supply a filename or site name as the first parameter (e.g. 'quicksites-to-managed-sites.sh' or 'utexas-whole-health')"
   exit
 fi
 if [ -f "$1" ]; 
@@ -55,8 +55,3 @@ else
     run_updates_on_site $SITE
   fi
 fi
-
-
-
-
-

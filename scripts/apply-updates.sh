@@ -9,9 +9,10 @@ fi
 run_updates_on_site() {
   echo "Running updates on $1 ..."
   # Update 'preview'
-  $terminus env:wake $1.preview
-  $terminus env:clear-cache $1.preview
-  $terminus upstream:updates:apply --updatedb --accept-upstream -- $1.preview
+
+  # $terminus env:wake $1.preview
+  # $terminus env:clear-cache $1.preview
+  # $terminus upstream:updates:apply --updatedb --accept-upstream -- $1.preview
   # $terminus drush $1.dev updb -y
   # $terminus drush $1.dev cr
 
@@ -21,8 +22,14 @@ run_updates_on_site() {
   # $terminus upstream:updates:apply --updatedb --accept-upstream -- $1.dev
   # $terminus drush $1.dev updb -y
   # $terminus drush $1.dev cr
-  # $terminus env:deploy "$1".test --sync-content --note='Apply upstream updates' --cc --updatedb
-  # $terminus env:deploy "$1".live --sync-content --note='Apply upstream updates' --cc --updatedb
+  $terminus env:deploy "$1".test --sync-content --note='Apply upstream updates' --cc --updatedb
+  $terminus env:deploy "$1".live --sync-content --note='Apply upstream updates' --cc --updatedb
+
+  # Push to 'preview'
+  $terminus env:wake $1.preview
+  $terminus multidev:merge-from-dev --updatedb --yes -- $1.preview
+  $terminus env:clone-content --cc --updatedb --yes -- $1.live preview
+  espeak "Process complete"
 }
 
 if [ -z "$1" ];

@@ -23,6 +23,10 @@ then
 fi
 DOMAIN=$3
 
+echo "****************************************"
+echo "*** BEGIN MIGRATION: $DESTINATION_SITE ***"
+echo "****************************************"
+
 echo "Performing migration of $SOURCE_SITE to $DESTINATION_SITE as $DOMAIN..."
 
 echo "Cloning the destination site & building the codebase..."
@@ -84,5 +88,9 @@ echo "File synchronization complete"
 
 echo "Removing Docker containers..."
 fin project remove 
-# cd ..
-# rm -r $DESTINATION_SITE
+cd ..
+rm -r $DESTINATION_SITE
+
+echo "****************************************"
+echo "*** END MIGRATION: $DESTINATION_SITE ***"
+echo "****************************************"

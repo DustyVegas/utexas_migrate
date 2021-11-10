@@ -99,10 +99,10 @@ abstract class MediaDestination extends DestinationBase implements MigrateDestin
     // The managed file needs to be saved, first,
     // before the media entity can be created.
     $filepath = str_replace(['public://', 'private://'], ['', ''], $file_uri);
-    $filepath = str_replace("%2F", "/", urlencode($filepath));
-    $filepath = str_replace("+", "%20", $filepath);
-
     if (strpos($file_uri, 'public://') !== FALSE) {
+      // Query encode files to be retrieved over HTTP.
+      $filepath = str_replace("%2F", "/", urlencode($filepath));
+      $filepath = str_replace("+", "%20", $filepath);
       $location_path = $this->migrationSourcePublicFilePath . $filepath;
       // Public files.
       $path_to_file = $this->migrationSourceBaseUrl . $location_path;

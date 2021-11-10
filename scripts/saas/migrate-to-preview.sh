@@ -29,6 +29,10 @@ echo "****************************************"
 
 echo "Performing migration of $SOURCE_SITE to $DESTINATION_SITE as $DOMAIN..."
 
+echo "Waking environments..."
+terminus env:wake $DESTINATION_SITE.live
+terminus env:wake $DESTINATION_SITE.preview
+
 echo "Cloning the destination site & building the codebase..."
 PANTHEON_SITE_GIT_URL="$(terminus connection:info $DESTINATION_SITE.dev --field=git_url)"
 git clone "$PANTHEON_SITE_GIT_URL" $DESTINATION_SITE
@@ -62,7 +66,6 @@ fin drush cr
 echo "Migration complete... Proceeding to sync..."
 
 fin db dump $DESTINATION_SITE.sql
-terminus env:wake $DESTINATION_SITE.$ENV
 
 echo "Importing database. This can take ~10 minutes..."
 PANTHEON_SQL_CMD=`terminus connection:info $DESTINATION_SITE.$ENV --field=mysql_command`
@@ -87,9 +90,9 @@ rsync -rLvz --size-only --checksum --ipv4 --progress -e 'ssh -p 2222' "$PATH_TO_
 echo "File synchronization complete"
 
 echo "Removing Docker containers..."
-fin project remove 
+fin project remove -f
 cd ..
-rm -r $DESTINATION_SITE
+# rm -r $DESTINATION_SITE
 
 echo "****************************************"
 echo "*** END MIGRATION: $DESTINATION_SITE ***"

@@ -41,12 +41,12 @@ $sites[] = ["utqs-texas-metro-observatory", "utexas-texas-metro-observatory", "h
 $sites[] = ["utqs-ttap", "utexas-ttap", "https://ttap.disabilitystudies.utexas.edu"];
 $sites[] = ["utqs-compliance", "utexas-compliance", "https://compliance.utexas.edu"];
 $sites[] = ["utqs-title-ix", "utexas-title-ix", "https://titleix.utexas.edu"];
+
+$sites = [];
+
 $sites[] = ["utqs-student-affairs", "utexas-student-affairs", "https://studentaffairs.utexas.edu"];
 $sites[] = ["utqs-waggoner-center", "utexas-waggoner", "https://waggonercenter.utexas.edu"];
 $sites[] = ["utqs-covid-resource-guide", "utexas-whole-health", "https://covid.wholecommunities.utexas.edu"];
-
-// $sites = [];
-// $sites[] = ['utqs-zoom', 'utexas-zoom', 'https://zoom.its.utexas.edu'];
 
 foreach ($sites as $site) {
   echo "Attempting migration from $site[0] to $site[1] as $site[2]... " . PHP_EOL;

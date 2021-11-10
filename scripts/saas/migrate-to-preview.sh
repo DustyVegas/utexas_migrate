@@ -91,7 +91,6 @@ echo "File synchronization complete"
 
 echo "Removing Docker containers..."
 fin project remove -f
-cd ..
 # rm -r $DESTINATION_SITE
 
 echo "****************************************"

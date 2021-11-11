@@ -652,12 +652,6 @@ class Layouts extends ProcessPluginBase {
           case 'hero_image':
             $delta = 0;
             $region = 'main';
-            $layout_override = [
-              'layout' => 'layout_utexas_onecol',
-              'layoutSettings' => [
-                'section_width' => 'container',
-              ],
-            ];
             break;
 
           case 'content_top_left':
@@ -693,12 +687,6 @@ class Layouts extends ProcessPluginBase {
           case 'hero_image':
             $delta = 0;
             $region = 'main';
-            $layout_override = [
-              'layout' => 'layout_utexas_onecol',
-              'layoutSettings' => [
-                'section_width' => 'container',
-              ],
-            ];
             break;
 
           case 'content_top_three_pillars':
@@ -777,11 +765,10 @@ class Layouts extends ProcessPluginBase {
       $view_mode = $field_data['data']['view_mode'];
       unset($field_data['data']['view_mode']);
     }
-    if (!empty($layout_override)) {
-      // Used to accommodate hero image 4 & 5 divergent section width.
-      $sections[$delta]['layout'] = $layout_override['layout'];
-      $sections[$delta]['layoutSettings']['section_width'] = $layout_override['layoutSettings']['section_width'];
+    if (in_array($field_data['data'][0]['view_mode'], ['utexas_hero_4', 'utexas_hero_5'])) {
+      $sections[$delta]['layoutSettings']['section_width'] = 'container';
     }
+
     if ($region) {
       $sections[$delta]['components'][$field] = [
         'field_identifier' => $field,

@@ -513,6 +513,7 @@ class Layouts extends ProcessPluginBase {
   protected static function placeFieldinSection(array $sections, $field_data, array $settings, $template) {
     // In v2, Standard page sidebar regions apply a border w/ background style
     // to blocks.
+    $layout_override = [];
     $layout_builder_styles = [];
     $border_with_background = [
       'layout_builder_styles_style' => [
@@ -651,6 +652,12 @@ class Layouts extends ProcessPluginBase {
           case 'hero_image':
             $delta = 0;
             $region = 'main';
+            $layout_override = [
+              'layout' => 'layout_utexas_onecol',
+              'layoutSettings' => [
+                'section_width' => 'container',
+              ],
+            ];
             break;
 
           case 'content_top_left':
@@ -686,6 +693,12 @@ class Layouts extends ProcessPluginBase {
           case 'hero_image':
             $delta = 0;
             $region = 'main';
+            $layout_override = [
+              'layout' => 'layout_utexas_onecol',
+              'layoutSettings' => [
+                'section_width' => 'container',
+              ],
+            ];
             break;
 
           case 'content_top_three_pillars':
@@ -763,6 +776,11 @@ class Layouts extends ProcessPluginBase {
     if (isset($field_data['data']['view_mode'])) {
       $view_mode = $field_data['data']['view_mode'];
       unset($field_data['data']['view_mode']);
+    }
+    if (!empty($layout_override)) {
+      // Used to accommodate hero image 4 & 5 divergent section width.
+      $sections[$delta]['layout'] = $layout_override['layout'];
+      $sections[$delta]['layoutSettings']['section_width'] = $layout_override['layoutSettings']['section_width'];
     }
     if ($region) {
       $sections[$delta]['components'][$field] = [

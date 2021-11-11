@@ -1,0 +1,1004 @@
+****************************************
+*** BEGIN MIGRATION: utexas-purchasing ***
+****************************************
+Performing migration of utqs-purchasing to utexas-purchasing as https://purchasing.utexas.edu...
+Waking environments...
+ [notice] OK >> live-utexas-purchasing.pantheonsite.io responded
+ [notice] OK >> preview-utexas-purchasing.pantheonsite.io responded
+Cloning the destination site & building the codebase...
+Cloning into 'utexas-purchasing'...
+Installing dependencies from lock file (including require-dev)
+Verifying lock file contents can be installed on current platform.
+Package operations: 197 installs, 0 updates, 0 removals
+    0 [>---------------------------]    0 [>---------------------------]  - Installing cweagans/composer-patches (1.7.1): Extracting archive
+No patches supplied.
+Gathering patches for dependencies. This might take a minute.
+  - Installing composer/installers (v1.12.0): Extracting archive
+  - Installing drupal/core-composer-scaffold (9.2.8): Extracting archive
+  - Installing symfony/polyfill-mbstring (v1.23.0): Extracting archive
+  - Installing symfony/polyfill-ctype (v1.23.0): Extracting archive
+  - Installing twig/twig (v2.14.6): Extracting archive
+  - Installing symfony/polyfill-php80 (v1.23.0): Extracting archive
+  - Installing symfony/filesystem (v4.4.27): Extracting archive
+  - Installing psr/container (1.1.1): Extracting archive
+  - Installing symfony/service-contracts (v2.4.0): Extracting archive
+  - Installing symfony/polyfill-php73 (v1.23.0): Extracting archive
+  - Installing symfony/console (v4.4.25): Extracting archive
+  - Installing symfony/yaml (v4.4.25): Extracting archive
+  - Installing symfony/process (v4.4.25): Extracting archive
+  - Installing symfony/finder (v5.3.7): Extracting archive
+  - Installing symfony/event-dispatcher-contracts (v1.1.9): Extracting archive
+  - Installing symfony/event-dispatcher (v4.4.25): Extracting archive
+  - Installing composer/semver (3.2.5): Extracting archive
+  - Installing psr/log (1.1.4): Extracting archive
+  - Installing typo3/phar-stream-wrapper (v3.1.6): Extracting archive
+  - Installing symfony/translation-contracts (v2.4.0): Extracting archive
+  - Installing symfony/validator (v4.4.25): Extracting archive
+  - Installing symfony/translation (v4.4.25): Extracting archive
+  - Installing symfony/serializer (v4.4.25): Extracting archive
+  - Installing symfony/routing (v4.4.25): Extracting archive
+  - Installing symfony/polyfill-php72 (v1.23.0): Extracting archive
+  - Installing symfony/polyfill-intl-normalizer (v1.23.0): Extracting archive
+  - Installing symfony/polyfill-intl-idn (v1.23.0): Extracting archive
+  - Installing symfony/deprecation-contracts (v2.4.0): Extracting archive
+  - Installing symfony/mime (v5.3.0): Extracting archive
+  - Installing symfony/http-foundation (v4.4.25): Extracting archive
+  - Installing psr/http-message (1.0.1): Extracting archive
+  - Installing symfony/psr-http-message-bridge (v2.1.0): Extracting archive
+  - Installing symfony/polyfill-iconv (v1.23.0): Extracting archive
+  - Installing symfony/http-client-contracts (v2.4.0): Extracting archive
+  - Installing symfony/var-dumper (v5.3.0): Extracting archive
+  - Installing symfony/debug (v4.4.25): Extracting archive
+  - Installing symfony/error-handler (v4.4.25): Extracting archive
+  - Installing symfony/http-kernel (v4.4.25): Extracting archive
+  - Installing symfony/dependency-injection (v4.4.25): Extracting archive
+  - Installing symfony-cmf/routing (2.3.3): Extracting archive
+  - Installing stack/builder (v1.0.6): Extracting archive
+  - Installing pear/pear_exception (v1.0.2): Extracting archive
+  - Installing pear/console_getopt (v1.4.3): Extracting archive
+  - Installing pear/pear-core-minimal (v1.10.10): Extracting archive
+  - Installing pear/archive_tar (1.4.14): Extracting archive
+  - Installing masterminds/html5 (2.7.4): Extracting archive
+  - Installing laminas/laminas-zendframework-bridge (1.2.0): Extracting archive
+  - Installing laminas/laminas-stdlib (3.3.1): Extracting archive
+  - Installing laminas/laminas-escaper (2.7.0): Extracting archive
+  - Installing laminas/laminas-feed (2.14.1): Extracting archive
+  - Installing psr/http-factory (1.0.1): Extracting archive
+  - Installing laminas/laminas-diactoros (2.6.0): Extracting archive
+  - Installing ralouphie/getallheaders (3.0.3): Extracting archive
+  - Installing guzzlehttp/psr7 (1.8.2): Extracting archive
+  - Installing guzzlehttp/promises (1.4.1): Extracting archive
+  - Installing guzzlehttp/guzzle (6.5.5): Extracting archive
+  - Installing doctrine/lexer (1.2.1): Extracting archive
+  - Installing egulias/email-validator (2.1.25): Extracting archive
+  - Installing psr/cache (1.0.1): Extracting archive
+  - Installing doctrine/annotations (1.13.1): Extracting archive
+  - Installing doctrine/reflection (1.2.2): Extracting archive
+  - Installing asm89/stack-cors (1.3.0): Extracting archive
+  - Installing drupal/core (9.2.7): Extracting archive
+  - Installing drupal/externalauth (1.4.0): Extracting archive
+  - Installing phpmailer/phpmailer (v6.5.1): Extracting archive
+  - Installing symfony/var-exporter (v5.3.8): Extracting archive
+  - Installing symfony/polyfill-php81 (v1.23.0): Extracting archive
+  - Installing symfony/config (v4.4.33): Extracting archive
+  - Installing symfony/cache-contracts (v2.4.0): Extracting archive
+  - Installing symfony/cache (v5.3.10): Extracting archive
+  - Installing symfony/framework-bundle (v4.4.31): Extracting archive
+  - Installing twig/extensions (v1.5.4): Extracting archive
+  - Installing simplesamlphp/twig-configurable-i18n (v2.3.4): Extracting archive
+  - Installing simplesamlphp/simplesamlphp (v1.19.3): Extracting archive
+  0/62 [>---------------------------]   0%
+ 10/62 [====>-----------------------]  16%
+ 20/62 [=========>------------------]  32%
+ 29/62 [=============>--------------]  46%
+ 39/62 [=================>----------]  62%
+ 49/62 [======================>-----]  79%
+ 58/62 [==========================>-]  93%
+ 59/62 [==========================>-]  95%
+ 60/62 [===========================>]  96%
+ 61/62 [===========================>]  98%
+ 62/62 [============================] 100%  - Applying patches for drupal/core
+    https://drupalkit.its.utexas.edu/patches/1480-ckeditor-align.patch (Fix issue with CKEditor image align center)
+    https://drupalkit.its.utexas.edu/patches/1494-mariadb-version.patch (Fix minimum MariaDb version for Pantheon)
+    https://drupalkit.its.utexas.edu/patches/1122-layout-builder-revert.patch (Impossible to update inline blocks after reverting to a previous revision)
+    https://www.drupal.org/files/issues/2021-02-16/2900208-33.patch (Improve performance of functional tests by caching Drupal installations)
+    https://drupalkit.its.utexas.edu/patches/1559-media-library-video-width.patch (Media Library: Default value for data-align attribute should not be center)
+
+  - Installing simplesamlphp/composer-module-installer (v1.1.8): Extracting archive
+  - Installing utexas/utexas_saml_auth_helper (3.0.0): Extracting archive
+  - Installing drupal/simplesamlphp_auth (3.2.0): Extracting archive
+ 0/2 [>---------------------------]   0%
+ 2/2 [============================] 100%  - Installing utexas/pantheon_saml_integration (3.1.0): Extracting archive
+  - Installing chi-teck/drupal-code-generator (1.33.1): Extracting archive
+  - Installing dflydev/dot-access-data (v1.1.0): Extracting archive
+  - Installing consolidation/filter-via-dot-access-data (1.0.0): Extracting archive
+  - Installing league/container (3.4.1): Extracting archive
+  - Installing consolidation/self-update (2.0.0): Extracting archive
+  - Installing consolidation/output-formatters (4.1.2): Extracting archive
+  - Installing consolidation/log (2.0.2): Extracting archive
+  - Installing grasmash/expander (1.0.0): Extracting archive
+  - Installing consolidation/config (1.2.1): Extracting archive
+  - Installing consolidation/annotated-command (4.4.0): Extracting archive
+  - Installing consolidation/robo (3.0.6): Extracting archive
+  - Installing consolidation/site-alias (3.1.1): Extracting archive
+  - Installing consolidation/site-process (4.1.0): Extracting archive
+  - Installing drupal/addtoany (1.15.0): Extracting archive
+  - Installing drupal/admin_toolbar (2.5.0): Extracting archive
+  - Installing drupal/ckeditorheight (1.8.0): Extracting archive
+  - Installing drupal/core-recommended (9.2.7)
+  - Installing drupal/date_ap_style (1.3.0): Extracting archive
+  - Installing ezyang/htmlpurifier (v4.13.0): Extracting archive
+  - Installing caxy/php-htmldiff (v0.1.13): Extracting archive
+  - Installing mkalkbrenner/php-htmldiff-advanced (0.0.8): Extracting archive
+  - Installing drupal/diff (1.0.0): Extracting archive
+  - Installing drupal/editor_advanced_link (2.0.0): Extracting archive
+  - Installing drupal/config_update (1.7.0): Extracting archive
+  - Installing drupal/features (3.12.0): Extracting archive
+  - Installing drupal/feed_block (1.1.0): Extracting archive
+  - Installing drupal/google_cse (3.4.0): Extracting archive
+  - Installing drupal/google_tag (1.4.0): Extracting archive
+  - Installing drupal/iframe_title_filter (1.1.0): Extracting archive
+  - Installing drupal/layout_builder_modal (1.1.0): Extracting archive
+  - Installing drupal/layout_builder_restrictions (2.10.0): Extracting archive
+  - Installing drupal/layout_builder_styles (1.0.0-beta4): Extracting archive
+  - Installing drupal/linkit (6.0.0-beta3): Extracting archive
+  - Installing drupal/media_library_form_element (2.0.3): Extracting archive
+  - Installing drupal/media_library_theme_reset (1.1.0): Extracting archive
+  - Installing drupal/menu_block (1.7.0): Extracting archive
+  - Installing drupal/pantheon_advanced_page_cache (1.2.0): Extracting archive
+  - Installing drupal/token (1.9.0): Extracting archive
+  - Installing drupal/ctools (3.7.0): Extracting archive
+  - Installing drupal/pathauto (1.8.0): Extracting archive
+  - Installing drupal/pathologic (1.0.0-alpha2): Extracting archive
+  - Installing drupal/redirect (1.6.0): Extracting archive
+  - Installing drupal/responsive_tables_filter (1.8.0): Extracting archive
+  - Installing drupal/role_delegation (1.1.0): Extracting archive
+  - Installing drupal/metatag (1.16.0): Extracting archive
+  - Installing drupal/schema_metatag (2.2.0): Extracting archive
+  - Installing drupal/seckit (2.0.0): Extracting archive
+  - Installing drupal/smtp (1.0.0): Extracting archive
+  - Installing enshrined/svg-sanitize (0.13.3): Extracting archive
+  - Installing drupal/svg_upload_sanitizer (1.1.0): Extracting archive
+  - Installing drupal/twitter_profile_widget (3.0.1): Extracting archive
+  - Installing drupal/updated (1.0.0-alpha1): Extracting archive
+  - Installing composer/ca-bundle (1.3.1): Extracting archive
+  - Installing embed/embed (3.4.17): Extracting archive
+  - Installing drupal/embed (1.4.0): Extracting archive
+  - Installing drupal/url_embed (1.0.0-beta1): Extracting archive
+  - Installing drupal/xmlsitemap (1.1.0): Extracting archive
+  - Installing enlightn/security-checker (v1.9.0): Extracting archive
+  - Installing gettext/languages (2.8.1): Extracting archive
+  - Installing grasmash/yaml-expander (1.4.0): Extracting archive
+  - Installing nikic/php-parser (v4.13.1): Extracting archive
+  - Installing psy/psysh (v0.10.9): Extracting archive
+  - Installing webmozart/assert (1.10.0): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-statistics (v0.9.6): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-sqlauth (v0.9.3): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-smartattributes (v0.9.1): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-sanitycheck (v0.9.1): Extracting archive
+  - Installing phpfastcache/riak-client (3.4.3): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-riak (v0.9.1): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-radius (v0.9.3): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-preprodwarning (v0.9.2): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-oauth (v0.9.3): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-ldap (v0.9.14): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-negotiate (v0.9.11): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-metarefresh (v1.0.0): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-memcookie (v1.2.2): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-memcachemonitor (v0.9.2): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-expirycheck (v0.9.3): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-exampleattributeserver (v1.0.0): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-discopower (v0.10.1): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-consent (v0.9.7): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-consentadmin (v0.9.1): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-cdc (v0.9.1): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-cas (v0.9.1): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-authyubikey (v0.9.1): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-authx509 (v0.9.8): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-authwindowslive (v0.9.1): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-authtwitter (v0.9.1): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-authorize (v0.9.3): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-authfacebook (v0.9.3): Extracting archive
+  - Installing whitehat101/apr1-md5 (v1.0.0): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-authcrypt (v0.9.3): Extracting archive
+  - Installing simplesamlphp/simplesamlphp-module-adfs (v0.9.8): Extracting archive
+  - Installing robrichards/xmlseclibs (3.1.1): Extracting archive
+  - Installing simplesamlphp/saml2 (v4.2.3): Extracting archive
+  - Installing simplesamlphp/assert (v0.0.13): Extracting archive
+  - Installing gettext/gettext (v4.8.6): Extracting archive
+  - Installing doctrine/collections (1.6.8): Extracting archive
+  - Installing simshaun/recurr (v4.0.5): Extracting archive
+  - Installing utexas/forty_acres (3.3.0): Extracting archive
+  - Installing utexas/utexas_qualtrics_filter (3.0.0): Extracting archive
+  - Installing drupal/page_title_visibility (1.3.0): Extracting archive
+  - Installing drupal/breadcrumbs_visibility (1.2.0): Extracting archive
+  - Installing utexas/utdk_profile (3.3.0): Extracting archive
+  - Installing pantheon-systems/drupal-integrations (9.0.2): Extracting archive
+  - Installing webmozart/path-util (2.3.0): Extracting archive
+  - Installing webflo/drupal-finder (1.2.2): Extracting archive
+  - Installing drush/drush (10.6.1): Extracting archive
+  - Installing utexas/upstream-configuration (3.3.0): Symlinking from upstream-configuration
+  - Installing utexas/utdk_saas (3.2.0): Extracting archive
+  - Installing drupal/smart_date (3.4.3): Extracting archive
+  - Installing utexas/utevent (3.3.0): Extracting archive
+  - Installing drupal/search_api (1.20.0): Extracting archive
+  - Installing drupal/facets (1.8.0): Extracting archive
+  - Installing utexas/utnews (3.3.0): Extracting archive
+  - Installing drupal/field_group (3.2.0): Extracting archive
+  - Installing drupal/bootstrap_horizontal_tabs (1.3.0): Extracting archive
+  - Installing utexas/utprof (3.3.0): Extracting archive
+   0/106 [>---------------------------]   0%
+   9/106 [==>-------------------------]   8%
+  19/106 [=====>----------------------]  17%
+  29/106 [=======>--------------------]  27%
+  39/106 [==========>-----------------]  36%
+  49/106 [============>---------------]  46%
+  57/106 [===============>------------]  53%
+  67/106 [=================>----------]  63%
+  77/106 [====================>-------]  72%
+  87/106 [======================>-----]  82%
+  96/106 [=========================>--]  90%
+ 106/106 [============================] 100%  - Applying patches for drupal/linkit
+    https://drupalkit.its.utexas.edu/patches/1106-linkit-multiple-autocomplete.patch (LinkIt-style autocomplete affects multiple adjacent link fields)
+    https://drupalkit.its.utexas.edu/patches/1723-linkit-relative-modal.patch (Form button obscured if Layout Builder is being used)
+
+  - Applying patches for drupal/url_embed
+    https://drupalkit.its.utexas.edu/patches/1225-url-embed-responsive.patch (Add option to make embeds responsive)
+
+Package doctrine/reflection is abandoned, you should avoid using it. Use roave/better-reflection instead.
+Package simplesamlphp/simplesamlphp-module-authfacebook is abandoned, you should avoid using it. No replacement was suggested.
+Package simplesamlphp/simplesamlphp-module-authwindowslive is abandoned, you should avoid using it. No replacement was suggested.
+Package simplesamlphp/simplesamlphp-module-oauth is abandoned, you should avoid using it. No replacement was suggested.
+Package twig/extensions is abandoned, you should avoid using it. No replacement was suggested.
+Generating optimized autoload files
+54 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+Scaffolding files for drupal/core:
+  - Skip [project-root]/.editorconfig: overridden in utexas/utdk-project
+  - Skip [project-root]/.gitattributes: overridden in utexas/utdk-project
+  - Copy [web-root]/.csslintrc from assets/scaffold/files/csslintrc
+  - Copy [web-root]/.eslintignore from assets/scaffold/files/eslintignore
+  - Copy [web-root]/.eslintrc.json from assets/scaffold/files/eslintrc.json
+  - Copy [web-root]/.ht.router.php from assets/scaffold/files/ht.router.php
+  - Copy [web-root]/.htaccess from assets/scaffold/files/htaccess
+  - Copy [web-root]/example.gitignore from assets/scaffold/files/example.gitignore
+  - Copy [web-root]/index.php from assets/scaffold/files/index.php
+  - Copy [web-root]/INSTALL.txt from assets/scaffold/files/drupal.INSTALL.txt
+  - Copy [web-root]/README.md from assets/scaffold/files/drupal.README.md
+  - Skip [web-root]/robots.txt: overridden in utexas/utdk_profile
+  - Copy [web-root]/update.php from assets/scaffold/files/update.php
+  - Copy [web-root]/web.config from assets/scaffold/files/web.config
+  - Copy [web-root]/sites/README.txt from assets/scaffold/files/sites.README.txt
+  - Copy [web-root]/sites/development.services.yml from assets/scaffold/files/development.services.yml
+  - Copy [web-root]/sites/example.settings.local.php from assets/scaffold/files/example.settings.local.php
+  - Copy [web-root]/sites/example.sites.php from assets/scaffold/files/example.sites.php
+  - Copy [web-root]/sites/default/default.services.yml from assets/scaffold/files/default.services.yml
+  - Copy [web-root]/sites/default/default.settings.php from assets/scaffold/files/default.settings.php
+  - Copy [web-root]/modules/README.txt from assets/scaffold/files/modules.README.txt
+  - Copy [web-root]/profiles/README.txt from assets/scaffold/files/profiles.README.txt
+  - Copy [web-root]/themes/README.txt from assets/scaffold/files/themes.README.txt
+Scaffolding files for pantheon-systems/drupal-integrations:
+  - Copy [project-root]/.drush-lock-update from assets/drush-lock-update
+  - Copy [web-root]/sites/default/default.services.pantheon.preproduction.yml from assets/default.services.pantheon.preproduction.yml
+  - Copy [web-root]/sites/default/settings.pantheon.php from assets/settings.pantheon.php
+  - Skip [web-root]/sites/default/settings.php because it already exists and overwrite is false.
+Scaffolding files for utexas/utdk_profile:
+  - Copy [web-root]/robots.txt from assets/robots.txt
+  - Copy [web-root]/android-chrome-192x192.png from assets/android-chrome-192x192.png
+  - Copy [web-root]/android-chrome-512x512.png from assets/android-chrome-512x512.png
+  - Copy [web-root]/apple-touch-icon.png from assets/apple-touch-icon.png
+  - Copy [web-root]/browserconfig.xml from assets/browserconfig.xml
+  - Copy [web-root]/favicon.ico from assets/favicon.ico
+  - Copy [web-root]/favicon-32x32.png from assets/favicon-32x32.png
+  - Copy [web-root]/favicon-48x48.png from assets/favicon-48x48.png
+  - Copy [web-root]/mstile-150x150.png from assets/mstile-150x150.png
+  - Copy [web-root]/safari-pinned-tab.svg from assets/safari-pinned-tab.svg
+  - Copy [web-root]/site.webmanifest from assets/site.webmanifest
+Webroot located at: web
+[UTexas Pantheon SAML]: Directory cleanup
+[UTexas Pantheon SAML]: Generating symlinks
+Making directory: web/simplesaml a symlink pointing to: ../vendor/simplesamlphp/simplesamlphp/www
+Making directory: ./vendor/simplesamlphp/simplesamlphp/config a symlink pointing to: ../../../web/sites/default/files/private/saml/assets/config
+Making directory: ./vendor/simplesamlphp/simplesamlphp/metadata a symlink pointing to: ../../../web/sites/default/files/private/saml/assets/metadata
+[UTexas Pantheon SAML]: Copying Drupal settings file
+Initiating site...
+Cloning into '.docksal'...
+[0;33mRemoving containers...[0m
+Removing network utexas-purchasing_default
+Network utexas-purchasing_default not found.
+Removing volume utexas-purchasing_cli_home
+Volume utexas-purchasing_cli_home not found.
+Removing volume utexas-purchasing_project_root
+Volume utexas-purchasing_project_root not found.
+Removing volume utexas-purchasing_db_data
+Volume utexas-purchasing_db_data not found.
+Volume docksal_ssh_agent is external, skipping
+[0;33mRunning in a non-interactive environment. SSH keys with passphrases cannot be used.[0m
+Enter passphrase for id_rsa: [0;32mStarting services...[0m
+Creating network "utexas-purchasing_default" with the default driver
+Creating volume "utexas-purchasing_cli_home" with default driver
+Creating volume "utexas-purchasing_project_root" with local driver
+Creating volume "utexas-purchasing_db_data" with default driver
+Creating utexas-purchasing_pma_1 ... 
+Creating utexas-purchasing_cli_1 ... 
+Creating utexas-purchasing_db_1  ... 
+Creating utexas-purchasing_mail_1 ... 
+Creating utexas-purchasing_mail_1 ... done
+Creating utexas-purchasing_db_1   ... done
+Creating utexas-purchasing_pma_1  ... done
+Creating utexas-purchasing_cli_1  ... done
+Creating utexas-purchasing_web_1  ... 
+Creating utexas-purchasing_web_1  ... done
+[0;32mConnected vhost-proxy to "utexas-purchasing_default" network.[0m
+Waiting for project stack to become ready...
+Waiting for project stack to become ready...
+/home/mark/Sites/utexas_migrate/scripts/saas/utexas-purchasing/web/sites/default/settings.php already in place.
+Copying /home/mark/Sites/utexas_migrate/scripts/saas/utexas-purchasing/web/sites/default/settings.local.php...
+Waiting for MySQL to initialize...
+Containers are up and refreshed!
+Added value for HOSTING_SITE into /home/mark/Sites/utexas_migrate/scripts/saas/utexas-purchasing/.docksal/docksal.env
+[0;32mStarting provider pull for pantheon[0m
+[0;32mPulling DB[0m
+[0;96mPulling new database file...[0m
+[0;96mCreating new backup on Pantheon for utexas-purchasing on the live environment[0m
+ [notice] Created a backup of the live environment.
+[0;96mDownloading database backup from Pantheon for utexas-purchasing on the live environment[0m
+[0;96mTruncating Existing Database[0m
+stdin: is not a tty
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[0;32mDB Pull Successful[0m
+[0;32mPull Completed[0m
+Rsyncing files from utqs-purchasing...
+receiving incremental file list
+created directory web/sites/default/files
+./
+.htaccess
+              0   0%    0.00kB/s    0:00:00              476 100%  464.84kB/s    0:00:00 (xfr#1, to-chk=49/51)
+AP_DocumentRoutingFlowfinal2.png
+              0   0%    0.00kB/s    0:00:00           63,247 100%  657.07kB/s    0:00:00 (xfr#2, to-chk=48/51)
+DEFINE GG4 screenshot.PNG
+              0   0%    0.00kB/s    0:00:00            8,089 100%   84.04kB/s    0:00:00 (xfr#3, to-chk=47/51)
+Payment_Services2.png
+              0   0%    0.00kB/s    0:00:00          162,110 100%  551.60kB/s    0:00:00 (xfr#4, to-chk=46/51)
+RGB_formal_Purchasing_Office.png
+              0   0%    0.00kB/s    0:00:00           34,476 100%  115.70kB/s    0:00:00 (xfr#5, to-chk=45/51)
+ggv_Hints1.gif
+              0   0%    0.00kB/s    0:00:00            9,790 100%   32.41kB/s    0:00:00 (xfr#6, to-chk=44/51)
+ggv_Hints2.gif
+              0   0%    0.00kB/s    0:00:00            9,330 100%   30.89kB/s    0:00:00 (xfr#7, to-chk=43/51)
+ggv_Hints3a.gif
+              0   0%    0.00kB/s    0:00:00            8,814 100%   29.18kB/s    0:00:00 (xfr#8, to-chk=42/51)
+ggv_Hints3b.gif
+              0   0%    0.00kB/s    0:00:00            9,702 100%   25.54kB/s    0:00:00 (xfr#9, to-chk=41/51)
+ggv_Hints4.gif
+              0   0%    0.00kB/s    0:00:00           12,286 100%   32.25kB/s    0:00:00 (xfr#10, to-chk=40/51)
+ggv_Hints5.gif
+              0   0%    0.00kB/s    0:00:00           12,333 100%   32.38kB/s    0:00:00 (xfr#11, to-chk=39/51)
+ggv_Hints6.gif
+              0   0%    0.00kB/s    0:00:00           13,742 100%   35.88kB/s    0:00:00 (xfr#12, to-chk=38/51)
+logo-purchasing-bw.svg
+              0   0%    0.00kB/s    0:00:00           28,971 100%   75.45kB/s    0:00:00 (xfr#13, to-chk=37/51)
+logo-purchasing.svg
+              0   0%    0.00kB/s    0:00:00           29,835 100%   77.70kB/s    0:00:00 (xfr#14, to-chk=36/51)
+next.gif
+              0   0%    0.00kB/s    0:00:00            1,599 100%    4.16kB/s    0:00:00 (xfr#15, to-chk=35/51)
+next_0.gif
+              0   0%    0.00kB/s    0:00:00            1,599 100%    4.16kB/s    0:00:00 (xfr#16, to-chk=34/51)
+payment-services.pdf
+              0   0%    0.00kB/s    0:00:00          201,979 100%  488.23kB/s    0:00:00 (xfr#17, to-chk=33/51)
+payment_services1.png
+              0   0%    0.00kB/s    0:00:00          155,718 100%  317.47kB/s    0:00:00 (xfr#18, to-chk=32/51)
+payment_solutions_sh.png
+              0   0%    0.00kB/s    0:00:00          322,880 100%  604.05kB/s    0:00:00 (xfr#19, to-chk=31/51)
+pg_rules_gg3.gif
+              0   0%    0.00kB/s    0:00:00            2,827 100%    5.29kB/s    0:00:00 (xfr#20, to-chk=30/51)
+pg_rules_pp.gif
+              0   0%    0.00kB/s    0:00:00            1,841 100%    3.44kB/s    0:00:00 (xfr#21, to-chk=29/51)
+previous.gif
+              0   0%    0.00kB/s    0:00:00            1,733 100%    3.24kB/s    0:00:00 (xfr#22, to-chk=28/51)
+previous_0.gif
+              0   0%    0.00kB/s    0:00:00            1,733 100%    3.24kB/s    0:00:00 (xfr#23, to-chk=27/51)
+purch.gif
+              0   0%    0.00kB/s    0:00:00           15,007 100%   27.86kB/s    0:00:00 (xfr#24, to-chk=26/51)
+ctools/
+featured-highlights/
+featured-highlights/texas-flag-pete-alexopoulos-unsplash.jpg
+              0   0%    0.00kB/s    0:00:00          728,066 100%    1.01MB/s    0:00:00 (xfr#25, to-chk=15/51)
+flex-content-areas/
+flex-content-areas/Arch-of-Main-Building-and-Capitol.jpg
+              0   0%    0.00kB/s    0:00:00          203,059 100%  276.57kB/s    0:00:00 (xfr#26, to-chk=14/51)
+flex-content-areas/Austin-Texas.jpg
+              0   0%    0.00kB/s    0:00:00           97,126 100%  128.70kB/s    0:00:00 (xfr#27, to-chk=13/51)
+flex-content-areas/eastmallviewmainbuilding.jpg
+              0   0%    0.00kB/s    0:00:00        1,507,387  32%    1.43MB/s    0:00:02        4,597,353 100%    3.03MB/s    0:00:01 (xfr#28, to-chk=12/51)
+hero-photos-full/
+hero-photos-full/Tower_sky-view-cropped.jpg
+              0   0%    0.00kB/s    0:00:00           63,989 100%  140.11kB/s    0:00:00 (xfr#29, to-chk=11/51)
+image-link/
+media-icons/
+media-icons/default/
+media-icons/default/application-octet-stream.png
+              0   0%    0.00kB/s    0:00:00            1,520 100%    3.33kB/s    0:00:00 (xfr#30, to-chk=9/51)
+media-icons/default/audio-mpeg.png
+              0   0%    0.00kB/s    0:00:00            1,770 100%    3.87kB/s    0:00:00 (xfr#31, to-chk=8/51)
+media-icons/default/audio-x-generic.png
+              0   0%    0.00kB/s    0:00:00            1,770 100%    3.87kB/s    0:00:00 (xfr#32, to-chk=7/51)
+media-icons/default/file-unknown.png
+              0   0%    0.00kB/s    0:00:00            1,522 100%    3.33kB/s    0:00:00 (xfr#33, to-chk=6/51)
+media-icons/default/image-x-generic.png
+              0   0%    0.00kB/s    0:00:00            1,166 100%    2.55kB/s    0:00:00 (xfr#34, to-chk=5/51)
+media-icons/default/video-x-generic.png
+              0   0%    0.00kB/s    0:00:00            1,828 100%    3.99kB/s    0:00:00 (xfr#35, to-chk=4/51)
+pictures/
+private/
+private/.htaccess
+              0   0%    0.00kB/s    0:00:00              491 100%    1.07kB/s    0:00:00 (xfr#36, to-chk=3/51)
+promo-lists/
+promo-lists/hold for image.jpg
+              0   0%    0.00kB/s    0:00:00            3,405 100%    7.42kB/s    0:00:00 (xfr#37, to-chk=2/51)
+xmlsitemap/
+xmlsitemap/NXhscRe0440PFpI5dSznEVgmauL25KojD7u4e9aZwOM/
+xmlsitemap/NXhscRe0440PFpI5dSznEVgmauL25KojD7u4e9aZwOM/1.xml
+              0   0%    0.00kB/s    0:00:00            9,072 100%   19.78kB/s    0:00:00 (xfr#38, to-chk=0/51)
+
+sent 855 bytes  received 6,731,407 bytes  464,293.93 bytes/sec
+total size is 6,822,254  speedup is 1.01
+ [success] Cache rebuild complete.
+Running migration...
+./composer.json has been updated
+Running composer update utexas/utexas_migrate
+Loading composer repositories with package information
+Updating dependencies
+Lock file operations: 3 installs, 0 updates, 0 removals
+  - Locking drupal/migrate_plus (5.1.0)
+  - Locking drupal/migrate_tools (dev-5.x 56d82b4)
+  - Locking utexas/utexas_migrate (dev-develop cf1ca03)
+Writing lock file
+Installing dependencies from lock file (including require-dev)
+Package operations: 3 installs, 0 updates, 0 removals
+  - Syncing drupal/migrate_tools (dev-5.x 56d82b4) into cache
+  - Syncing utexas/utexas_migrate (dev-develop cf1ca03) into cache
+    0 [>---------------------------]    0 [>---------------------------]No patches supplied.
+Gathering patches for dependencies. This might take a minute.
+  - Installing drupal/migrate_plus (5.1.0): Extracting archive
+  - Installing drupal/migrate_tools (dev-5.x 56d82b4): Cloning 56d82b4fc1 from cache
+  - Installing utexas/utexas_migrate (dev-develop cf1ca03): Cloning cf1ca03639 from cache
+    0 [>---------------------------]    0 [>---------------------------]2 package suggestions were added by new dependencies, use `composer suggest` to see details.
+Package doctrine/reflection is abandoned, you should avoid using it. Use roave/better-reflection instead.
+Package simplesamlphp/simplesamlphp-module-authfacebook is abandoned, you should avoid using it. No replacement was suggested.
+Package simplesamlphp/simplesamlphp-module-authwindowslive is abandoned, you should avoid using it. No replacement was suggested.
+Package simplesamlphp/simplesamlphp-module-oauth is abandoned, you should avoid using it. No replacement was suggested.
+Package twig/extensions is abandoned, you should avoid using it. No replacement was suggested.
+Generating optimized autoload files
+54 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+Scaffolding files for pantheon-systems/drupal-integrations:
+  - Skip [web-root]/sites/default/settings.php because it already exists and overwrite is false.
+Webroot located at: web
+[UTexas Pantheon SAML]: Directory cleanup
+[UTexas Pantheon SAML]: Generating symlinks
+Making directory: web/simplesaml a symlink pointing to: ../vendor/simplesamlphp/simplesamlphp/www
+Recreating symlink: ./vendor/simplesamlphp/simplesamlphp/config
+Making directory: ./vendor/simplesamlphp/simplesamlphp/config a symlink pointing to: ../../../web/sites/default/files/private/saml/assets/config
+Recreating symlink: ./vendor/simplesamlphp/simplesamlphp/metadata
+Making directory: ./vendor/simplesamlphp/simplesamlphp/metadata a symlink pointing to: ../../../web/sites/default/files/private/saml/assets/metadata
+[UTexas Pantheon SAML]: Copying Drupal settings file
+The following module(s) will be enabled: utexas_migrate, migrate_plus, migrate, migrate_tools, migrate_drupal
+
+ // Do you want to continue?: yes.                                              
+
+ [success] Successfully enabled: utexas_migrate, migrate_plus, migrate, migrate_tools, migrate_drupal
+mysql: [Warning] Using a password on the command line interface can be insecure.
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Database [0;33mutexas_migrate[0m created
+ [notice] OK >> live-utqs-purchasing.pantheonsite.io responded
+'all' cache was cleared.                                             [1;32;40m[1m[success][0m
+ [notice] Command: utqs-purchasing.live -- drush cc all [Exit: 0]
+ [notice] Created a backup of the live environment.
+Truncating [0;33mutexas_migrate[0m database...
+stdin: is not a tty
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Importing [0;33mdb.sql[0m...
+mysql: [Warning] Using a password on the command line interface can be insecure.
+[0;32mDone[0m
+
+ 1/1 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+
+  1/21 [=>--------------------------]   4%
+  3/21 [====>-----------------------]  14%
+  7/21 [=========>------------------]  33%
+ 11/21 [==============>-------------]  52%
+ 15/21 [====================>-------]  71%
+ 19/21 [=========================>--]  90%
+ 21/21 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+
+  1/27 [=>--------------------------]   3%
+  2/27 [==>-------------------------]   7%
+  3/27 [===>------------------------]  11%
+  5/27 [=====>----------------------]  18%
+  9/27 [=========>------------------]  33%
+ 11/27 [===========>----------------]  40%
+ 14/27 [==============>-------------]  51%
+ 17/27 [=================>----------]  62%
+ 19/27 [===================>--------]  70%
+ 22/27 [======================>-----]  81%
+ 25/27 [=========================>--]  92%
+ 27/27 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+ [notice] Processed 27 items (27 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_image'
+
+ 1/1 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+ [notice] Processed 27 items (27 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_image'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_vocabularies'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+ [notice] Processed 27 items (27 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_image'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_vocabularies'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_terms'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+ [notice] Processed 27 items (27 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_image'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_vocabularies'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_terms'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_video'
+
+ 1/1 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+ [notice] Processed 27 items (27 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_image'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_vocabularies'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_terms'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_video'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_document'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+ [notice] Processed 27 items (27 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_image'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_vocabularies'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_terms'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_video'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_document'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_article'
+
+ 1/1 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+ [notice] Processed 27 items (27 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_image'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_vocabularies'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_terms'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_video'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_document'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_article'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_basic_page'
+
+ 1/3 [=========>------------------]  33%
+ 3/3 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+ [notice] Processed 27 items (27 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_image'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_vocabularies'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_terms'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_video'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_document'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_article'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_basic_page'
+ [notice] Processed 3 items (3 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_landing_page'
+
+  1/78 [>---------------------------]   1%
+  8/78 [==>-------------------------]  10%
+ 16/78 [=====>----------------------]  20%
+ 24/78 [========>-------------------]  30%
+ 32/78 [===========>----------------]  41%
+ 39/78 [==============>-------------]  50%
+ 47/78 [================>-----------]  60%
+ 55/78 [===================>--------]  70%
+ 63/78 [======================>-----]  80%
+ 71/78 [=========================>--]  91%
+ 78/78 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+ [notice] Processed 27 items (27 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_image'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_vocabularies'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_terms'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_video'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_document'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_article'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_basic_page'
+ [notice] Processed 3 items (3 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_landing_page'
+ [notice] Processed 78 items (78 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_standard_page'
+
+ 1/6 [====>-----------------------]  16%
+ 2/6 [=========>------------------]  33%
+ 3/6 [==============>-------------]  50%
+ 4/6 [==================>---------]  66%
+ 5/6 [=======================>----]  83%
+ 6/6 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+ [notice] Processed 27 items (27 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_image'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_vocabularies'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_terms'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_video'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_document'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_article'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_basic_page'
+ [notice] Processed 3 items (3 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_landing_page'
+ [notice] Processed 78 items (78 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_standard_page'
+ [notice] Processed 6 items (6 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_content_blocks'
+
+ 1/1 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_pathauto_patterns'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_roles'
+ [notice] Processed 21 items (21 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_users'
+ [notice] Processed 27 items (27 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_image'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_vocabularies'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_terms'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_media_video'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_document'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_article'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_basic_page'
+ [notice] Processed 3 items (3 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_landing_page'
+ [notice] Processed 78 items (78 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_standard_page'
+ [notice] Processed 6 items (6 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_content_blocks'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_social_links_sitewide'
+ [error]  Message: Failed to connect to your database server. The server reports the following 
+message: /No database connection configured for source plugin variable/.
+ * Is the database server running?
+ * Does the database exist, and have you entered the correct database name?
+ * Have you entered the correct username and password?
+ * Have you entered the correct database hostname?
+
+ 
+
+ 1/3 [=========>------------------]  33%
+ 3/3 [============================] 100% [notice] Processed 3 items (3 created, 0 updated, 0 failed, 0 ignored) - done with 'utprof_terms'
+ [notice] Processed 3 items (3 created, 0 updated, 0 failed, 0 ignored) - done with 'utprof_terms'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utprof_nodes'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utnews_terms'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utnews_terms'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utnews_nodes'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utevent_terms_location'
+
+ 1/3 [=========>------------------]  33%
+ 3/3 [============================] 100% [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utevent_terms_location'
+ [notice] Processed 3 items (3 created, 0 updated, 0 failed, 0 ignored) - done with 'utevent_terms_tags'
+
+ 1/2 [==============>-------------]  50%
+ 2/2 [============================] 100% [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utevent_terms_location'
+ [notice] Processed 3 items (3 created, 0 updated, 0 failed, 0 ignored) - done with 'utevent_terms_tags'
+ [notice] Processed 2 items (2 created, 0 updated, 0 failed, 0 ignored) - done with 'utevent_nodes'
+
+ 1/2 [==============>-------------]  50%
+ 2/2 [============================] 100% [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'utevent_terms_location'
+ [notice] Processed 3 items (3 created, 0 updated, 0 failed, 0 ignored) - done with 'utevent_terms_tags'
+ [notice] Processed 2 items (2 created, 0 updated, 0 failed, 0 ignored) - done with 'utevent_nodes'
+ [notice] Processed 2 items (2 created, 0 updated, 0 failed, 0 ignored) - done with 'utevent_redirects'
+
+ 1/1 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_announcement'
+
+ 1/1 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_announcement'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_footer_text'
+
+ 1/6 [====>-----------------------]  16%
+ 2/6 [=========>------------------]  33%
+ 3/6 [==============>-------------]  50%
+ 4/6 [==================>---------]  66%
+ 5/6 [=======================>----]  83%
+ 6/6 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_announcement'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_footer_text'
+ [notice] Processed 6 items (6 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_menus'
+ [warning] file_get_contents(/var/www/web/sites/default/files/private/sites/default/files/logo-purchasing.svg): failed to open stream: No such file or directory MediaDestination.php:90
+ [notice] The data could not be saved because the destination sites/default/files/logo-purchasing.svg is invalid. This may be caused by improper use of file_save_data() or a missing stream wrapper.
+
+ 1/1 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_announcement'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_footer_text'
+ [notice] Processed 6 items (6 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_menus'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_site_settings'
+
+  1/55 [>---------------------------]   1%
+  6/55 [===>------------------------]  10%
+ 11/55 [=====>----------------------]  20%
+ 17/55 [========>-------------------]  30%
+ 22/55 [===========>----------------]  40%
+ 28/55 [==============>-------------]  50%
+ 33/55 [================>-----------]  60%
+ 39/55 [===================>--------]  70%
+ 44/55 [======================>-----]  80%
+ 50/55 [=========================>--]  90% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_announcement'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_footer_text'
+ [notice] Processed 6 items (6 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_menus'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_site_settings'
+ [notice] Processed 55 items (53 created, 0 updated, 0 failed, 2 ignored) - done with 'utexas_menu_links'
+
+ 1/1 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_announcement'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_footer_text'
+ [notice] Processed 6 items (6 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_menus'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_site_settings'
+ [notice] Processed 55 items (53 created, 0 updated, 0 failed, 2 ignored) - done with 'utexas_menu_links'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'contact_info'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_announcement'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_footer_text'
+ [notice] Processed 6 items (6 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_menus'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_site_settings'
+ [notice] Processed 55 items (53 created, 0 updated, 0 failed, 2 ignored) - done with 'utexas_menu_links'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'contact_info'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'twitter_widgets'
+
+  1/81 [>---------------------------]   1%
+  8/81 [==>-------------------------]   9%
+  9/81 [===>------------------------]  11%
+ 15/81 [=====>----------------------]  18%
+ 17/81 [=====>----------------------]  20%
+ 24/81 [========>-------------------]  29%
+ 25/81 [========>-------------------]  30%
+ 31/81 [==========>-----------------]  38%
+ 33/81 [===========>----------------]  40%
+ 38/81 [=============>--------------]  46%
+ 41/81 [==============>-------------]  50%
+ 44/81 [===============>------------]  54%
+ 49/81 [================>-----------]  60%
+ 56/81 [===================>--------]  69%
+ 57/81 [===================>--------]  70%
+ 63/81 [=====================>------]  77%
+ 65/81 [======================>-----]  80%
+ 73/81 [=========================>--]  90%
+ 78/81 [==========================>-]  96%
+ 81/81 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_announcement'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_footer_text'
+ [notice] Processed 6 items (6 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_menus'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_site_settings'
+ [notice] Processed 55 items (53 created, 0 updated, 0 failed, 2 ignored) - done with 'utexas_menu_links'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'contact_info'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'twitter_widgets'
+ [notice] Processed 81 items (81 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_flex_page_layouts'
+
+  1/81 [>---------------------------]   1%
+  9/81 [===>------------------------]  11%
+ 17/81 [=====>----------------------]  20%
+ 25/81 [========>-------------------]  30%
+ 33/81 [===========>----------------]  40%
+ 41/81 [==============>-------------]  50%
+ 49/81 [================>-----------]  60%
+ 57/81 [===================>--------]  70%
+ 65/81 [======================>-----]  80%
+ 73/81 [=========================>--]  90%
+ 81/81 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_announcement'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_footer_text'
+ [notice] Processed 6 items (6 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_menus'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_site_settings'
+ [notice] Processed 55 items (53 created, 0 updated, 0 failed, 2 ignored) - done with 'utexas_menu_links'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'contact_info'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'twitter_widgets'
+ [notice] Processed 81 items (81 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_flex_page_layouts'
+ [notice] Processed 81 items (81 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_metatags'
+
+  1/82 [>---------------------------]   1%
+  9/82 [===>------------------------]  10%
+ 17/82 [=====>----------------------]  20%
+ 25/82 [========>-------------------]  30%
+ 33/82 [===========>----------------]  40%
+ 41/82 [==============>-------------]  50%
+ 50/82 [=================>----------]  60%
+ 58/82 [===================>--------]  70%
+ 66/82 [======================>-----]  80%
+ 74/82 [=========================>--]  90%
+ 82/82 [============================] 100% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_announcement'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_footer_text'
+ [notice] Processed 6 items (6 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_menus'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_site_settings'
+ [notice] Processed 55 items (53 created, 0 updated, 0 failed, 2 ignored) - done with 'utexas_menu_links'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'contact_info'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'twitter_widgets'
+ [notice] Processed 81 items (81 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_flex_page_layouts'
+ [notice] Processed 81 items (81 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_metatags'
+ [notice] Processed 82 items (82 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_path_aliases'
+
+   1/116 [>---------------------------]   0%
+  12/116 [==>-------------------------]  10%
+  24/116 [=====>----------------------]  20%
+  35/116 [========>-------------------]  30%
+  47/116 [===========>----------------]  40%
+  58/116 [==============>-------------]  50%
+  70/116 [================>-----------]  60%
+  82/116 [===================>--------]  70%
+  93/116 [======================>-----]  80%
+ 105/116 [=========================>--]  90% [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_announcement'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_footer_text'
+ [notice] Processed 6 items (6 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_menus'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_site_settings'
+ [notice] Processed 55 items (53 created, 0 updated, 0 failed, 2 ignored) - done with 'utexas_menu_links'
+ [notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored) - done with 'contact_info'
+ [notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored) - done with 'twitter_widgets'
+ [notice] Processed 81 items (81 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_flex_page_layouts'
+ [notice] Processed 81 items (81 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_metatags'
+ [notice] Processed 82 items (82 created, 0 updated, 0 failed, 0 ignored) - done with 'utexas_path_aliases'
+ [notice] Processed 116 items (115 created, 0 updated, 0 failed, 1 ignored) - done with 'utexas_redirects'
+ [error]  Message: The data could not be saved because the destination is invalid. More 
+information is available in the system log.
+ 
+Peforming cleanup tasks...
+The following extensions will be uninstalled: utprof_migrate, utevent_migrate, utnews_migrate, utexas_migrate, migrate_tools, migrate_plus, migrate, migrate_drupal
+
+ // Do you want to continue?: yes.                                              
+
+ [success] Successfully uninstalled: utprof_migrate, utevent_migrate, utnews_migrate, utexas_migrate, migrate_tools, migrate_plus, migrate, migrate_drupal
+./composer.json has been updated
+Running composer update utexas/utexas_migrate
+Loading composer repositories with package information
+Updating dependencies
+Lock file operations: 0 installs, 0 updates, 3 removals
+  - Removing drupal/migrate_plus (5.1.0)
+  - Removing drupal/migrate_tools (dev-5.x 56d82b4)
+  - Removing utexas/utexas_migrate (dev-develop cf1ca03)
+Writing lock file
+Installing dependencies from lock file (including require-dev)
+Package operations: 0 installs, 0 updates, 3 removals
+  - Removing utexas/utexas_migrate (dev-develop cf1ca03)
+Deleting web/modules/custom/utexas_migrate - deleted
+  - Removing drupal/migrate_tools (dev-5.x 56d82b4)
+Deleting web/modules/contrib/migrate_tools - deleted
+  - Removing drupal/migrate_plus (5.1.0)
+Deleting web/modules/contrib/migrate_plus - deleted
+    0 [>---------------------------]    0 [>---------------------------]Package doctrine/reflection is abandoned, you should avoid using it. Use roave/better-reflection instead.
+Package simplesamlphp/simplesamlphp-module-authfacebook is abandoned, you should avoid using it. No replacement was suggested.
+Package simplesamlphp/simplesamlphp-module-authwindowslive is abandoned, you should avoid using it. No replacement was suggested.
+Package simplesamlphp/simplesamlphp-module-oauth is abandoned, you should avoid using it. No replacement was suggested.
+Package twig/extensions is abandoned, you should avoid using it. No replacement was suggested.
+Generating optimized autoload files
+54 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+Scaffolding files for pantheon-systems/drupal-integrations:
+  - Skip [web-root]/sites/default/settings.php because it already exists and overwrite is false.
+Webroot located at: web
+[UTexas Pantheon SAML]: Directory cleanup
+[UTexas Pantheon SAML]: Generating symlinks
+Making directory: web/simplesaml a symlink pointing to: ../vendor/simplesamlphp/simplesamlphp/www
+Recreating symlink: ./vendor/simplesamlphp/simplesamlphp/config
+Making directory: ./vendor/simplesamlphp/simplesamlphp/config a symlink pointing to: ../../../web/sites/default/files/private/saml/assets/config
+Recreating symlink: ./vendor/simplesamlphp/simplesamlphp/metadata
+Making directory: ./vendor/simplesamlphp/simplesamlphp/metadata a symlink pointing to: ../../../web/sites/default/files/private/saml/assets/metadata
+[UTexas Pantheon SAML]: Copying Drupal settings file
+ [success] Cache rebuild complete.
+Migration complete... Proceeding to sync...
+[0;32mExporting...[0m
+mysqldump: [Warning] Using a password on the command line interface can be insecure.
+Done.
+Importing database. This can take ~10 minutes...
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Rsyncing files...
+Site files found at /home/mark/Sites/utexas_migrate/scripts/saas/utexas-purchasing/web/sites/default/files
+Syncing...
+sending incremental file list
+.htaccess
+            476 100%    0.00kB/s    0:00:00              476 100%    0.00kB/s    0:00:00 (xfr#1, to-chk=54/56)
+AP_DocumentRoutingFlowfinal2.png
+         32,768  51%    7.81MB/s    0:00:00           63,247 100%    6.70MB/s    0:00:00 (xfr#2, to-chk=53/56)
+DEFINE GG4 screenshot.PNG
+          8,089 100%  789.94kB/s    0:00:00            8,089 100%  789.94kB/s    0:00:00 (xfr#3, to-chk=52/56)
+Payment_Services2.png
+         32,768  20%    2.40MB/s    0:00:00          162,110 100%    4.83MB/s    0:00:00 (xfr#4, to-chk=51/56)
+RGB_formal_Purchasing_Office.png
+         32,768  95%  941.18kB/s    0:00:00           34,476 100%  990.23kB/s    0:00:00 (xfr#5, to-chk=50/56)
+ggv_Hints1.gif
+          9,790 100%  273.16kB/s    0:00:00            9,790 100%  273.16kB/s    0:00:00 (xfr#6, to-chk=49/56)
+ggv_Hints2.gif
+          9,330 100%  260.32kB/s    0:00:00            9,330 100%  260.32kB/s    0:00:00 (xfr#7, to-chk=48/56)
+ggv_Hints3a.gif
+          8,814 100%  239.10kB/s    0:00:00            8,814 100%  239.10kB/s    0:00:00 (xfr#8, to-chk=47/56)
+ggv_Hints3b.gif
+          9,702 100%  263.18kB/s    0:00:00            9,702 100%  263.18kB/s    0:00:00 (xfr#9, to-chk=46/56)
+ggv_Hints4.gif
+         12,286 100%  324.27kB/s    0:00:00           12,286 100%  324.27kB/s    0:00:00 (xfr#10, to-chk=45/56)
+ggv_Hints5.gif
+         12,333 100%  325.51kB/s    0:00:00           12,333 100%  325.51kB/s    0:00:00 (xfr#11, to-chk=44/56)
+ggv_Hints6.gif
+         13,742 100%  353.16kB/s    0:00:00           13,742 100%  353.16kB/s    0:00:00 (xfr#12, to-chk=43/56)
+logo-purchasing-bw.svg
+         28,892 100%  688.17kB/s    0:00:00           28,892 100%  688.17kB/s    0:00:00 (xfr#13, to-chk=42/56)
+logo-purchasing.svg
+         29,754 100%  660.38kB/s    0:00:00           29,754 100%  660.38kB/s    0:00:00 (xfr#14, to-chk=41/56)
+next.gif
+          1,599 100%   35.49kB/s    0:00:00            1,599 100%   35.49kB/s    0:00:00 (xfr#15, to-chk=40/56)
+next_0.gif
+          1,599 100%   35.49kB/s    0:00:00            1,599 100%   35.49kB/s    0:00:00 (xfr#16, to-chk=39/56)
+payment-services.pdf
+         32,768  16%  711.11kB/s    0:00:00          201,979 100%    3.63MB/s    0:00:00 (xfr#17, to-chk=38/56)
+payment_services1.png
+         32,768  21%  603.77kB/s    0:00:00          155,718 100%    2.56MB/s    0:00:00 (xfr#18, to-chk=37/56)
+payment_solutions_sh.png
+         32,768  10%  542.37kB/s    0:00:00          322,880 100%    4.53MB/s    0:00:00 (xfr#19, to-chk=36/56)
+pg_rules_gg3.gif
+          2,827 100%   40.60kB/s    0:00:00            2,827 100%   40.60kB/s    0:00:00 (xfr#20, to-chk=35/56)
+pg_rules_pp.gif
+          1,841 100%   26.44kB/s    0:00:00            1,841 100%   26.44kB/s    0:00:00 (xfr#21, to-chk=34/56)
+previous.gif
+          1,733 100%   24.89kB/s    0:00:00            1,733 100%   24.89kB/s    0:00:00 (xfr#22, to-chk=33/56)
+previous_0.gif
+          1,733 100%   24.89kB/s    0:00:00            1,733 100%   24.89kB/s    0:00:00 (xfr#23, to-chk=32/56)
+purch.gif
+         15,007 100%  215.52kB/s    0:00:00           15,007 100%  215.52kB/s    0:00:00 (xfr#24, to-chk=31/56)
+ctools/
+featured-highlights/
+featured-highlights/texas-flag-pete-alexopoulos-unsplash.jpg
+         32,768   4%   26.21kB/s    0:00:26           65,536   9%   52.33kB/s    0:00:12          728,066 100%  570.63kB/s    0:00:01 (xfr#25, to-chk=19/56)
+flex-content-areas/
+flex-content-areas/Arch-of-Main-Building-and-Capitol.jpg
+         32,768  16%    1.30MB/s    0:00:00          203,059 100%    6.68MB/s    0:00:00 (xfr#26, to-chk=18/56)
+flex-content-areas/Austin-Texas.jpg
+         32,768  33%    1.04MB/s    0:00:00           97,126 100%    2.72MB/s    0:00:00 (xfr#27, to-chk=17/56)
+flex-content-areas/eastmallviewmainbuilding.jpg
+         32,768   0%  941.18kB/s    0:00:04          557,056  12%  180.49kB/s    0:00:22          851,968  18%  205.18kB/s    0:00:18        1,245,184  27%  233.80kB/s    0:00:14        1,638,400  35%  252.17kB/s    0:00:11        2,031,616  44%  325.28kB/s    0:00:07        2,424,832  52%  344.24kB/s    0:00:06        2,818,048  61%  343.85kB/s    0:00:05        3,178,496  69%  343.30kB/s    0:00:04        3,375,104  73%  303.14kB/s    0:00:04        3,964,928  86%  348.87kB/s    0:00:01        4,292,608  93%  345.49kB/s    0:00:00        4,597,353 100%  306.21kB/s    0:00:14 (xfr#28, to-chk=16/56)
+google_tag/utexas_migrated_gtm/
+google_tag/utexas_migrated_gtm/google_tag.data_layer.js
+            152 100%    0.18kB/s    0:00:00              152 100%    0.18kB/s    0:00:00 (xfr#29, to-chk=14/56)
+google_tag/utexas_migrated_gtm/google_tag.noscript.js
+            178 100%    0.21kB/s    0:00:00              178 100%    0.21kB/s    0:00:00 (xfr#30, to-chk=13/56)
+google_tag/utexas_migrated_gtm/google_tag.script.js
+            347 100%    0.41kB/s    0:00:00              347 100%    0.41kB/s    0:00:00 (xfr#31, to-chk=12/56)
+hero-photos-full/
+hero-photos-full/Tower_sky-view-cropped.jpg
+         32,768  51%   38.65kB/s    0:00:00           63,989 100%   68.07kB/s    0:00:00 (xfr#32, to-chk=11/56)
+image-link/
+media-icons/default/
+media-icons/default/application-octet-stream.png
+          1,520 100%    1.62kB/s    0:00:00            1,520 100%    1.62kB/s    0:00:00 (xfr#33, to-chk=9/56)
+media-icons/default/audio-mpeg.png
+          1,770 100%    1.88kB/s    0:00:00            1,770 100%    1.88kB/s    0:00:00 (xfr#34, to-chk=8/56)
+media-icons/default/audio-x-generic.png
+          1,770 100%    1.88kB/s    0:00:00            1,770 100%    1.88kB/s    0:00:00 (xfr#35, to-chk=7/56)
+media-icons/default/file-unknown.png
+          1,522 100%    1.62kB/s    0:00:00            1,522 100%    1.62kB/s    0:00:00 (xfr#36, to-chk=6/56)
+media-icons/default/image-x-generic.png
+          1,166 100%    1.24kB/s    0:00:00            1,166 100%    1.24kB/s    0:00:00 (xfr#37, to-chk=5/56)
+media-icons/default/video-x-generic.png
+          1,828 100%    1.94kB/s    0:00:00            1,828 100%    1.94kB/s    0:00:00 (xfr#38, to-chk=4/56)
+pictures/
+private/.htaccess
+            491 100%    0.52kB/s    0:00:00              491 100%    0.52kB/s    0:00:00 (xfr#39, to-chk=3/56)
+promo-lists/
+promo-lists/hold for image.jpg
+          3,405 100%    3.61kB/s    0:00:00            3,405 100%    3.61kB/s    0:00:00 (xfr#40, to-chk=2/56)
+xmlsitemap/NXhscRe0440PFpI5dSznEVgmauL25KojD7u4e9aZwOM/1.xml
+          9,072 100%    9.61kB/s    0:00:00            9,072 100%    9.61kB/s    0:00:00 (xfr#41, to-chk=0/56)
+
+sent 6,732,472 bytes  received 874 bytes  244,848.95 bytes/sec
+total size is 6,822,771  speedup is 1.01
+File synchronization complete
+Removing Docker containers...
+[0;33mRemoving containers...[0m
+Stopping utexas-purchasing_web_1  ... 
+Stopping utexas-purchasing_db_1   ... 
+Stopping utexas-purchasing_mail_1 ... 
+Stopping utexas-purchasing_cli_1  ... 
+Stopping utexas-purchasing_pma_1  ... 
+Stopping utexas-purchasing_web_1  ... done
+Stopping utexas-purchasing_mail_1 ... done
+Stopping utexas-purchasing_cli_1  ... done
+Stopping utexas-purchasing_pma_1  ... done
+Stopping utexas-purchasing_db_1   ... done
+Removing utexas-purchasing_web_1  ... 
+Removing utexas-purchasing_db_1   ... 
+Removing utexas-purchasing_mail_1 ... 
+Removing utexas-purchasing_cli_1  ... 
+Removing utexas-purchasing_pma_1  ... 
+Removing utexas-purchasing_mail_1 ... done
+Removing utexas-purchasing_cli_1  ... done
+Removing utexas-purchasing_pma_1  ... done
+Removing utexas-purchasing_db_1   ... done
+Removing utexas-purchasing_web_1  ... done
+Removing network utexas-purchasing_default
+Removing volume utexas-purchasing_cli_home
+Removing volume utexas-purchasing_project_root
+Removing volume utexas-purchasing_db_data
+Volume docksal_ssh_agent is external, skipping
+****************************************
+*** END MIGRATION: utexas-purchasing ***
+****************************************

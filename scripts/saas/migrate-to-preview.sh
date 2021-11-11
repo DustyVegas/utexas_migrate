@@ -96,3 +96,5 @@ fin project remove -f
 echo "****************************************"
 echo "*** END MIGRATION: $DESTINATION_SITE ***"
 echo "****************************************"
+
+sleep 10s

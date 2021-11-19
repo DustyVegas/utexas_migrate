@@ -65,9 +65,9 @@ fin drush en utexas_migrate -y
 sh web/modules/custom/utexas_migrate/scripts/migrate.sh $SOURCE_SITE $DOMAIN
 
 echo "Peforming cleanup tasks..."
-# fin drush pmu utprof_migrate utevent_migrate utnews_migrate utexas_migrate migrate_tools migrate_plus migrate -y
-# composer remove utexas/utexas_migrate
-# fin drush cr
+fin drush pmu utprof_migrate utevent_migrate utnews_migrate utexas_migrate migrate_tools migrate_plus migrate -y
+composer remove utexas/utexas_migrate
+fin drush cr
 
 say "Migration complete"
 

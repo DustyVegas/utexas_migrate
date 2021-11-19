@@ -3,6 +3,7 @@
 namespace Drupal\utexas_migrate\Plugin\migrate\destination;
 
 use Drupal\block_content\Entity\BlockContent;
+use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\block\Entity\Block;
 use Drupal\migrate\Plugin\migrate\destination\Entity;
@@ -23,6 +24,11 @@ class ContactInfo extends Entity implements MigrateDestinationInterface {
    * {@inheritdoc}
    */
   public function import(Row $row, array $old_destination_id_values = []) {
+    // Query all IDs stored on Standard Page & Landing Page.
+    $referenced_on_pages = self::getReferencedContactInfo();
+    if (!in_array($row->getSourceProperty('id'), $referenced_on_pages)) {
+      return [1];
+    }
     try {
       $block = BlockContent::create([
         'type' => 'utexas_flex_list',
@@ -52,6 +58,25 @@ class ContactInfo extends Entity implements MigrateDestinationInterface {
         ':code' => $e->getCode(),
       ]);
     }
+  }
+
+  /**
+   * Retrieve a user entity ID from the migration map.
+   *
+   * @param int $uid
+   *   A user entity ID from the source site.
+   *
+   * @return mixed
+   *   Returns the matching media entity ID or FALSE.
+   */
+  public static function getReferencedContactInfo() {
+    $source_db = Database::getConnection('default', 'utexas_migrate');
+    $result = $source_db->select('field_data_field_utexas_contact_info', 'r')
+      ->fields('r', ['field_utexas_contact_info_target_id'])
+      ->condition('bundle', ['standard_page', 'landing_page'], 'IN')
+      ->execute()
+      ->fetchCol('field_utexas_contact_info_target_id');
+    return array_values($result);
   }
 
   /**

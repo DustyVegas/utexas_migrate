@@ -1,3 +1,6 @@
 #!/bin/bash
-./migrate-to-preview.sh utqs-legal-affairs utexas-legal https://legal.utexas.edu
-./migrate-to-preview.sh utqs-datacenters utexas-datacenters https://datacenters.utexas.edu
+./migrate-to-preview.sh utqs-parents-association utexas-parents-assoc https://parents.utexas.edu
+./migrate-to-preview.sh utqs-faculty-council utexas-faculty-council https://facultycouncil.utexas.edu
+./migrate-to-preview.sh utqs-budget utexas-budget https://budget.utexas.edu
+./migrate-to-preview.sh utqs-business-contracts utexas-business-contracts,https://businesscontracts.utexas.edu
+./migrate-to-preview.sh utqs-payroll utexas-payroll https://payroll.utexas.edu

@@ -56,7 +56,7 @@ class AnnouncementDestination extends Entity implements MigrateDestinationInterf
         'title' => $source['utexas_announcement_cta'],
       ];
     }
-    if (isset($source['utexas_announcement_title_icon']) && false) {
+    if (isset($source['utexas_announcement_title_icon'])) {
       $icon_map = [
         'icon-announcement' => 'bullhorn',
         'icon-warning' => 'warning',

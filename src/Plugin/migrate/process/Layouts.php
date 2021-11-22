@@ -582,7 +582,6 @@ class Layouts extends ProcessPluginBase {
         break;
 
       case 'Hero Image & Sidebars':
-      case 'Header with Content & Sidebars':
         switch ($settings['region']) {
           case 'content_top_left':
             $delta = 0;
@@ -594,7 +593,31 @@ class Layouts extends ProcessPluginBase {
             $region = 'second';
             break;
 
+          case 'content':
+            $delta = 1;
+            $region = 'first';
+            break;
+
+          case 'sidebar_second':
+            $delta = 1;
+            $region = 'second';
+            break;
+
           case 'social_links':
+            $delta = 1;
+            $region = 'second';
+            break;
+        }
+        break;
+
+      case 'Header with Content & Sidebars':
+        switch ($settings['region']) {
+          case 'content_top_left':
+            $delta = 0;
+            $region = 'first';
+            break;
+
+          case 'content_top_right':
             $delta = 0;
             $region = 'second';
             break;
@@ -610,6 +633,11 @@ class Layouts extends ProcessPluginBase {
             break;
 
           case 'sidebar_second':
+            $delta = 1;
+            $region = 'second';
+            break;
+
+          case 'social_links':
             $delta = 1;
             $region = 'second';
             break;

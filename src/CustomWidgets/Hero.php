@@ -96,6 +96,9 @@ class Hero {
   protected static function massageFieldData(array $source) {
     $destination = [];
     foreach ($source as $delta => $instance) {
+      if ($instance['image_fid'] == 0) {
+        continue;
+      }
       if (!empty($instance['photo_credit'])) {
         $destination[$delta]['credit'] = $instance['photo_credit'];
       }

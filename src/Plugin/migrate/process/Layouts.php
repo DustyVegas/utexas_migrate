@@ -515,11 +515,6 @@ class Layouts extends ProcessPluginBase {
     // to blocks.
     $layout_override = [];
     $layout_builder_styles = [];
-    $border_with_background = [
-      'layout_builder_styles_style' => [
-        'utexas_border_with_background' => 'utexas_border_with_background',
-      ],
-    ];
     $three_col = [
       'layout_builder_styles_style' => [
         'utexas_threecol' => 'utexas_threecol',
@@ -562,10 +557,6 @@ class Layouts extends ProcessPluginBase {
           case 'sidebar_second':
             $delta = 2;
             $region = 'second';
-            // Add border with background to all fields except those listed.
-            if (MigrateHelper::shouldReceiveBorderWithBackground($field)) {
-              $layout_builder_styles = $border_with_background;
-            }
             break;
         }
         break;
@@ -581,10 +572,6 @@ class Layouts extends ProcessPluginBase {
           case 'sidebar_second':
             $delta = 0;
             $region = 'second';
-            // Add border with background to all fields except those listed.
-            if (MigrateHelper::shouldReceiveBorderWithBackground($field)) {
-              $layout_builder_styles = $border_with_background;
-            }
             break;
         }
         break;
@@ -615,10 +602,6 @@ class Layouts extends ProcessPluginBase {
           case 'sidebar_second':
             $delta = 1;
             $region = 'second';
-            // Add border with background to all fields except those listed.
-            if (MigrateHelper::shouldReceiveBorderWithBackground($field)) {
-              $layout_builder_styles = $border_with_background;
-            }
             break;
         }
         break;
@@ -719,12 +702,6 @@ class Layouts extends ProcessPluginBase {
           case 'quick_links':
             $delta = 2;
             $region = 'main';
-            $layout_builder_styles = [
-              'layout_builder_styles_style' => [
-                'utexas_border_without_background' => 'utexas_border_without_background',
-                'utexas_fourcol' => 'utexas_fourcol',
-              ],
-            ];
             break;
 
           case 'content_bottom':

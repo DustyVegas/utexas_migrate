@@ -462,28 +462,6 @@ class MigrateHelper {
   }
 
   /**
-   * Check if the field should receive a border.
-   *
-   * @param string $field
-   *   The source block name.
-   *
-   * @return bool
-   *   Whether or not the field should receive a border.
-   */
-  public static function shouldReceiveBorderWithBackground($field) {
-    if (self::isMenuBlock($field)) {
-      return FALSE;
-    }
-    if ($field === 'social_links') {
-      return FALSE;
-    }
-    if ($field === 'social_sharing') {
-      return FALSE;
-    }
-    return TRUE;
-  }
-
-  /**
    * Check if Views block can be migrated to inline blocks.
    *
    * @param string $d7_display_id

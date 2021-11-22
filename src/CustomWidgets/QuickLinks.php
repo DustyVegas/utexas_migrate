@@ -114,13 +114,6 @@ class QuickLinks {
         $instances['field'][$delta]['links'] = serialize($prepared_links);
       }
     }
-    // Quick Links should always display with border w/o background.
-    $instances['additional'] = [
-      'layout_builder_styles_style' => [
-        'utexas_border_without_background' => 'utexas_border_without_background',
-
-      ],
-    ];
     return $instances;
   }
 

@@ -118,12 +118,6 @@ class SocialLinks {
         ];
       }
     }
-    // Social Links should always display with border w/o background.
-    $destination['additional'] = [
-      'layout_builder_styles_style' => [
-        'utexas_border_without_background' => 'utexas_border_without_background',
-      ],
-    ];
     return $destination;
   }
 

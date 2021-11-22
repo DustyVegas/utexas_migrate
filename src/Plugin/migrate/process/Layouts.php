@@ -569,6 +569,11 @@ class Layouts extends ProcessPluginBase {
             $region = 'first';
             break;
 
+          case 'social_links':
+            $delta = 0;
+            $region = 'second';
+            break;
+
           case 'sidebar_second':
             $delta = 0;
             $region = 'second';
@@ -585,6 +590,11 @@ class Layouts extends ProcessPluginBase {
             break;
 
           case 'content_top_right':
+            $delta = 0;
+            $region = 'second';
+            break;
+
+          case 'social_links':
             $delta = 0;
             $region = 'second';
             break;
@@ -655,6 +665,11 @@ class Layouts extends ProcessPluginBase {
           case 'content_bottom':
             $delta = 3;
             $region = 'first';
+            break;
+
+          case 'social_links':
+            $delta = 3;
+            $region = 'second';
             break;
 
           case 'sidebar_second':

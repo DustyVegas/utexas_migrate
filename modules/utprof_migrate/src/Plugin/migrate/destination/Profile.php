@@ -34,7 +34,7 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
         'body_format' => MigrateHelper::getDestinationTextFormat($body[0]['format']),
       ];
     }
-    // Convert 'Additional basic info' from Quick Links'. The header, copy &
+    // Convert 'Additional basic info' from Quick Links. The header, copy &
     // links will populate the v3 WYSIWYG something like this:
     // <h3>Lorem Ipsum</h3><p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p><p><a href="http://stanford.edu">JD Stanford</a></p><p><a href="http://wesleyan.edu">BA Wesleyan University</a></p>.
     $basic_info_string = '';
@@ -76,9 +76,6 @@ class Profile extends EntityContentBase implements MigrateDestinationInterface {
       // In cases where the summary is explicitly defined, populate that as
       // the 'additional basic info'.
       $summary = WysiwygHelper::process($body[0]['summary']);
-    }
-    elseif (!empty($body[0]['value'])) {
-      $summary = text_summary(strip_tags(WysiwygHelper::process($body[0]['value']), 'plain_text'));
     }
     if (isset($summary)) {
       $basic_info = [

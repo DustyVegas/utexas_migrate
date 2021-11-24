@@ -33,6 +33,12 @@ echo "Waking environments..."
 terminus env:wake $DESTINATION_SITE.live
 terminus env:wake $DESTINATION_SITE.preview
 
+echo "Wiping destination's preview environment..."
+terminus env:wipe $DESTINATION_SITE.preview
+
+echo "Syncing files from live environment of destination to preview environment"
+terminus env:clone-content $DESTINATION_SITE.live preview --files-only
+
 echo "Cloning the destination site & building the codebase..."
 PANTHEON_SITE_GIT_URL="$(terminus connection:info $DESTINATION_SITE.dev --field=git_url)"
 git clone "$PANTHEON_SITE_GIT_URL" $DESTINATION_SITE

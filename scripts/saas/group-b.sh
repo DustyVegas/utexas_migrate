@@ -1,0 +1,21 @@
+#!/bin/bash
+./migrate-to-preview.sh utqs-mesoamerica utexas-mesoamerica https://utmesoamerica.org >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-mrsec utexas-mrsec https://mrsec.utexas.edu >> migration-report.txt 2>&1
+./migrate-to-preview.sh utqs-offcampus utexas-offcampus https://offcampus.utexas.edu >> migration-report.txt 2>&1
+./migrate-to-preview.sh utqs-office-365 utexas-office-365 https://office365.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-ombuds utexas-ombuds https://ombuds.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-parents-association utexas-parents-assoc https://parents.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-payroll utexas-payroll https://payroll.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-purchasing utexas-purchasing https://purchasing.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-staff-council utexas-staff-council https://staffcouncil.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-student-affairs utexas-student-affairs https://studentaffairs.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-texas-memorial-museum utexas-texas-memorial-museum https://tmm.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-texas-metro-observatory utexas-texas-metro-observatory https://tmo.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-texcep utexas-texcep https://texcep.education.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-title-ix utexas-title-ix https://titleix.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-trademarks utexas-trademarks https://trademarks.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-ttap utexas-ttap https://ttap.disabilitystudies.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-urban-lab utexas-urban-lab https://urbanlab.lbj.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-waggoner-center utexas-waggoner https://waggonercenter.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-webpublishing utexas-webpublishing https://webpublishing.utexas.edu >> migration-report.txt 2>&1 
+./migrate-to-preview.sh utqs-zoom utexas-zoom https://zoom.its.utexas.edu >> migration-report.txt 2>&1 

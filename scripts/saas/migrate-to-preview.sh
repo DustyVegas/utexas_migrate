@@ -31,13 +31,13 @@ echo "Performing migration of $SOURCE_SITE to $DESTINATION_SITE as $DOMAIN..."
 
 echo "Waking environments..."
 terminus env:wake $DESTINATION_SITE.live
-terminus env:wake $DESTINATION_SITE.preview
+terminus env:wake $DESTINATION_SITE.$ENV
 
 echo "Wiping destination's preview environment..."
-terminus env:wipe $DESTINATION_SITE.preview
+terminus env:wipe $DESTINATION_SITE.$ENV
 
 echo "Syncing files from live environment of destination to preview environment"
-terminus env:clone-content $DESTINATION_SITE.live preview --files-only
+terminus env:clone-content $DESTINATION_SITE.live $ENV --files-only
 
 echo "Cloning the destination site & building the codebase..."
 PANTHEON_SITE_GIT_URL="$(terminus connection:info $DESTINATION_SITE.dev --field=git_url)"
@@ -74,10 +74,12 @@ echo "Migration complete... Proceeding to sync..."
 fin db dump $DESTINATION_SITE.sql
 
 echo "Importing database. This can take ~10 minutes..."
+terminus env:wake $DESTINATION_SITE.$ENV
 PANTHEON_SQL_CMD=`terminus connection:info $DESTINATION_SITE.$ENV --field=mysql_command`
 $PANTHEON_SQL_CMD < $DESTINATION_SITE.sql
 
 echo "Rsyncing files..."
+terminus env:wake $DESTINATION_SITE.$ENV
 DEST_ID=$(terminus site:info "$DESTINATION_SITE" --field=ID)
 if [ ! $DEST_ID ];
 then
